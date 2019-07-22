@@ -31,6 +31,8 @@ export default {
     HelloWorld
   },
   created(){
+    this.addMember();
+    this.testMember();
     this.addEvent();
     this.testEvent();
   },
@@ -39,8 +41,14 @@ export default {
     memberStore: state => state.memberStore,
   }),
   methods : {
+    ...mapMutations('memberStore', [
+      'addMember',
+    ]),
     ...mapMutations('eventStore', [
       'addEvent',
+    ]),
+    ...mapActions('memberStore', [
+      'testMember'
     ]),
     ...mapActions('eventStore', [
       'testEvent'
