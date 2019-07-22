@@ -1,5 +1,5 @@
 {
-  "content" : [
+  "contents" : [
     {
       "key" : "qqqweerrtyyy",
       "name" : "보드게임"
@@ -711,7 +711,7 @@
       "title" : "당일치기 양양 바다여행"
     }
   ],
-  "member" : {
+  "members" : {
     "-LOvteMzU211Morqz6pJ" : {
       "address" : "도봉구",
       "birth" : 19910614,
@@ -1894,7 +1894,7 @@
       "phone" : 1012345678
     }
   },
-  "place" : [ {
+  "places" : [ {
     "key" : "wervwtbwrtbetrh",
     "name" : "쌍문"
   }, {

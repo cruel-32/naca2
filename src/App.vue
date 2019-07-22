@@ -35,6 +35,8 @@ export default {
     this.testMember();
     this.addEvent();
     this.testEvent();
+    console.log('this.eventStore : ', this.eventStore);
+    console.log('this.memberStore : ', this.memberStore);
   },
   computed: mapState({
     eventStore: state => state.eventStore,
