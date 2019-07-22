@@ -69,7 +69,7 @@
       "name" : "탈퇴 혹은 강퇴 회원"
     }
   ],
-  "meeting" : [
+  "events" : [
     {
       "uid" : "20181005-1",
       "date" : 20181005, 
@@ -722,7 +722,7 @@
       "mail" : "",
       "name" : "김희수",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20181116-1",
         "20190105-1",
         "20190227-1",
@@ -747,7 +747,7 @@
       "mail" : "",
       "name" : "김도용",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190120-2",
         "20190130-1",
         "20190213-1",
@@ -782,7 +782,7 @@
       "mail" : "",
       "name" : "김은기",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190327-1",
         "20190420-1",
         "20190529-1",
@@ -800,7 +800,7 @@
       "mail" : "",
       "name" : "김민우",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190316-1",
         "20190327-1",
         "20190420-1"
@@ -817,7 +817,7 @@
       "mail" : "",
       "name" : "이현홍",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190329-1",
         "20190406-1",
         "20190406-2",
@@ -839,7 +839,7 @@
       "mail" : "",
       "name" : "김혜진",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190327-1",
         "20190406-2",
         "20190420-1",
@@ -866,7 +866,7 @@
       "mail" : "",
       "name" : "유경진",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190410-1",
         "20190414-1",
         "20190421-1",
@@ -895,7 +895,7 @@
       "mail" : "",
       "name" : "공혜진",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190501-1",
         "20190601-1",
         "20190706-1"
@@ -912,7 +912,7 @@
       "mail" : "",
       "name" : "최중현",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190518-1",
         "20190625-1"
       ],
@@ -928,7 +928,7 @@
       "mail" : "",
       "name" : "윤호석",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190714-1"
       ],
       "phone" : 1012345678
@@ -943,7 +943,7 @@
       "mail" : "",
       "name" : "정연호",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190626-1"
       ],
       "phone" : 1012345678
@@ -957,7 +957,7 @@
       "joinDate" : 20190611,
       "mail" : "",
       "name" : "강현구",
-      "participation" : [
+      "events" : [
       ],
       "outDay" : 0,
       "phone" : 1012345678
@@ -971,7 +971,7 @@
       "joinDate" : 20190606,
       "mail" : "",
       "name" : "황원미",
-      "participation" : [
+      "events" : [
       ],
       "outDay" : 0,
       "phone" : 1012345678
@@ -986,7 +986,7 @@
       "mail" : "",
       "name" : "김다현",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190625-1",
         "20190626-1",
         "20190710-1"
@@ -1015,7 +1015,7 @@
       "mail" : "",
       "name" : "김예진",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190626-1"
       ],
       "phone" : 1012345678
@@ -1030,7 +1030,7 @@
       "mail" : "",
       "name" : "강주희",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190706-1"
       ],
       "phone" : 1012345678
@@ -1045,7 +1045,7 @@
       "mail" : "",
       "name" : "이해창",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190710-1"
       ],
       "phone" : 1012345678
@@ -1060,7 +1060,7 @@
       "mail" : "",
       "name" : "양인태",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190714-1"
       ],
       "phone" : 1012345678
@@ -1086,7 +1086,7 @@
       "joinDate" : 20190703,
       "mail" : "",
       "name" : "윤인목",
-      "participation" : [
+      "events" : [
       ],
       "outDay" : 0,
       "phone" : 1012345678
@@ -1100,7 +1100,7 @@
       "joinDate" : 20190712,
       "mail" : "",
       "name" : "이미영",
-      "participation" : [
+      "events" : [
       ],
       "outDay" : 0,
       "phone" : 1012345678
@@ -1114,7 +1114,7 @@
       "joinDate" : 20190714,
       "mail" : "",
       "name" : "신나나",
-      "participation" : [
+      "events" : [
       ],
       "outDay" : 0,
       "phone" : 1012345678
@@ -1128,7 +1128,7 @@
       "joinDate" : 20190717,
       "mail" : "",
       "name" : "남효경",
-      "participation" : [
+      "events" : [
       ],
       "outDay" : 0,
       "phone" : 1012345678
@@ -1143,7 +1143,7 @@
       "mail" : "",
       "name" : "김민수",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20190302-1",
         "20190608-1",
         "20190706-1",
@@ -1160,7 +1160,7 @@
       "joinDate" : 20160219,
       "mail" : "",
       "name" : "박세민",
-      "participation" : [
+      "events" : [
         "20181010-1",
         "20181013-1",
         "20181020-1",
@@ -1190,7 +1190,7 @@
       "joinDate" : 20150405,
       "mail" : "",
       "name" : "고중민",
-      "participation" : [
+      "events" : [
         "20181005-1",
         "20181007-1",
         "20181013-1",
@@ -1233,7 +1233,7 @@
       "joinDate" : 20160717,
       "mail" : "",
       "name" : "신선하",
-      "participation" : [
+      "events" : [
         "20181010-1",
         "20190109-1",
         "20190113-1",
@@ -1258,7 +1258,7 @@
       "joinDate" : 20171218,
       "mail" : "",
       "name" : "유태종",
-      "participation" : [
+      "events" : [
         "20181005-1",
         "20181028-1",
         "20181031-1",
@@ -1308,7 +1308,7 @@
       "joinDate" : 20180101,
       "mail" : "tladlwl13@gmail.com",
       "name" : "심이지",
-      "participation" : [
+      "events" : [
         "20181005-1",
         "20181007-1",
         "20181013-1",
@@ -1378,7 +1378,7 @@
       "joinDate" : 20170101,
       "mail" : "",
       "name" : "정혜선",
-      "participation" : [
+      "events" : [
         "20190109-1",
         "20190506-1",
         "20190714-1"
@@ -1394,7 +1394,7 @@
       "joinDate" : 20161227,
       "mail" : "",
       "name" : "신지혁",
-      "participation" : [
+      "events" : [
         "20181222-1",
         "20190414-1",
         "20190430-1"
@@ -1411,7 +1411,7 @@
       "mail" : "cshee8508@gmail.com",
       "name" : "최승희",
       "outDay" : 0,
-      "participation" : [
+      "events" : [
         "20181005-1",
         "20181007-1",
         "20181013-1",
@@ -1477,7 +1477,7 @@
       "joinDate" : 20161031,
       "mail" : "",
       "name" : "노미혜",
-      "participation" : [
+      "events" : [
         "20181013-1",
         "20181107-1",
         "20190120-1",
@@ -1496,7 +1496,7 @@
       "joinDate" : 20180701,
       "mail" : "",
       "name" : "배인지",
-      "participation" : [
+      "events" : [
         "20181028-1",
         "20181031-1",
         "20181107-1",
@@ -1540,7 +1540,7 @@
       "joinDate" : 20180201,
       "mail" : "",
       "name" : "박정현",
-      "participation" : [
+      "events" : [
         "20181010-1",
         "20181013-1",
         "20181020-1",
@@ -1572,7 +1572,7 @@
       "joinDate" : 20160706,
       "mail" : "",
       "name" : "배숙경",
-      "participation" : [
+      "events" : [
         "20181107-1",
         "20181222-1",
         "20190323-1",
@@ -1590,7 +1590,7 @@
       "joinDate" : 20151020,
       "mail" : "",
       "name" : "김비오",
-      "participation" : [
+      "events" : [
         "20181010-1",
         "20181222-1",
         "20190109-1",
@@ -1615,7 +1615,7 @@
       "joinDate" : 20180420,
       "mail" : "",
       "name" : "김승범",
-      "participation" : [
+      "events" : [
         "20181010-1",
         "20181013-1",
         "20181020-1",
@@ -1635,7 +1635,7 @@
       "joinDate" : 20150218,
       "mail" : "",
       "name" : "김예주",
-      "participation" : [
+      "events" : [
         "20181010-1",
         "20181031-1",
         "20181128-1",
@@ -1663,7 +1663,7 @@
       "joinDate" : 20180324,
       "mail" : "",
       "name" : "김효석",
-      "participation" : [
+      "events" : [
         "20181005-1",
         "20181116-1",
         "20181229-1",
@@ -1686,7 +1686,7 @@
       "joinDate" : 20160715,
       "mail" : "",
       "name" : "이평강",
-      "participation" : [
+      "events" : [
         "20181107-1",
         "20181222-1",
         "20181229-1",
@@ -1705,7 +1705,7 @@
       "joinDate" : 20170101,
       "mail" : "",
       "name" : "조신재",
-      "participation" : [
+      "events" : [
         "20181107-1",
         "20181222-1",
         "20190302-1",
@@ -1732,7 +1732,7 @@
       "joinDate" : 20170927,
       "mail" : "",
       "name" : "박요한",
-      "participation" : [
+      "events" : [
         "20181205-1",
         "20190130-1",
         "20190510-1"
@@ -1748,7 +1748,7 @@
       "joinDate" : 20160902,
       "mail" : "",
       "name" : "남동우",
-      "participation" : [
+      "events" : [
         "20190113-1",
         "20190406-2"
       ],
@@ -1762,7 +1762,7 @@
       "job" : "보드카페 메니저",
       "joinDate" : 20170101,
       "name" : "나성태",
-      "participation" : [
+      "events" : [
       ],
       "outDay" : 0,
       "phone" : 1012345678
@@ -1776,7 +1776,7 @@
       "joinDate" : 20171025,
       "mail" : "",
       "name" : "박제연",
-      "participation" : [
+      "events" : [
         "20181005-1",
         "20181010-1",
         "20181028-1",
@@ -1817,7 +1817,7 @@
       "joinDate" : 20141112,
       "mail" : "",
       "name" : "최영환",
-      "participation" : [
+      "events" : [
         "20181107-1",
         "20181222-1",
         "20190106-1",
@@ -1848,7 +1848,7 @@
       "joinDate" : 20180420,
       "mail" : "",
       "name" : "최세훈",
-      "participation" : [
+      "events" : [
         "20181005-1",
         "20181007-1",
         "20181020-1",
