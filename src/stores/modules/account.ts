@@ -1,17 +1,17 @@
-import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
 
-interface User {
+export interface UserTypes {
   name:string;
   email:string;
   photoURL:string;
 }
 
-@Module({ dynamic: true, store, name: 'AccountStore' })
-export default class AccountStore extends VuexModule {
-  currentUser:User|null = null;
+@Module
+class AccountStore extends VuexModule {
+  currentUser:UserTypes|null = null;
   @Mutation
-  setCurrentUser(payload:User){
+  setCurrentUser(payload:UserTypes){
     console.log('payload : ', payload);
   }
   @Action
@@ -21,4 +21,4 @@ export default class AccountStore extends VuexModule {
 
 }
 
-export const accountStore = getModule(AccountStore)
+export const accountStore = new AccountStore({store, name: "accountStore" })

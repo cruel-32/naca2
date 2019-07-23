@@ -1,7 +1,7 @@
-import { Module, VuexModule, Mutation, Action, getModule} from 'vuex-module-decorators'
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
 
-interface Member {
+export interface MemberTypes {
   uid:string;
   address:string;
   birth:number;
@@ -14,9 +14,9 @@ interface Member {
   phone:number;
 }
 
-@Module({ dynamic: true, store, name: 'MemberStore' })
-export default class MemberStore extends VuexModule {
-  members:Member[] = [];
+@Module
+class MemberStore extends VuexModule {
+  members:MemberTypes[] = [];
 
   @Mutation
   private addMember(payload:any){
@@ -29,4 +29,4 @@ export default class MemberStore extends VuexModule {
   }
 }
 
-export const memberStore = getModule(MemberStore)
+export const memberStore = new MemberStore({store, name: "memberStore" })

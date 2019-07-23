@@ -1,7 +1,7 @@
-import { Module, VuexModule, Mutation, Action, getModule } from 'vuex-module-decorators'
+import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
 
-interface Event {
+export interface EventTypes {
   uid:string;
   date:number;
   title:string;
@@ -10,9 +10,9 @@ interface Event {
   memberKeys:string[];
 }
 
-@Module({ dynamic: true, store, name: 'EventStore' })
-export default class EventStore extends VuexModule {
-  events:Event[] = [];
+@Module
+class EventStore extends VuexModule {
+  events:EventTypes[] = [];
 
   @Mutation
   private addEvent(payload:any){
@@ -25,4 +25,4 @@ export default class EventStore extends VuexModule {
   }
 }
 
-export const eventStore = getModule(EventStore)
+export const eventStore = new EventStore({store, name: "eventStore" })
