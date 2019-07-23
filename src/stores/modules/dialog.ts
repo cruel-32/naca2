@@ -19,7 +19,6 @@ class DialogStore extends VuexModule {
 
   @Mutation
   setSnackbar(snackBar:SnackbarTypes){
-    console.log('setSnackbar : ', snackBar);
     this.snackBar = snackBar;
   }
 

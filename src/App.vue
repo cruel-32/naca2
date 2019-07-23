@@ -2,7 +2,7 @@
   <v-app
     app
   >
-    <router-view />
+    <Home></Home>
 
     <v-snackbar
       v-model="snackBar.isShowSnackbar"
@@ -32,16 +32,19 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
-import { mapState, mapActions } from 'vuex'
 
 import { UserTypes, accountStore } from "@/stores/modules/account"
 import { EventTypes, eventStore } from "@/stores/modules/event"
 import { SnackbarTypes, dialogStore } from "@/stores/modules/dialog"
 import { MemberTypes, memberStore } from "@/stores/modules/member"
 
+import Home from "@/views/Home.vue"
+
+
 @Component({
   name: 'App',
   components: {
+    Home
   },
 })
 export default class extends Vue {
@@ -63,20 +66,16 @@ export default class extends Vue {
     console.log('this.snackBar : ', this.snackBar);
     console.log('this.members : ', this.members);
   }
-  open(){
-  }
   closeSnackbar(){
     console.log('closeSnackbar');
+    this.snackBar.snackbarText = "닫기 테스트중입니다"; //프로퍼티 값변경 가능
+    this.snackBar.isShowSnackbar = false; //프로퍼티 값변경 가능
+    dialogStore.callSnackbar(this.snackBar);
   }
   openSnackbar(){
-    console.log('openSnackbar');
-    const info:SnackbarTypes = {
-      time:2000,
-      isShowSnackbar:true,
-      snackColor:"success",
-      snackbarText:"tettete",
-    }
-    dialogStore.callSnackbar(info);
+    this.snackBar.snackbarText = "열기 테스트중입니다"; //프로퍼티 값변경 가능
+    this.snackBar.isShowSnackbar = true; //프로퍼티 값변경 가능
+    dialogStore.callSnackbar(this.snackBar);
   }
 }
 </script>
