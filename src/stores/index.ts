@@ -1,13 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import * as eventStore from './event'
-import * as memberStore from './member'
+import AccountStore from './modules/account'
+import EventStore from './modules/event'
+import MemberStore from './modules/member'
 
 Vue.use(Vuex);
 
-export default new Vuex.Store({
-  modules : {
-    eventStore,
-    memberStore
-  }
-})
+export interface RootState {
+  account:AccountStore;
+  event:EventStore;
+  member:MemberStore;
+}
+
+export default new Vuex.Store<RootState>({})
