@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import eventStore from './event'
-import memberStore from './member'
+import * as eventStore from './event'
+import * as memberStore from './member'
 
 Vue.use(Vuex);
 
