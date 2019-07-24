@@ -12,7 +12,7 @@ export interface SnackbarTypes {
 class DialogStore extends VuexModule {
   snackBar:SnackbarTypes = {
     time:2000,
-    isShowSnackbar:true,
+    isShowSnackbar:false,
     snackColor:"success",
     snackbarText:"",
   }

@@ -10,6 +10,7 @@ const firebaseConfig = {
     messagingSenderId: "476472808109",
     appId: "1:476472808109:web:81b230abdee83d77"
 };
+
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 
@@ -17,8 +18,8 @@ const database = firebase.database();
 const auth = firebase.auth();
 const googleAuthProvider:any = new firebase.auth.GoogleAuthProvider();
 
-axios.defaults.baseURL = 'https://nac-admin2.firebaseio.com';
-axios.defaults.headers['content-type'] = 'application/json';
+axios.defaults.baseURL = 'https://nac-admin2.firebaseapp.com';
+// axios.defaults.headers['content-type'] = 'application/json';
 
 export default {
     firebaseConfig,

@@ -2,7 +2,8 @@
   <v-app
     app
   >
-    <Home></Home>
+    <SideComp></SideComp>
+    <HeaderComp></HeaderComp>
 
     <v-snackbar
       v-model="snackBar.isShowSnackbar"
@@ -19,14 +20,6 @@
         Close
       </v-btn>
     </v-snackbar>
-
-    <v-btn
-      flat
-      @click="openSnackbar"
-    >
-      Close
-    </v-btn>
-
   </v-app>
 </template>
 
@@ -39,12 +32,15 @@ import { SnackbarTypes, dialogStore } from "@/stores/modules/dialog"
 import { MemberTypes, memberStore } from "@/stores/modules/member"
 
 import Home from "@/views/Home.vue"
+import SideComp from "@/components/SideComp.vue"
+import HeaderComp from "@/components/HeaderComp.vue"
+import account from './api/account';
 
 
 @Component({
   name: 'App',
   components: {
-    Home
+    Home,HeaderComp,SideComp
   },
 })
 export default class extends Vue {
@@ -61,20 +57,11 @@ export default class extends Vue {
     return memberStore.members
   }
   created(){
-    console.log('this.currentUser : ', this.currentUser);
-    console.log('this.events : ', this.events);
-    console.log('this.snackBar : ', this.snackBar);
-    console.log('this.members : ', this.members);
+    accountStore.onAuthStateChanged(); //전체앱 통틀어 한번만 실행
   }
   closeSnackbar(){
-    console.log('closeSnackbar');
     this.snackBar.snackbarText = "닫기 테스트중입니다"; //프로퍼티 값변경 가능
     this.snackBar.isShowSnackbar = false; //프로퍼티 값변경 가능
-    dialogStore.callSnackbar(this.snackBar);
-  }
-  openSnackbar(){
-    this.snackBar.snackbarText = "열기 테스트중입니다"; //프로퍼티 값변경 가능
-    this.snackBar.isShowSnackbar = true; //프로퍼티 값변경 가능
     dialogStore.callSnackbar(this.snackBar);
   }
 }
