@@ -7,6 +7,12 @@ import './registerServiceWorker'
 import Vuetify from 'vuetify';
 import VeeValidate from 'vee-validate';
 
+declare module 'vue/types/vue' {
+  interface Vue {
+      $moment: any
+  }
+}
+
 Vue.use(Vuetify, {
   theme: {
     primary: "#FF6D00",

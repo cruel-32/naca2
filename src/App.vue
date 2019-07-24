@@ -4,6 +4,11 @@
   >
     <SideComp></SideComp>
     <HeaderComp></HeaderComp>
+    <v-content class="pb-5">
+      <router-view v-scroll="onScroll">
+      </router-view>
+    </v-content>
+    <FooterComp></FooterComp>
 
     <v-snackbar
       v-model="snackBar.isShowSnackbar"
@@ -26,38 +31,39 @@
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator'
 
-import { UserTypes, accountStore } from "@/stores/modules/account"
-import { EventTypes, eventStore } from "@/stores/modules/event"
-import { SnackbarTypes, dialogStore } from "@/stores/modules/dialog"
-import { MemberTypes, memberStore } from "@/stores/modules/member"
+import { accountStore } from "@/stores/modules/account"
+// import { EventTypes, eventStore } from "@/stores/modules/event"
+import { dialogStore } from "@/stores/modules/dialog"
+// import { MemberTypes, memberStore } from "@/stores/modules/member"
 
-import Home from "@/views/Home.vue"
 import SideComp from "@/components/SideComp.vue"
 import HeaderComp from "@/components/HeaderComp.vue"
-import account from './api/account';
+import FooterComp from "@/components/FooterComp.vue"
 
 
 @Component({
   name: 'App',
   components: {
-    Home,HeaderComp,SideComp
+    HeaderComp,SideComp,FooterComp
   },
 })
 export default class extends Vue {
-  get currentUser(){
-    return accountStore.currentUser
-  }
-  get events(){
-    return eventStore.events
-  }
+  // get currentUser(){
+  //   return accountStore.currentUser
+  // }
+  // get events(){
+  //   return eventStore.events
+  // }
   get snackBar(){
     return dialogStore.snackBar
   }
-  get members(){
-    return memberStore.members
-  }
+  // get members(){
+  //   return memberStore.members
+  // }
   created(){
     accountStore.onAuthStateChanged(); //전체앱 통틀어 한번만 실행
+  }
+  onScroll(){
   }
   closeSnackbar(){
     this.snackBar.snackbarText = "닫기 테스트중입니다"; //프로퍼티 값변경 가능
