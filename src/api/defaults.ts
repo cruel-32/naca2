@@ -15,15 +15,17 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 
 const database = firebase.database();
+const rootRef = database.ref();
 const auth = firebase.auth();
 const googleAuthProvider:any = new firebase.auth.GoogleAuthProvider();
 
-axios.defaults.baseURL = 'https://nac-admin2.firebaseapp.com';
+axios.defaults.baseURL = 'https://nac-admin2.firebaseio.com/nac-admin2';
 // axios.defaults.headers['content-type'] = 'application/json';
 
 export default {
     firebaseConfig,
     database,
+    rootRef,
     auth,
     googleAuthProvider,
     firebase,

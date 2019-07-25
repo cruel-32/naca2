@@ -5,11 +5,11 @@
     <SideComp></SideComp>
     <HeaderComp></HeaderComp>
     <v-content class="pb-5">
+      <ProgressComp></ProgressComp>
       <router-view v-scroll="onScroll">
       </router-view>
     </v-content>
     <FooterComp></FooterComp>
-
     <v-snackbar
       v-model="snackBar.isShowSnackbar"
       :color="snackBar.snackColor"
@@ -39,12 +39,13 @@ import { dialogStore } from "@/stores/modules/dialog"
 import SideComp from "@/components/SideComp.vue"
 import HeaderComp from "@/components/HeaderComp.vue"
 import FooterComp from "@/components/FooterComp.vue"
+import ProgressComp from "@/components/ProgressComp.vue"
 
 
 @Component({
   name: 'App',
   components: {
-    HeaderComp,SideComp,FooterComp
+    HeaderComp,SideComp,FooterComp,ProgressComp
   },
 })
 export default class extends Vue {

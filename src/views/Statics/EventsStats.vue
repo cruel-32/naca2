@@ -28,33 +28,6 @@
 
 
 <script lang="ts">
-import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
-import { MeetingService } from '../service/MeetingService';
-import ProgressComp from '../components/ProgressComp.vue';
-
-@Component({
-  components : {
-    ProgressComp
-  }
-})
-export default class MeetingsStats extends Vue {
-  @Prop() currentUser: any;
-  @Prop() query: any;
-  @Prop() params: any;
-  @Emit('showSnackbar') showSnackbar(color:string,text:string){}
-
-  date:any = this.$moment(new Date).format('YYYY-MM-DD');
-
-  created(){
-    // console.log('currentUser : ', this.currentUser);
-    // console.log('query : ', this.query);
-    // console.log('params : ', this.params);
-  }
-
-  changePickMonth(month){
-    this.$router.push(`/statistics/meetingsStatsDetail/${month}`);
-  }
-}
 </script>
 
 <style scoped lang="scss">

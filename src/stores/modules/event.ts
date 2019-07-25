@@ -1,27 +1,26 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
-
-export interface EventTypes {
-  uid:string;
-  date:number;
-  title:string;
-  placeKeys:string;
-  contentKeys:string[];
-  memberKeys:string[];
-}
+import eventApi from "@/api/events";
 
 @Module
 class EventStore extends VuexModule {
   events:EventTypes[] = [];
 
   @Mutation
-  private addEvent(payload:any){
-    console.log('EventStore addEvent payload : ', payload);
+  private setEvents(payload:EventTypes[]){
+    this.events = payload;
   }
 
   @Action
-  public async testEvent(payload:any){//{ state, commit, rootState }
-    console.log('EventStore testEvent payload : ', payload);
+  public async getEvents(){//{ state, commit, rootState }
+    const events:EventTypes[] = await eventApi.getEvents();
+    this.setEvents(events);
+  }
+
+  @Action
+  public async getEventsRange(payload:DateRange){//{ state, commit, rootState }
+    const events:EventTypes[] = await eventApi.getEventsRange(payload);
+    this.setEvents(events)
   }
 }
 

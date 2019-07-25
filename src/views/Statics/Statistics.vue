@@ -43,53 +43,6 @@
 
 
 <script lang="ts">
-import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
-
-@Component
-export default class Statistics extends Vue {
-  @Prop() currentUser: any;
-  @Prop() query: any;
-  @Prop() params: any;
-  @Emit('showSnackbar') showSnackbar(color:string,text:string){}
-
-
-  items:any = [
-    { header: '통계목록',icon:'insert_chart'},
-    {
-      title: '회원별 참여도 통계',
-      subtitle: "회원별 참여날짜 및 기타 통계를 봅니다.",
-      link: '/statistics/membersParti'
-    },
-    { divider: true},
-    {
-      title: '회원 나이대 통계',
-      subtitle: "평균연령 및 나이대별 회원 분포도 등의 통계를 봅니다.",
-      link: '/statistics/membersAge'
-    },
-    { divider: true},
-    {
-      title: '월별 모임 관련 통계',
-      subtitle: "월별 모임 관련 통계를 봅니다.",
-      link: '/statistics/meetingsStats'
-    },
-    { divider: true},
-    {
-      title: '연별 모임 관련 통계',
-      subtitle: "연별 모임 관련 통계를 봅니다.",
-      link: '/statistics/meetingsStatsYear'
-    },
-  ]
-  created(){
-    // console.log('currentUser : ', this.currentUser);
-    // console.log('query : ', this.query);
-    // console.log('params : ', this.params);
-  }
-  viewStatistic(link:string){
-    // console.log('link : ', link)
-    // this.showSnackbar('info', `${link} : 내년 구현예정입니다.`);
-    this.$router.push(link);
-  }
-}
 </script>
 
 <style lang="scss">

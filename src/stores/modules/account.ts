@@ -3,13 +3,6 @@ import store from '@/stores'
 import defaults from '@/api/defaults'
 import accountApi from '@/api/account'
 
-export interface UserTypes {
-  displayName:string;
-  email:string;
-  emailVerified?:boolean;
-  providerData?:any[];
-}
-
 @Module
 class AccountStore extends VuexModule {
   currentUser:UserTypes|null = null;

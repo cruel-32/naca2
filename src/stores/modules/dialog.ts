@@ -1,13 +1,6 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
 
-export interface SnackbarTypes {
-  time:number;
-  isShowSnackbar:boolean;
-  snackColor:string;
-  snackbarText:string;
-}
-
 @Module
 class DialogStore extends VuexModule {
   snackBar:SnackbarTypes = {

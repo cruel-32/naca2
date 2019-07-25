@@ -1,18 +1,11 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
 
-export interface SideMenuTypes {
-  icon:string;
-  iconClass:string;
-  title:string;
-  subtitle:string;
-  link:string;
-}
-
 @Module
 class MenuStore extends VuexModule {
   drawer:boolean = false;
   miniVariant:boolean = false;
+  progress:boolean = false;
 
   sideMenuItems:SideMenuTypes[] = [
     {icon: 'date_range', iconClass: 'amber lighten-1 white--text', title: '모임관리', subtitle: '모임 생성,삭제 출석관리', link:"events"},
@@ -24,10 +17,19 @@ class MenuStore extends VuexModule {
   setDrawer(drawer:boolean){
     this.drawer = drawer;
   }
+  @Mutation
+  setProgress(progress:boolean){
+    this.progress = progress;
+  }
 
   @Action
   setDrawerAction(payload:boolean){
     this.setDrawer(payload);
+  }
+
+  @Action
+  setProgressAction(payload:boolean){
+    this.setProgress(payload);
   }
 
 }

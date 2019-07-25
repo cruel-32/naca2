@@ -62,8 +62,8 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
-import { UserTypes, accountStore } from "@/stores/modules/account"
-import { SnackbarTypes, dialogStore } from "@/stores/modules/dialog"
+import { accountStore } from "@/stores/modules/account"
+import { dialogStore } from "@/stores/modules/dialog"
 import { menuStore } from "@/stores/modules/menu"
 
 @Component({})
