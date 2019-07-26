@@ -67,7 +67,6 @@ export default class extends Vue {
   onScroll(){
   }
   closeSnackbar(){
-    this.snackBar.snackbarText = "닫기 테스트중입니다"; //프로퍼티 값변경 가능
     this.snackBar.isShowSnackbar = false; //프로퍼티 값변경 가능
     dialogStore.callSnackbar(this.snackBar);
   }

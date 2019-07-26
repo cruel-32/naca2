@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Home from './views/Main/Home.vue'
 
 Vue.use(Router)
 
@@ -11,35 +10,29 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: Home,
+      component: ()=> import('./views/Main/Home.vue'),
     },
     {
       path: '/events',
       name: 'events',
-      props: (route) => ({
-        params : route.params,
-        query: route.query
-      }),
       component: () => import('@/views/Events/Events.vue'),
     },
-    // {
-    //   path: '/events',
-    //   name: 'eventsCreate',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/EventCreate.vue'),
-    // },
-    // {
-    //   path: '/events/:key',
-    //   name: 'eventsUpdate',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/EventCreate.vue'),
-    // },
+    {
+      path: '/event/create/:uid',
+      name: 'eventCreate',
+      props: (route) => ({
+        params : route.params,
+      }),
+      component: () => import('./views/Events/EventDetail.vue'),
+    },
+    {
+      path: '/event/update/:uid',
+      name: 'eventUpdate',
+      props: (route) => ({
+        params : route.params,
+      }),
+      component: () => import('./views/Events/EventDetail.vue'),
+    },
     // {
     //   path: '/members',
     //   name: 'members',

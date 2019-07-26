@@ -5,7 +5,7 @@
 
         <v-list-tile three-line
           class="custom_tile"
-          v-for="item in items"
+          v-for="item in sideMenuItems"
           :key="item.title"
           avatar
           @click="goPage(item.link)"
@@ -26,16 +26,17 @@
 
 <script lang="ts">
 import { Component, Vue } from 'vue-property-decorator';
+import { menuStore } from "@/stores/modules/menu"
 
 @Component
 export default class Home extends Vue {
-  items:any = [
-    {title:"모임관리", subtitle:"모임 생성,삭제 출석관리", link:"/events", icon:"date_range", color:"amber", iconClass:"" },
-    {title:"회원관리", subtitle:"회원목록과 기타 관리", link:"/members", icon:"people", color:"brown", iconClass:"" },
-    {title:"통계보기", subtitle:"여러가지 통계 보기", link:"/statistics", icon:"insert_chart", color:"blue-grey", iconClass:"" },
-  ];
-  goPage(link:string){
-    this.$router.push(link);
+  get sideMenuItems(){
+    return menuStore.sideMenuItems
+  }
+  goPage(name:string){
+    this.$router.push({
+      name,
+    });
   }
 }
 </script>

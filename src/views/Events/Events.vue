@@ -62,10 +62,11 @@ import {eventStore} from "@/stores/modules/event";
 
 @Component
 export default class Meeting extends Vue {
-  date:any = '';
+  today:string = this.$moment(new Date).format('YYYY-MM-DD');
+  date:string = '';
   clickedYYYYMMDD:any = '';
   pickedYYYYMM:any = null;
-  samedayEvents:any[] = [];
+  samedayEvents:EventTypes[] = [];
   eventsDialog:boolean = false;
   colors:string[] = [
     "info",
@@ -74,6 +75,9 @@ export default class Meeting extends Vue {
 
   get events(){
     return eventStore.events
+  }
+
+  created(){
   }
 
   changePickedDay(date:string){
@@ -85,12 +89,14 @@ export default class Meeting extends Vue {
 
   @Watch('pickedYYYYMM')
   dateChanged(changedDate:any){
+    this.date = this.today.slice(0,7) === changedDate ? this.today : changedDate;
     if(changedDate.length > 4){
       const changedDateArr = changedDate.split('-')
-      eventStore.getEventsRange({
+      const dateRange:DateRange = {
         startAt: parseInt(changedDateArr.join('')+'01'),
         endAt: parseInt(changedDateArr.join('')+'31'),
-      });
+      }
+      eventStore.getEventsRange(dateRange);
     }
   }
   
@@ -100,12 +106,12 @@ export default class Meeting extends Vue {
   }
 
   goCreateEvent(){
-    const date = `${this.clickedYYYYMMDD.split('-').join('')}-${this.samedayEvents.length+1}`
-    console.log('만들러가기 date : ', date);
+    const eventUid = `${this.clickedYYYYMMDD.split('-').join('')}-${this.samedayEvents.length+1}`
+    this.$router.push(`/event/create/${eventUid}`);
   }
   
-  goEventDetail(YYYYMMDD:number){
-      this.$router.push(`/events/${YYYYMMDD}`);
+  goEventDetail(eventUid:string){
+    this.$router.push(`/event/update/${eventUid}`);
   }
 }
 </script>

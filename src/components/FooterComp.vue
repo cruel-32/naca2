@@ -94,10 +94,6 @@ export default class FooterComp extends Vue {
   fab:boolean = false;
   joinDate:any = parseInt(this.$moment(new Date()).format('YYYYMMDD'));
 
-  created(){
-    console.log(this);
-    console.log(this.$moment);
-  }
   // get pageColor() {
   //   console.log('this.$route : ', this.$route);
     

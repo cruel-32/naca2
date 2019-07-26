@@ -89,8 +89,10 @@ export default class SideComp extends Vue {
   toggleDrawer(){
     menuStore.setDrawerAction(!this.drawer);
   }
-  goPage(link:string){
-    this.$router.push(link);
+  goPage(name:string){
+    this.$router.push({
+      name,
+    });
   }
   async login(){
     const user = await accountStore.login();

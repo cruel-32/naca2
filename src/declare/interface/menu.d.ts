@@ -4,4 +4,5 @@ declare interface SideMenuTypes {
     title:string;
     subtitle:string;
     link:string;
+    color:string;
 }

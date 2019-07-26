@@ -9,7 +9,6 @@ class AccountStore extends VuexModule {
 
   @Mutation
   setCurrentUser(user:UserTypes|null){
-    console.log('setCurrentUser user : ', user);
     this.currentUser=user;
   }
 
