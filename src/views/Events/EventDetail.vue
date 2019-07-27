@@ -9,163 +9,213 @@
                 {{isNew ? "이벤트 생성" : "이벤트 수정"}}
               </span>
             </v-card-title>
-          </v-card>
-          <v-card-text class="pa-0">
-            <v-container grid-list-md>
-              <v-layout wrap>
+          
+            <v-card-text class="pa-0">
+              <v-container grid-list-md>
+                <v-layout wrap>
 
-                <v-flex xs12 sm6 md4>
-                  <v-text-field
-                    v-model="eventDate"
-                    label="이벤트 날짜"
-                    required
-                    readonly
-                    disabled
-                  ></v-text-field>
-                </v-flex>
-                
-                <v-flex xs12 sm6 md4>
-                  <v-text-field
-                    v-validate="'required|min:1|max:20'"
-                    v-model="event.title"
-                    :counter="20"
-                    label="타이틀"
-                    data-vv-name="title"
-                    :error-messages="errors.collect('title')"
-                    clearable
-                  ></v-text-field>
-                </v-flex>
+                  <v-flex xs12 sm6 md4>
+                    <v-text-field
+                      v-model="eventDate"
+                      label="이벤트 날짜"
+                      required
+                      readonly
+                      disabled
+                    ></v-text-field>
+                  </v-flex>
+                  
+                  <v-flex xs12 sm6 md4>
+                    <v-text-field
+                      v-validate="'required|min:1|max:20'"
+                      v-model="event.title"
+                      :counter="20"
+                      label="타이틀"
+                      data-vv-name="title"
+                      :error-messages="errors.collect('title')"
+                      clearable
+                    ></v-text-field>
+                  </v-flex>
 
-                <v-flex xs12>
-                  <v-select
-                    v-validate="'required|min:1'"
-                    v-model="event.placeKeys"
-                    :items="places"
-                    item-value="key"
-                    item-text="name"
-                    :error-messages="errors.collect('place')"
-                    label="장소"
-                    data-vv-name="place"
-                    multiple
-                  ></v-select>
-                </v-flex>
+                  <v-flex xs12>
+                    <v-select
+                      v-validate="'required|min:1'"
+                      v-model="event.placeKeys"
+                      :items="places"
+                      item-value="key"
+                      item-text="name"
+                      :error-messages="errors.collect('place')"
+                      label="장소"
+                      data-vv-name="place"
+                      multiple
+                    ></v-select>
+                  </v-flex>
 
-                <v-flex xs12>
-                  <v-select
-                    v-model="event.contentKeys"
-                    v-validate="'required|min:1'"
-                    :error-messages="errors.collect('contents')"
-                    :items="contents"
-                    item-value="key"
-                    item-text="name"
-                    label="컨텐츠"
-                    data-vv-name="contents"
-                    deletable-chips
-                    multiple
-                  >
-                    <v-list-tile
-                      slot="prepend-item"
-                      
-                      @click="toggleSelectAllContents"
+                  <v-flex xs12>
+                    <v-select
+                      v-model="event.contentKeys"
+                      v-validate="'required|min:1'"
+                      :error-messages="errors.collect('contents')"
+                      :items="contents"
+                      item-value="key"
+                      item-text="name"
+                      label="컨텐츠"
+                      data-vv-name="contents"
+                      deletable-chips
+                      multiple
                     >
-                      <v-list-tile-action>
-                        <v-icon :color="event.contentKeys && event.contentKeys.length > 0 ? 'indigo darken-4' : ''">{{contentsCheckboxIcon}}</v-icon>
-                      </v-list-tile-action>
-                      <v-list-tile-title>
-                        {{event.contentKeys && event.contentKeys.length === contents.length ? 'Deselect All' : 'Select All'}}
-                      </v-list-tile-title>
-                    </v-list-tile>
-                    <v-divider
-                      slot="prepend-item"
-                      class="mt-2"
-                    ></v-divider>
-                    <v-divider
-                      slot="append-item"
-                      class="mb-2"
-                    ></v-divider>
-                  </v-select>
-                </v-flex>
+                      <v-list-tile
+                        slot="prepend-item"
+                        
+                        @click="toggleSelectAllContents"
+                      >
+                        <v-list-tile-action>
+                          <v-icon :color="event.contentKeys && event.contentKeys.length > 0 ? 'indigo darken-4' : ''">{{contentsCheckboxIcon}}</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-title>
+                          {{event.contentKeys && event.contentKeys.length === contents.length ? 'Deselect All' : 'Select All'}}
+                        </v-list-tile-title>
+                      </v-list-tile>
+                      <v-divider
+                        slot="prepend-item"
+                        class="mt-2"
+                      ></v-divider>
+                      <v-divider
+                        slot="append-item"
+                        class="mb-2"
+                      ></v-divider>
+                    </v-select>
+                  </v-flex>
 
-                <v-flex xs12>
-                  <v-select
-                    v-model="event.memberKeys"
-                    :items="members"
-                    label="참여자"
-                    data-vv-name="member"
-                    item-value="uid"
-                    item-text="name"
-                    chips
-                    deletable-chips
-                    multiple
-                    dense
-                    :messages="[`필수입력값이 아니므로 모임 생성 후 입력가능. ${event.memberKeys && event.memberKeys.length}명 선택`]"
-                  >
-                    <v-list-tile
-                      slot="prepend-item"
-                      
-                      @click="toggleSelectAllMembers"
+                  <v-flex xs12>
+                    <v-select
+                      v-model="event.memberKeys"
+                      :items="members"
+                      label="참여자"
+                      data-vv-name="member"
+                      item-value="uid"
+                      item-text="name"
+                      chips
+                      deletable-chips
+                      multiple
+                      dense
+                      :messages="[`필수입력값이 아니므로 모임 생성 후 입력가능. ${event.memberKeys ? event.memberKeys.length : 0}명 선택`]"
                     >
-                      <v-list-tile-action>
-                        <v-icon :color="event.members && event.members.length > 0 ? 'indigo darken-4' : ''">1{{membersCheckboxIcon}}</v-icon>
-                      </v-list-tile-action>
-                      <v-list-tile-title>
-                        {{event.members && event.members.length == memberList.length ? 'Deselect All' : 'Select All'}}
-                      </v-list-tile-title>
-                    </v-list-tile>
-                    <v-divider
-                      slot="prepend-item"
-                      class="mt-2"
-                    ></v-divider>
-                    <v-divider
-                      slot="append-item"
-                      class="mb-2"
-                    ></v-divider>
-                  </v-select>
-                </v-flex>
+                      <v-list-tile
+                        slot="prepend-item"
+                        
+                        @click="toggleSelectAllMembers"
+                      >
+                        <v-list-tile-action>
+                          <v-icon :color="event.members && event.members.length > 0 ? 'indigo darken-4' : ''">1{{membersCheckboxIcon}}</v-icon>
+                        </v-list-tile-action>
+                        <v-list-tile-title>
+                          {{event.members && event.members.length == memberList.length ? 'Deselect All' : 'Select All'}}
+                        </v-list-tile-title>
+                      </v-list-tile>
+                      <v-divider
+                        slot="prepend-item"
+                        class="mt-2"
+                      ></v-divider>
+                      <v-divider
+                        slot="append-item"
+                        class="mb-2"
+                      ></v-divider>
+                    </v-select>
+                  </v-flex>
 
+                  <v-card>
+                    <v-card-title class="pb-0">
+                      <span class="title">이 날의 모임정보</span>
+                    </v-card-title>
+                    <v-container grid-list-md>
+                      <v-layout wrap>
+
+                        <v-flex xs12 sm12 md12>
+                          <span>평균나이 : {{joinedMemberInfo.totalAge && event.memberKeys ? (joinedMemberInfo.totalAge/event.memberKeys.length).toFixed(2) : 0}} 살 </span>
+                        </v-flex>
+
+                        <v-flex xs6 sm3 md2>
+                          <span>운영진 : {{joinedMemberInfo.adminCount}}명</span>
+                        </v-flex>
+
+                        <v-flex xs6 sm3 md2>
+                          <span>일반회원 : {{joinedMemberInfo.normalCount}}명</span>
+                        </v-flex>
+
+                        <v-flex xs6 sm3 md2>
+                          <span>신입회원 :{{joinedMemberInfo.newbieCount}}명</span>
+                        </v-flex>
+
+                        <v-flex xs6 sm3 md2>
+                          <span>특수멤버 : {{joinedMemberInfo.specialCount}}명</span>
+                        </v-flex>
+
+                        <v-flex xs12 sm12 md12>
+                          <span>신입회원(미참여) : {{joinedMemberInfo.pnewbieCount}}명</span>
+                        </v-flex>
+
+                        <v-flex xs12 sm12 md12>
+                          <span>남자:{{joinedMemberInfo.maleCount}}명 여자: {{joinedMemberInfo.femaleCount}}명</span>
+                        </v-flex>
+
+                      </v-layout>
+                    </v-container>
+                  </v-card>
+                </v-layout>
+              </v-container>
+            </v-card-text>
+            <v-card-actions>
+              <v-btn
+                color="error"
+                v-if="!isNew"
+                @click="viewConfirmDelete = true"
+                depressed
+                outline
+              >
+                Delete
+              </v-btn>
+              <v-dialog
+                v-model="viewConfirmDelete"
+              >
                 <v-card>
-                  <v-card-title class="pb-0">
-                    <span class="title">이 날의 모임정보</span>
-                  </v-card-title>
-                  <v-container grid-list-md>
-                    <v-layout wrap>
-
-                      <v-flex xs12 sm12 md12>
-                        <span>평균나이 : {{joinedMemberInfo.totalAge && event.memberKeys ? (joinedMemberInfo.totalAge/event.memberKeys.length).toFixed(2) : 0}} 살 </span>
-                      </v-flex>
-
-                      <v-flex xs6 sm3 md2>
-                        <span>운영진 : {{joinedMemberInfo.adminCount}}명</span>
-                      </v-flex>
-
-                      <v-flex xs6 sm3 md2>
-                        <span>일반회원 : {{joinedMemberInfo.normalCount}}명</span>
-                      </v-flex>
-
-                      <v-flex xs6 sm3 md2>
-                        <span>신입회원 :{{joinedMemberInfo.newbieCount}}명</span>
-                      </v-flex>
-
-                      <v-flex xs6 sm3 md2>
-                        <span>특수멤버 : {{joinedMemberInfo.specialCount}}명</span>
-                      </v-flex>
-
-                      <v-flex xs12 sm12 md12>
-                        <span>신입회원(미참여) : {{joinedMemberInfo.pnewbieCount}}명</span>
-                      </v-flex>
-
-                      <v-flex xs12 sm12 md12>
-                        <span>남자:{{joinedMemberInfo.maleCount}}명 여자: {{joinedMemberInfo.femaleCount}}명</span>
-                      </v-flex>
-
-                    </v-layout>
-                  </v-container>
+                  <v-card-title class="headline">정말 지우시겠습니까?</v-card-title>
+                  <v-card-text>
+                    이 모임을 삭제하면 복구할 수 없습니다.
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-spacer></v-spacer>
+                    <v-btn
+                      right
+                      @click="viewConfirmDelete = false"
+                      outline
+                      depressed
+                    >
+                      Cancel
+                    </v-btn>
+                    <v-btn
+                      right
+                      color="red darken-1"
+                      @click="deleteMeeting()"
+                      outline
+                      depressed
+                    >
+                      Delete
+                    </v-btn>
+                  </v-card-actions>
                 </v-card>
+              </v-dialog>
+              <v-spacer></v-spacer>
+              <v-btn
+                color="success"
+                type="submit"
+                outline
+                depressed
+              >
+                {{isNew ? 'Create' : 'Update'}}
+              </v-btn>
+            </v-card-actions>
 
-                
-              </v-layout>
-            </v-container>
-          </v-card-text>
+          </v-card>
         </form>
       </v-layout>
     </v-slide-y-transition>
@@ -180,8 +230,11 @@ import { contentStore } from "@/stores/modules/content";
 import { placeStore } from "@/stores/modules/place";
 import { gradeStore } from "@/stores/modules/grade";
 import { memberStore } from "@/stores/modules/member";
+import { debounce } from "typescript-debounce-decorator";
+
 import colors from 'vuetify/es5/util/colors';
 import API_UTILS from '@/api/API_UTILS'
+import events from '../../api/events';
 
 interface joinedMembers {
   totalAge:number;
@@ -204,26 +257,26 @@ export default class EventDetail extends Vue {
   get members(){return memberStore.members}
   get currentUser(){return accountStore.currentUser}
 
-  //local data
-  get isNew(){return this.$route.name === 'eventCreate'}
+  //local computed data
   get eventDate(){return this.event.date ? this.$moment(this.event.date.toString()).format('YYYY-MM-DD') : ''}
   get someContents (){return this.event.contentKeys && this.event.contentKeys.length > 0 && !this.allContents}
   get allContents (){return this.event.contentKeys && this.event.contentKeys.length === this.contents.length}
   get allMembers (){return this.event.memberKeys && this.event.memberKeys.length === this.members.length}
   get someMembers (){return this.event.memberKeys && this.event.memberKeys.length > 0 && !this.allMembers}
-
   get contentsCheckboxIcon (){
     if (this.allContents) return 'check_box'
     if (this.someContents) return 'indeterminate_check_box'
     return 'check_box_outline_blank'
   }
-
   get membersCheckboxIcon () {
     if (this.allMembers) return 'check_box'
     if (this.someMembers) return 'indeterminate_check_box'
     return 'check_box_outline_blank'
   }
 
+  //local data
+  isNew:boolean = false;
+  viewConfirmDelete:boolean = false;
   joinedMemberInfo:joinedMembers = {
     totalAge : 0,
     adminCount : 0,
@@ -235,9 +288,9 @@ export default class EventDetail extends Vue {
     femaleCount : 0,
   };
 
+
   @Watch('event.memberKeys')
   getJoinedMemberInfo(){
-    console.log('getJoinedMemberInfo : ', this.event.memberKeys);
     const today:number = parseInt(this.$moment(new Date()).format("YYYY"));
     const joinedMembersInfo:joinedMembers = {
       totalAge : 0,
@@ -254,7 +307,6 @@ export default class EventDetail extends Vue {
       this.joinedMemberInfo = this.event.memberKeys.reduce((newJoinedMembersInfo:joinedMembers, memberKey:string):joinedMembers=>{
         const member:MemberTypes|undefined = this.members.find((member:MemberTypes)=>member.uid === memberKey);
         if(member){
-
           //이 날 참석한 회원들의 등급을 분류해서 카운팅하기
           if(member.grade === 0 || member.grade === 1){
             newJoinedMembersInfo.adminCount+=1
@@ -282,19 +334,20 @@ export default class EventDetail extends Vue {
     }
   }
   
-  created(){
-    const {uid} = this.$route.params;
+  async created(){
+    if(!this.contents.length) contentStore.getContents();
+    if(!this.places.length) placeStore.getPlaces();
+    if(!this.grades.length) gradeStore.getGrades();
+    if(!this.members.length) memberStore.getMembers();
 
-    API_UTILS.axios.all([
-      eventStore.getEventByUid(uid),
-      contentStore.getContents(),
-      placeStore.getPlaces(),
-      gradeStore.getGrades(),
-      memberStore.getMembers(),
-    ]).then(res=>{
-      console.log('this.members : ', this.members);
-      this.getJoinedMemberInfo();
-    })
+    if(this.$route.name === 'eventCreate'){
+      this.reset();
+      this.isNew = true;
+    } else {
+      const {uid} = this.$route.params;
+        await eventStore.getEventByUid(uid),
+        this.getJoinedMemberInfo();
+    }
   }
 
   toggleSelectAllContents () {
@@ -319,8 +372,18 @@ export default class EventDetail extends Vue {
 
   postEvent(e:any){
     console.log('e : ', e);
+    console.log('this.isNew : ', this.isNew);
   }
-  
+
+  reset(){
+    console.log('reset');
+    eventStore.resetEvent();
+  }
+
+  @debounce(1000)
+  deleteMeeting(e:any){
+    console.log('deleteMeeting e : ', e);
+  }
 }
 </script>
 

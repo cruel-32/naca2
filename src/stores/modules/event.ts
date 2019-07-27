@@ -34,6 +34,12 @@ class EventStore extends VuexModule {
     const events:EventTypes[] = await eventApi.getEventsRange(payload);
     this.setEvents(events)
   }
+
+  @Action
+  public async resetEvent(){//{ state, commit, rootState }
+    this.setEvent({});
+  }
+
 }
 
 export const eventStore = new EventStore({store, name: "eventStore" })
