@@ -49,18 +49,38 @@ import ProgressComp from "@/components/ProgressComp.vue"
   },
 })
 export default class extends Vue {
-  // get currentUser(){
-  //   return accountStore.currentUser
-  // }
-  // get events(){
-  //   return eventStore.events
-  // }
+  moundted(){
+    this.$validator.localize('en', {
+      custom : {
+        title: {
+          required : (field:any) => `${field} 이벤트 제목을 적으세요`,
+          max: (field:any,count:number) => `${field}필드는 ${count} 자를 초과할 수 없습니다`
+        },
+        place: {
+          required : (field:any) => `${field} 이벤트 장소를 선택하세요`,
+        },
+        contents: {
+          required : (field:any) => `${field} 이벤트 컨텐츠를 선택하세요`,
+          min : (field:any, count:number) => `이벤트 ${field}를 ${count}개 이상 선택하세요`
+        },
+        date : {
+          required : (field:any) => `${field} 날짜를 선택하세요`
+        },
+        name: {
+          required : (field:any) => `${field} 회원 이름을 적으세요`,
+          max: (field:any,count:number) => `${field}필드는 ${count} 자를 초과할 수 없습니다`
+        },
+        address: {
+          required : (field:any) => `${field} 사는 곳을 적으세요`,
+          max: (field:any,count:number) => `${field}필드는 ${count} 자를 초과할 수 없습니다`
+        }
+      }
+    });
+  }
+  
   get snackBar(){
     return dialogStore.snackBar
   }
-  // get members(){
-  //   return memberStore.members
-  // }
   created(){
     accountStore.onAuthStateChanged(); //전체앱 통틀어 한번만 실행
   }

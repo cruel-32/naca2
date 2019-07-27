@@ -60,6 +60,7 @@ export default class HeaderComp extends Vue {
   async login(){
     const user = await accountStore.login();
     if(user){
+      this.snackBar.snackColor = "success";
       this.snackBar.snackbarText = `어서오세요 ${user.displayName}님`;
       this.snackBar.isShowSnackbar = true;
       dialogStore.callSnackbar(this.snackBar);

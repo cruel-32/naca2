@@ -10,7 +10,7 @@ class MenuStore extends VuexModule {
   sideMenuItems:SideMenuTypes[] = [
     {
       icon: 'date_range', iconClass: 'amber lighten-1 white--text', color:"amber",
-      title: '모임관리', subtitle: '모임 생성,삭제 출석관리', link: "events",
+      title: '이벤트관리', subtitle: '이벤트 생성,삭제 출석관리', link: "events",
     },
     {
       icon: 'people', iconClass: 'amber lighten-1 white--text', color:"brown",

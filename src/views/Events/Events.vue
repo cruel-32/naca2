@@ -5,11 +5,11 @@
         <v-card class="pt-3 pa-3">
           <h1 class="headline">
             <v-icon color="#009688">date_range</v-icon>
-            이달의 모임(벙) 목록
+            이달의 이벤트 목록
           </h1>
           <p class="pt-2 caption">
-            *모임을 생성 혹은 수정,삭제하고나 하는 날짜를 클릭하세요<br/>
-            *이미 모임이 있는 날은 초록색으로 마킹되어 있습니다<br/>
+            *이벤트를 생성 혹은 수정,삭제하고나 하는 날짜를 클릭하세요<br/>
+            *이미 이벤트가 있는 날은 초록색으로 마킹되어 있습니다<br/>
           </p>
 
           <v-dialog
@@ -18,7 +18,7 @@
           >
             <v-card>
               <v-card-text>
-                <v-card-title class="headline">{{samedayEvents.length}}개의 벙이 있습니다</v-card-title>
+                <v-card-title class="headline">{{samedayEvents.length}}개의 이벤트가 있습니다</v-card-title>
                 <v-btn block
                    v-for="(event) of samedayEvents"
                   :key="event.uid"
@@ -29,7 +29,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-btn block dark color="success" @click="goCreateEvent()">
-                  {{clickedYYYYMMDD}} 벙만들기
+                  {{clickedYYYYMMDD}} 이벤트 만들기
                 </v-btn>
               </v-card-actions>
             </v-card>
@@ -49,7 +49,7 @@
 
         </v-card>
         <v-card>
-          이 달의 벙 횟수 : {{events && events.length}}
+          이 달의 이벤트 횟수 : {{events && events.length}}
         </v-card>
       </v-layout>
     </v-slide-y-transition>
@@ -58,7 +58,9 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
-import {eventStore} from "@/stores/modules/event";
+import { accountStore } from "@/stores/modules/account"
+import { eventStore } from "@/stores/modules/event";
+import { dialogStore } from "@/stores/modules/dialog"
 
 @Component
 export default class Meeting extends Vue {
@@ -73,8 +75,16 @@ export default class Meeting extends Vue {
     "blue-grey",
   ]
 
+  get currentUser(){
+    return accountStore.currentUser
+  }
+
   get events(){
     return eventStore.events
+  }
+
+  get snackBar(){
+    return dialogStore.snackBar
   }
 
   created(){
@@ -106,8 +116,15 @@ export default class Meeting extends Vue {
   }
 
   goCreateEvent(){
-    const eventUid = `${this.clickedYYYYMMDD.split('-').join('')}-${this.samedayEvents.length+1}`
-    this.$router.push(`/event/create/${eventUid}`);
+    if(!this.currentUser){
+      this.snackBar.snackColor = "error";
+      this.snackBar.snackbarText = "로그인이 필요합니다";
+      this.snackBar.isShowSnackbar = true;
+      dialogStore.callSnackbar(this.snackBar);
+    } else {
+      const eventUid = `${this.clickedYYYYMMDD.split('-').join('')}-${this.samedayEvents.length+1}`
+      this.$router.push(`/event/create/${eventUid}`);
+    }
   }
   
   goEventDetail(eventUid:string){

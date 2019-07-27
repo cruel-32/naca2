@@ -97,6 +97,7 @@ export default class SideComp extends Vue {
   async login(){
     const user = await accountStore.login();
     if(user){
+      this.snackBar.snackColor = "success";
       this.snackBar.snackbarText = `어서오세요 ${user.displayName}님`;
       this.snackBar.isShowSnackbar = true;
       dialogStore.callSnackbar(this.snackBar);
@@ -105,6 +106,7 @@ export default class SideComp extends Vue {
   async logout(){
     const result = await accountStore.logout();
     if(result){
+      this.snackBar.snackColor = "success";
       this.snackBar.snackbarText = "로그아웃되었습니다";
       this.snackBar.isShowSnackbar = true;
       dialogStore.callSnackbar(this.snackBar);

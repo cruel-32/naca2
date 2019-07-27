@@ -4,11 +4,23 @@ import eventApi from "@/api/events";
 
 @Module
 class EventStore extends VuexModule {
+  event:EventTypes = {};
   events:EventTypes[] = [];
 
   @Mutation
-  private setEvents(payload:EventTypes[]){
-    this.events = payload;
+  private setEvent(event:EventTypes){
+    this.event = event;
+  }
+
+  @Mutation
+  private setEvents(events:EventTypes[]){
+    this.events = events;
+  }
+
+  @Action
+  public async getEventByUid(uid:string){//{ state, commit, rootState }
+    const event:EventTypes = await eventApi.getEventByUid(uid);
+    this.setEvent(event);
   }
 
   @Action

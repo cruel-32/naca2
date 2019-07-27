@@ -20,17 +20,11 @@ export default new Router({
     {
       path: '/event/create/:uid',
       name: 'eventCreate',
-      props: (route) => ({
-        params : route.params,
-      }),
       component: () => import('./views/Events/EventDetail.vue'),
     },
     {
       path: '/event/update/:uid',
       name: 'eventUpdate',
-      props: (route) => ({
-        params : route.params,
-      }),
       component: () => import('./views/Events/EventDetail.vue'),
     },
     // {
