@@ -13,7 +13,7 @@ class ContentStore extends VuexModule {
 
   @Action
   async getContents(){
-    const {contents} = await contentApi.getContents();
+    const contents = await contentApi.getContents();
     this.setContents(contents);
   }
 

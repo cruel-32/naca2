@@ -1,10 +1,10 @@
-import defaults from './defaults';
+import API_UTILS from './API_UTILS';
 
 export default {
     signInGoogle():any {
-        return defaults.auth.signInWithPopup(defaults.googleAuthProvider).then((result:any)=>result);
+        return API_UTILS.auth.signInWithPopup(API_UTILS.googleAuthProvider).then((result:any)=>result);
     },
     signOut():any {
-        return defaults.auth.signOut().then((result:any)=>result);
+        return API_UTILS.auth.signOut().then((result:any)=>result);
     },
 }

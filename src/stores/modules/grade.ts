@@ -13,7 +13,7 @@ class GradeStore extends VuexModule {
 
   @Action
   async getGrades(){
-    const {grades} = await gradeApi.getGrades();
+    const grades = await gradeApi.getGrades();
     this.setGrades(grades);
   }
 

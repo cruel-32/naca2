@@ -13,7 +13,7 @@ class PlaceStore extends VuexModule {
 
   @Action
   async getPlaces(){
-    const {places} = await placeApi.getPlaces();
+    const places = await placeApi.getPlaces();
     this.setPlaces(places);
   }
 

@@ -1,6 +1,6 @@
-import defaults from './defaults';
+import API_UTILS from './API_UTILS';
 
 export default {
-    getContents : () => defaults.database.ref('contents').once('value').then((snapshot:any)=>snapshot.val()),
+    getContents : () => API_UTILS.database.ref('contents').once('value').then((snapshot:any)=>snapshot.val()),
 
 }

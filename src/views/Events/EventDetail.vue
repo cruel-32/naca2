@@ -36,18 +36,132 @@
                   ></v-text-field>
                 </v-flex>
 
-                <!-- <v-flex xs12>
+                <v-flex xs12>
                   <v-select
-                    v-validate="'required'"
-                    v-model="event.place"
+                    v-validate="'required|min:1'"
+                    v-model="event.placeKeys"
                     :items="places"
                     item-value="key"
                     item-text="name"
                     :error-messages="errors.collect('place')"
                     label="장소"
                     data-vv-name="place"
+                    multiple
                   ></v-select>
-                </v-flex> -->
+                </v-flex>
+
+                <v-flex xs12>
+                  <v-select
+                    v-model="event.contentKeys"
+                    v-validate="'required|min:1'"
+                    :error-messages="errors.collect('contents')"
+                    :items="contents"
+                    item-value="key"
+                    item-text="name"
+                    label="컨텐츠"
+                    data-vv-name="contents"
+                    deletable-chips
+                    multiple
+                  >
+                    <v-list-tile
+                      slot="prepend-item"
+                      
+                      @click="toggleSelectAllContents"
+                    >
+                      <v-list-tile-action>
+                        <v-icon :color="event.contentKeys && event.contentKeys.length > 0 ? 'indigo darken-4' : ''">{{contentsCheckboxIcon}}</v-icon>
+                      </v-list-tile-action>
+                      <v-list-tile-title>
+                        {{event.contentKeys && event.contentKeys.length === contents.length ? 'Deselect All' : 'Select All'}}
+                      </v-list-tile-title>
+                    </v-list-tile>
+                    <v-divider
+                      slot="prepend-item"
+                      class="mt-2"
+                    ></v-divider>
+                    <v-divider
+                      slot="append-item"
+                      class="mb-2"
+                    ></v-divider>
+                  </v-select>
+                </v-flex>
+
+                <v-flex xs12>
+                  <v-select
+                    v-model="event.memberKeys"
+                    :items="members"
+                    label="참여자"
+                    data-vv-name="member"
+                    item-value="uid"
+                    item-text="name"
+                    chips
+                    deletable-chips
+                    multiple
+                    dense
+                    :messages="[`필수입력값이 아니므로 모임 생성 후 입력가능. ${event.memberKeys && event.memberKeys.length}명 선택`]"
+                  >
+                    <v-list-tile
+                      slot="prepend-item"
+                      
+                      @click="toggleSelectAllMembers"
+                    >
+                      <v-list-tile-action>
+                        <v-icon :color="event.members && event.members.length > 0 ? 'indigo darken-4' : ''">1{{membersCheckboxIcon}}</v-icon>
+                      </v-list-tile-action>
+                      <v-list-tile-title>
+                        {{event.members && event.members.length == memberList.length ? 'Deselect All' : 'Select All'}}
+                      </v-list-tile-title>
+                    </v-list-tile>
+                    <v-divider
+                      slot="prepend-item"
+                      class="mt-2"
+                    ></v-divider>
+                    <v-divider
+                      slot="append-item"
+                      class="mb-2"
+                    ></v-divider>
+                  </v-select>
+                </v-flex>
+
+                <v-card>
+                  <v-card-title class="pb-0">
+                    <span class="title">이 날의 모임정보</span>
+                  </v-card-title>
+                  <v-container grid-list-md>
+                    <v-layout wrap>
+
+                      <v-flex xs12 sm12 md12>
+                        <span>평균나이 : {{joinedMemberInfo.totalAge && event.memberKeys ? (joinedMemberInfo.totalAge/event.memberKeys.length).toFixed(2) : 0}} 살 </span>
+                      </v-flex>
+
+                      <v-flex xs6 sm3 md2>
+                        <span>운영진 : {{joinedMemberInfo.adminCount}}명</span>
+                      </v-flex>
+
+                      <v-flex xs6 sm3 md2>
+                        <span>일반회원 : {{joinedMemberInfo.normalCount}}명</span>
+                      </v-flex>
+
+                      <v-flex xs6 sm3 md2>
+                        <span>신입회원 :{{joinedMemberInfo.newbieCount}}명</span>
+                      </v-flex>
+
+                      <v-flex xs6 sm3 md2>
+                        <span>특수멤버 : {{joinedMemberInfo.specialCount}}명</span>
+                      </v-flex>
+
+                      <v-flex xs12 sm12 md12>
+                        <span>신입회원(미참여) : {{joinedMemberInfo.pnewbieCount}}명</span>
+                      </v-flex>
+
+                      <v-flex xs12 sm12 md12>
+                        <span>남자:{{joinedMemberInfo.maleCount}}명 여자: {{joinedMemberInfo.femaleCount}}명</span>
+                      </v-flex>
+
+                    </v-layout>
+                  </v-container>
+                </v-card>
+
                 
               </v-layout>
             </v-container>
@@ -65,53 +179,142 @@ import { eventStore } from "@/stores/modules/event";
 import { contentStore } from "@/stores/modules/content";
 import { placeStore } from "@/stores/modules/place";
 import { gradeStore } from "@/stores/modules/grade";
+import { memberStore } from "@/stores/modules/member";
+import colors from 'vuetify/es5/util/colors';
+import API_UTILS from '@/api/API_UTILS'
+
+interface joinedMembers {
+  totalAge:number;
+  adminCount:number;
+  normalCount:number;
+  specialCount:number;
+  newbieCount:number;
+  pnewbieCount:number;
+  maleCount:number;
+  femaleCount:number;
+}
 
 @Component
 export default class EventDetail extends Vue {
-  get contents(){
-    return contentStore.contents
+  //stores
+  get contents(){return contentStore.contents}
+  get grades(){return gradeStore.grades}
+  get places(){return placeStore.places}
+  get event(){return eventStore.event}
+  get members(){return memberStore.members}
+  get currentUser(){return accountStore.currentUser}
+
+  //local data
+  get isNew(){return this.$route.name === 'eventCreate'}
+  get eventDate(){return this.event.date ? this.$moment(this.event.date.toString()).format('YYYY-MM-DD') : ''}
+  get someContents (){return this.event.contentKeys && this.event.contentKeys.length > 0 && !this.allContents}
+  get allContents (){return this.event.contentKeys && this.event.contentKeys.length === this.contents.length}
+  get allMembers (){return this.event.memberKeys && this.event.memberKeys.length === this.members.length}
+  get someMembers (){return this.event.memberKeys && this.event.memberKeys.length > 0 && !this.allMembers}
+
+  get contentsCheckboxIcon (){
+    if (this.allContents) return 'check_box'
+    if (this.someContents) return 'indeterminate_check_box'
+    return 'check_box_outline_blank'
   }
 
-  get grades(){
-    return gradeStore.grades
+  get membersCheckboxIcon () {
+    if (this.allMembers) return 'check_box'
+    if (this.someMembers) return 'indeterminate_check_box'
+    return 'check_box_outline_blank'
   }
 
-  get places(){
-    return placeStore.places
+  joinedMemberInfo:joinedMembers = {
+    totalAge : 0,
+    adminCount : 0,
+    normalCount : 0,
+    specialCount : 0,
+    newbieCount : 0,
+    pnewbieCount : 0,
+    maleCount : 0,
+    femaleCount : 0,
+  };
+
+  @Watch('event.memberKeys')
+  getJoinedMemberInfo(){
+    console.log('getJoinedMemberInfo : ', this.event.memberKeys);
+    const today:number = parseInt(this.$moment(new Date()).format("YYYY"));
+    const joinedMembersInfo:joinedMembers = {
+      totalAge : 0,
+      adminCount : 0,
+      normalCount : 0,
+      specialCount : 0,
+      newbieCount : 0,
+      pnewbieCount : 0,
+      maleCount : 0,
+      femaleCount : 0,
+    };
+
+    if(Array.isArray(this.event.memberKeys)){
+      this.joinedMemberInfo = this.event.memberKeys.reduce((newJoinedMembersInfo:joinedMembers, memberKey:string):joinedMembers=>{
+        const member:MemberTypes|undefined = this.members.find((member:MemberTypes)=>member.uid === memberKey);
+        if(member){
+
+          //이 날 참석한 회원들의 등급을 분류해서 카운팅하기
+          if(member.grade === 0 || member.grade === 1){
+            newJoinedMembersInfo.adminCount+=1
+          } else if(member.grade === 5){
+            newJoinedMembersInfo.specialCount+=1
+          } else {
+            const joinCount = (member.eventsKeys.length - 1);
+            if(joinCount >= 4){
+              newJoinedMembersInfo.normalCount+=1
+            } else if(joinCount >= 1){
+              newJoinedMembersInfo.newbieCount+=1
+            } else if(joinCount === 0){
+              newJoinedMembersInfo.pnewbieCount+=1
+            }
+          }
+
+          //나이 총합 구하기
+          joinedMembersInfo.totalAge += (1+today - parseInt(member.birth.toString().slice(0,4)));
+
+          //성별 구하기
+          member.gender === 'M' ? newJoinedMembersInfo.maleCount+=1 : newJoinedMembersInfo.femaleCount+=1;
+        }
+        return newJoinedMembersInfo
+      } ,joinedMembersInfo);
+    }
   }
   
-  get event(){
-    return eventStore.event
-  }
-
-  get currentUser(){
-    return accountStore.currentUser
-  }
-
-  get isNew(){
-    return this.$route.name === 'eventCreate'
-  }
-
-  get eventDate(){
-    return this.event.date ? 
-      this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
-      : ''
-  }
-
-  get computedDateFormatted () {
-    return '2019-07-01';
-    // return this.$moment(this.params.key.toString()).format('YYYY-MM-DD');
-  }
-  
-
   created(){
     const {uid} = this.$route.params;
-    eventStore.getEventByUid(uid);
-    contentStore.getContents();
-    placeStore.getPlaces();
-    gradeStore.getGrades();
 
-    console.log('this.event : ', this.event);
+    API_UTILS.axios.all([
+      eventStore.getEventByUid(uid),
+      contentStore.getContents(),
+      placeStore.getPlaces(),
+      gradeStore.getGrades(),
+      memberStore.getMembers(),
+    ]).then(res=>{
+      console.log('this.members : ', this.members);
+      this.getJoinedMemberInfo();
+    })
+  }
+
+  toggleSelectAllContents () {
+    this.$nextTick(() => {
+      if(this.allContents) {
+        this.event.contentKeys = [];
+      } else {
+        this.event.contentKeys = this.contents.map(content=>content.key);
+      }
+    })
+  }
+
+  toggleSelectAllMembers () {
+    this.$nextTick(() => {
+      if(this.allMembers) {
+        this.event.memberKeys = []
+      } else {
+        this.event.memberKeys =  this.members.map(member=>member.uid);
+      }
+    })
   }
 
   postEvent(e:any){

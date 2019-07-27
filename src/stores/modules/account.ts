@@ -1,6 +1,6 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
-import defaults from '@/api/defaults'
+import API_UTILS from '@/api/API_UTILS'
 import accountApi from '@/api/account'
 
 @Module
@@ -28,7 +28,7 @@ class AccountStore extends VuexModule {
 
   @Action
   async onAuthStateChanged(){
-    defaults.auth.onAuthStateChanged((user:any)=>{
+    API_UTILS.auth.onAuthStateChanged((user:any)=>{
       if(user){
         this.setCurrentUser(user);
       } else {

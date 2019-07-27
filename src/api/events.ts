@@ -1,8 +1,8 @@
-import defaults from './defaults';
+import API_UTILS from './API_UTILS';
 
 export default {
     getEventByUid : (uid:string):Promise<EventTypes> => new Promise<EventTypes>((resolve)=>{
-        defaults.database.ref('events')
+        API_UTILS.database.ref('events')
             .orderByChild('uid')
             .equalTo(uid)
             .on('value',(snapshot:any)=>{
@@ -10,9 +10,9 @@ export default {
                 resolve(val[Object.keys(val)[0]] || {});
             })
     }),
-    getEvents : () => defaults.database.ref('events').once('value').then((snapshot:any)=>snapshot.val()),
+    getEvents : () => API_UTILS.database.ref('events').once('value').then((snapshot:any)=>snapshot.val()),
     getEventsRange : (params:any):Promise<EventTypes[]> => new Promise<EventTypes[]>((resolve)=>{
-        defaults.database.ref('events')
+        API_UTILS.database.ref('events')
             .orderByChild('date')
             .startAt(params.startAt)
             .endAt(params.endAt)
