@@ -13,8 +13,29 @@
             <v-card-text class="pa-0">
               <v-container grid-list-md>
                 <v-layout wrap>
+                  <v-flex xs12 sm6 md6>
+                    <v-menu
+                      v-model="showEventDate"
+                      :close-on-content-click="false"
+                      transition="scale-transition"
+                      offset-y
+                      full-width
+                      max-width="290px"
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="selectedEventDate"
+                          label="Date (read only text field)"
+                          readonly
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-date-picker v-model="eventDate" no-title @input="showEventDate = false"></v-date-picker>
+                    </v-menu>
+                 </v-flex>
 
-                  <v-flex xs12 sm6 md4>
+                  <!-- <v-flex xs12 sm6 md6>
                     <v-text-field
                       v-model="eventDate"
                       label="이벤트 날짜"
@@ -22,9 +43,9 @@
                       readonly
                       disabled
                     ></v-text-field>
-                  </v-flex>
+                  </v-flex> -->
                   
-                  <v-flex xs12 sm6 md4>
+                  <v-flex xs12 sm6 md6>
                     <v-text-field
                       v-validate="'required|min:1|max:20'"
                       v-model="event.title"
@@ -249,6 +270,8 @@ interface joinedMembers {
 
 @Component
 export default class EventDetail extends Vue {
+  @Prop() query: any;
+
   //stores
   get contents(){return contentStore.contents}
   get grades(){return gradeStore.grades}
@@ -258,7 +281,19 @@ export default class EventDetail extends Vue {
   get currentUser(){return accountStore.currentUser}
 
   //local computed data
-  get eventDate(){return this.event.date ? this.$moment(this.event.date.toString()).format('YYYY-MM-DD') : ''}
+  set eventDate(date:any){
+    console.log('date : ', date);
+    this.selectedEventDate = date;
+  }
+  get eventDate(){
+    if(this.event && this.event.date){
+      return this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
+    } else if(this.query.date) {
+      return this.query.date;
+    } else {
+      return ''
+    }
+  }
   get someContents (){return this.event.contentKeys && this.event.contentKeys.length > 0 && !this.allContents}
   get allContents (){return this.event.contentKeys && this.event.contentKeys.length === this.contents.length}
   get allMembers (){return this.event.memberKeys && this.event.memberKeys.length === this.members.length}
@@ -275,6 +310,8 @@ export default class EventDetail extends Vue {
   }
 
   //local data
+  selectedEventDate:string = this.eventDate;
+  showEventDate:boolean = false;
   isNew:boolean = false;
   viewConfirmDelete:boolean = false;
   joinedMemberInfo:joinedMembers = {

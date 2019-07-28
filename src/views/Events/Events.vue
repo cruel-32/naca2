@@ -87,9 +87,6 @@ export default class Meeting extends Vue {
     return dialogStore.snackBar
   }
 
-  created(){
-  }
-
   changePickedDay(date:string){
     this.clickedYYYYMMDD = date;
     const clickedDate = parseInt(date.split('-').join(''));
@@ -122,13 +119,17 @@ export default class Meeting extends Vue {
       this.snackBar.isShowSnackbar = true;
       dialogStore.callSnackbar(this.snackBar);
     } else {
-      const eventUid = `${this.clickedYYYYMMDD.split('-').join('')}-${this.samedayEvents.length+1}`
-      this.$router.push(`/event/create/${eventUid}`);
+      this.$router.push({
+        path:`/event/detail`,
+        query: {
+          date : this.clickedYYYYMMDD
+        }
+      });
     }
   }
   
   goEventDetail(eventUid:string){
-    this.$router.push(`/event/update/${eventUid}`);
+    this.$router.push(`/event/detail/${eventUid}`);
   }
 }
 </script>

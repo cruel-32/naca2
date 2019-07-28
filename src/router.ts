@@ -18,12 +18,15 @@ export default new Router({
       component: () => import('@/views/Events/Events.vue'),
     },
     {
-      path: '/event/create/:uid',
+      path: '/event/detail',
       name: 'eventCreate',
+      props: route=>({
+        query : route.query
+      }),
       component: () => import('./views/Events/EventDetail.vue'),
     },
     {
-      path: '/event/update/:uid',
+      path: '/event/detail/:uid',
       name: 'eventUpdate',
       component: () => import('./views/Events/EventDetail.vue'),
     },
