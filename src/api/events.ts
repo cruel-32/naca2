@@ -21,4 +21,19 @@ export default {
                 resolve(val ? Object.values(val) : []);
             })
     }),
+    createEvent : (params:EventTypes) => API_UTILS.database.ref('events').once('value').then(snapshot=>{
+        const num:number = snapshot.numChildren();
+        let key:number = 1;
+        snapshot.forEach(sn=>{
+            sn.val().date === params.date && (key+=1)
+        })
+        let uid = `${params.date}-${key}`
+        API_UTILS.database.ref(`events/${num}`).update({uid,...params})
+        return uid;
+    }),
+    updateEvent : (uid:string, payload:EventTypes):Promise<string> => new Promise<string>((resolve)=>{
+        API_UTILS.database.ref(`events`)
+    })
+    
+    
 }

@@ -1,10 +1,17 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
 import eventApi from "@/api/events";
+import API_UTILS from '@/api/API_UTILS';
 
 @Module
 class EventStore extends VuexModule {
-  event:EventTypes = {};
+  event:EventTypes = {
+    date:0,
+    title:'테스트',
+    placeKeys:['wervwtbwrtbetrh'],
+    contentKeys:['qqqweerrtyyy'],
+    memberKeys:['-LOvteMzU211Morqz6pJ'],
+  };
   events:EventTypes[] = [];
 
   @Mutation
@@ -37,7 +44,29 @@ class EventStore extends VuexModule {
 
   @Action
   public async resetEvent(){//{ state, commit, rootState }
-    this.setEvent({});
+    this.setEvent({
+      date:0,
+      title:'테스트',
+      placeKeys:['wervwtbwrtbetrh'],
+      contentKeys:['qqqweerrtyyy'],
+      memberKeys:['-LOvteMzU211Morqz6pJ'],
+      // title:'',
+      // placeKeys:[],
+      // contentKeys:[],
+      // memberKeys:[],
+    });
+  }
+
+  @Action
+  public async createEvent(payload:EventTypes){
+    const result = await eventApi.createEvent(payload);
+    console.log('createEvent result : ', result);
+  }
+
+  @Action
+  public async updateEvent(payload:any){
+    const result = await eventApi.updateEvent(payload.uid, payload.params);
+    console.log('createEvent result : ', result);
   }
 
 }

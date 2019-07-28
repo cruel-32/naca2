@@ -7,6 +7,6 @@ declare interface MemberTypes {
   joinDate:number
   mail:string;
   outDay:number
-  eventsKeys:string[];
+  eventKeys:string[];
   phone:number;
 }

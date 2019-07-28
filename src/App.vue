@@ -87,8 +87,7 @@ export default class extends Vue {
   onScroll(){
   }
   closeSnackbar(){
-    this.snackBar.isShowSnackbar = false; //프로퍼티 값변경 가능
-    dialogStore.callSnackbar(this.snackBar);
+    dialogStore.hideSnackbar();
   }
 }
 </script>

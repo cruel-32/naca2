@@ -114,10 +114,7 @@ export default class Meeting extends Vue {
 
   goCreateEvent(){
     if(!this.currentUser){
-      this.snackBar.snackColor = "error";
-      this.snackBar.snackbarText = "로그인이 필요합니다";
-      this.snackBar.isShowSnackbar = true;
-      dialogStore.callSnackbar(this.snackBar);
+      dialogStore.showSnackbar({snackColor:'error',snackbarText:'로그인이 필요합니다'});
     } else {
       this.$router.push({
         path:`/event/detail`,

@@ -59,34 +59,38 @@
 
                   <v-flex xs12>
                     <v-select
-                      v-validate="'required|min:1'"
                       v-model="event.placeKeys"
                       :items="places"
-                      item-value="key"
-                      item-text="name"
-                      :error-messages="errors.collect('place')"
                       label="장소"
                       data-vv-name="place"
+                      item-value="key"
+                      item-text="name"
+                      chips
+                      deletable-chips
+                      :error-messages="errors.collect('place')"
                       multiple
+                      dense
+                      v-validate="'required|min:1'"
                     ></v-select>
                   </v-flex>
 
                   <v-flex xs12>
                     <v-select
-                      v-model="event.contentKeys"
                       v-validate="'required|min:1'"
                       :error-messages="errors.collect('contents')"
+                      v-model="event.contentKeys"
                       :items="contents"
-                      item-value="key"
-                      item-text="name"
                       label="컨텐츠"
                       data-vv-name="contents"
+                      item-value="key"
+                      item-text="name"
+                      chips
                       deletable-chips
                       multiple
+                      dense
                     >
                       <v-list-tile
                         slot="prepend-item"
-                        
                         @click="toggleSelectAllContents"
                       >
                         <v-list-tile-action>
@@ -112,7 +116,7 @@
                       v-model="event.memberKeys"
                       :items="members"
                       label="참여자"
-                      data-vv-name="member"
+                      data-vv-name="members"
                       item-value="uid"
                       item-text="name"
                       chips
@@ -123,14 +127,13 @@
                     >
                       <v-list-tile
                         slot="prepend-item"
-                        
                         @click="toggleSelectAllMembers"
                       >
                         <v-list-tile-action>
-                          <v-icon :color="event.members && event.members.length > 0 ? 'indigo darken-4' : ''">1{{membersCheckboxIcon}}</v-icon>
+                          <v-icon :color="event.memberKeys && event.memberKeys.length > 0 ? 'indigo darken-4' : ''">{{membersCheckboxIcon}}</v-icon>
                         </v-list-tile-action>
                         <v-list-tile-title>
-                          {{event.members && event.members.length == memberList.length ? 'Deselect All' : 'Select All'}}
+                          {{event.memberKeys && event.memberKeys.length == members.length ? 'Deselect All' : 'Select All'}}
                         </v-list-tile-title>
                       </v-list-tile>
                       <v-divider
@@ -251,6 +254,7 @@ import { contentStore } from "@/stores/modules/content";
 import { placeStore } from "@/stores/modules/place";
 import { gradeStore } from "@/stores/modules/grade";
 import { memberStore } from "@/stores/modules/member";
+import { dialogStore } from "@/stores/modules/dialog";
 import { debounce } from "typescript-debounce-decorator";
 
 import colors from 'vuetify/es5/util/colors';
@@ -271,6 +275,7 @@ interface joinedMembers {
 @Component
 export default class EventDetail extends Vue {
   @Prop() query: any;
+  @Prop() params: any;
 
   //stores
   get contents(){return contentStore.contents}
@@ -279,6 +284,7 @@ export default class EventDetail extends Vue {
   get event(){return eventStore.event}
   get members(){return memberStore.members}
   get currentUser(){return accountStore.currentUser}
+  get snackBar(){return dialogStore.snackBar}
 
   get someContents (){return this.event.contentKeys && this.event.contentKeys.length > 0 && !this.allContents}
   get allContents (){return this.event.contentKeys && this.event.contentKeys.length === this.contents.length}
@@ -341,7 +347,7 @@ export default class EventDetail extends Vue {
           } else if(member.grade === 5){
             newJoinedMembersInfo.specialCount+=1
           } else {
-            const joinCount = (member.eventsKeys.length - 1);
+            const joinCount:number = member.eventKeys ? (member.eventKeys.length - 1) : 0;
             if(joinCount >= 4){
               newJoinedMembersInfo.normalCount+=1
             } else if(joinCount >= 1){
@@ -367,15 +373,15 @@ export default class EventDetail extends Vue {
     if(!this.places.length) placeStore.getPlaces();
     if(!this.grades.length) gradeStore.getGrades();
     if(!this.members.length) memberStore.getMembers();
-    if(this.$route.name === 'eventCreate'){
-      this.reset();
-      this.selectedEventDate = this.query.date;
-      this.isNew = true;
-    } else {
-      const {uid} = this.$route.params;
+    if(this.params){
+      const {uid} = this.params;
         await eventStore.getEventByUid(uid),
         this.getJoinedMemberInfo();
         this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
+    } else {
+      this.reset();
+      this.selectedEventDate = this.query.date;
+      this.isNew = true;
     }
   }
 
@@ -402,6 +408,31 @@ export default class EventDetail extends Vue {
   postEvent(e:any){
     console.log('e : ', e);
     console.log('this.isNew : ', this.isNew);
+
+    this.$validator.validateAll().then((result:any) => {
+      if(result){
+        if(this.currentUser){
+          const params = Object.assign({},this.event,{date: parseInt(this.eventDate.split('-').join(''))});
+          console.log('params : ', params);
+
+          if(this.isNew){
+            console.log('생성');
+            eventStore.createEvent(params);
+
+          } else {
+            console.log('수정');
+            eventStore.updateEvent({
+              uid:this.event.uid,
+              params
+            });
+          }
+        } else {
+          dialogStore.showSnackbar({snackColor:'error',snackbarText:'권한이 없습니다'});
+        }
+      }
+    });
+
+
   }
 
   reset(){

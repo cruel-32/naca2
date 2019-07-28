@@ -28,6 +28,9 @@ export default new Router({
     {
       path: '/event/detail/:uid',
       name: 'eventUpdate',
+      props: route=>({
+        params : route.params
+      }),
       component: () => import('./views/Events/EventDetail.vue'),
     },
     // {

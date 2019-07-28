@@ -16,7 +16,16 @@ class DialogStore extends VuexModule {
   }
 
   @Action
-  async callSnackbar(snackBar:SnackbarTypes){
+  showSnackbar(payload:SnackbarTypes){
+    const snackBar:SnackbarTypes = Object.assign(this.snackBar, {isShowSnackbar:true}, payload);
+    this.setSnackbar(snackBar);
+  }
+
+  @Action
+  hideSnackbar(){
+    const snackBar:SnackbarTypes = Object.assign(this.snackBar, {
+      isShowSnackbar:false,
+    });
     this.setSnackbar(snackBar);
   }
 }
