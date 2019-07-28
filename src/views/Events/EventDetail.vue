@@ -280,20 +280,6 @@ export default class EventDetail extends Vue {
   get members(){return memberStore.members}
   get currentUser(){return accountStore.currentUser}
 
-  //local computed data
-  get eventDate(){
-    console.log('this.event : ', this.event);
-    
-    // if(this.event && this.event.date){
-    //   return this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
-    // } else if(this.query.date) {
-    //   return this.query.date;
-    // } else {
-    //   return ''
-    // }
-    return ''
-  }
-
   get someContents (){return this.event.contentKeys && this.event.contentKeys.length > 0 && !this.allContents}
   get allContents (){return this.event.contentKeys && this.event.contentKeys.length === this.contents.length}
   get allMembers (){return this.event.memberKeys && this.event.memberKeys.length === this.members.length}
@@ -310,14 +296,11 @@ export default class EventDetail extends Vue {
   }
 
   //local data
-  // eventDate:string = '';
-  @Watch('eventDate') setTest1(val:string){
-    console.log('setTest1 val : ', val);
-  }
-  @Watch('selectedEventDate') setTest2(val:string){
-    console.log('setTest2 val : ', val);
+  @Watch('selectedEventDate') setEventDate(date:string){
+    this.eventDate = date;
   }
 
+  eventDate:string = '';
   selectedEventDate:string = '';
   showEventDate:boolean = false;
   isNew:boolean = false;
@@ -384,14 +367,15 @@ export default class EventDetail extends Vue {
     if(!this.places.length) placeStore.getPlaces();
     if(!this.grades.length) gradeStore.getGrades();
     if(!this.members.length) memberStore.getMembers();
-
     if(this.$route.name === 'eventCreate'){
       this.reset();
+      this.selectedEventDate = this.query.date;
       this.isNew = true;
     } else {
       const {uid} = this.$route.params;
         await eventStore.getEventByUid(uid),
         this.getJoinedMemberInfo();
+        this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
     }
   }
 

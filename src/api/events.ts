@@ -7,9 +7,7 @@ export default {
             .equalTo(uid)
             .on('value',(snapshot:any)=>{
                 const val = snapshot.val();
-                resolve(val[Object.keys(val)[0]] || {
-                    date:0
-                });
+                resolve(val[Object.keys(val)[0]] || {});
             })
     }),
     getEvents : () => API_UTILS.database.ref('events').once('value').then((snapshot:any)=>snapshot.val()),

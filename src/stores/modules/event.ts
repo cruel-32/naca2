@@ -4,9 +4,7 @@ import eventApi from "@/api/events";
 
 @Module
 class EventStore extends VuexModule {
-  event:EventTypes = {
-    date:0
-  };
+  event:EventTypes = {};
   events:EventTypes[] = [];
 
   @Mutation
