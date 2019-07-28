@@ -25,13 +25,13 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="selectedEventDate"
+                          v-model="eventDate"
                           label="Date (read only text field)"
                           readonly
                           v-on="on"
                         ></v-text-field>
                       </template>
-                      <v-date-picker v-model="eventDate" no-title @input="showEventDate = false"></v-date-picker>
+                      <v-date-picker v-model="selectedEventDate" no-title @input="showEventDate = false"></v-date-picker>
                     </v-menu>
                  </v-flex>
 
@@ -281,19 +281,19 @@ export default class EventDetail extends Vue {
   get currentUser(){return accountStore.currentUser}
 
   //local computed data
-  set eventDate(date:any){
-    console.log('date : ', date);
-    this.selectedEventDate = date;
-  }
   get eventDate(){
-    if(this.event && this.event.date){
-      return this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
-    } else if(this.query.date) {
-      return this.query.date;
-    } else {
-      return ''
-    }
+    console.log('this.event : ', this.event);
+    
+    // if(this.event && this.event.date){
+    //   return this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
+    // } else if(this.query.date) {
+    //   return this.query.date;
+    // } else {
+    //   return ''
+    // }
+    return ''
   }
+
   get someContents (){return this.event.contentKeys && this.event.contentKeys.length > 0 && !this.allContents}
   get allContents (){return this.event.contentKeys && this.event.contentKeys.length === this.contents.length}
   get allMembers (){return this.event.memberKeys && this.event.memberKeys.length === this.members.length}
@@ -310,7 +310,15 @@ export default class EventDetail extends Vue {
   }
 
   //local data
-  selectedEventDate:string = this.eventDate;
+  // eventDate:string = '';
+  @Watch('eventDate') setTest1(val:string){
+    console.log('setTest1 val : ', val);
+  }
+  @Watch('selectedEventDate') setTest2(val:string){
+    console.log('setTest2 val : ', val);
+  }
+
+  selectedEventDate:string = '';
   showEventDate:boolean = false;
   isNew:boolean = false;
   viewConfirmDelete:boolean = false;
