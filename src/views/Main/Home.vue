@@ -28,11 +28,17 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { menuStore } from "@/stores/modules/menu"
 
-@Component
-export default class Home extends Vue {
-  get sideMenuItems(){
-    return menuStore.sideMenuItems
+@Component({
+  computed : {
+    sideMenuItems(){//store는 이걸로 가즈아
+      return menuStore.sideMenuItems 
+    }
   }
+})
+export default class Home extends Vue {
+  // get sideMenuItems(){
+  //   return menuStore.sideMenuItems
+  // }
   goPage(name:string){
     this.$router.push({
       name,
