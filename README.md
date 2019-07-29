@@ -1,7 +1,7 @@
 # naca2
 
 ### nac-admin의 고도화(?) 프로젝트입니다.
-### https://nac-admin2.firebaseapp.com 에서 실제 운영중입니다.
+### https://nac-admin2.firebaseapp.com 에서 실제 운영중입니다. (미완성)
 
 기존 프로젝트는 <br/>
 - vue
