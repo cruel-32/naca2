@@ -21,8 +21,8 @@
                 <v-card-title class="headline">{{samedayEvents.length}}개의 이벤트가 있습니다</v-card-title>
                 <v-btn block
                    v-for="(event) of samedayEvents"
-                  :key="event.uid"
-                  @click="goEventDetail(event.uid)"
+                  :key="event.key"
+                  @click="goEventDetail(event.key)"
                 >
                   {{event.title}}
                 </v-btn>
@@ -125,8 +125,9 @@ export default class Meeting extends Vue {
     }
   }
   
-  goEventDetail(eventUid:string){
-    this.$router.push(`/event/detail/${eventUid}`);
+  goEventDetail(key:string){
+    console.log('key : ', key);
+    this.$router.push(`/event/detail/${key}`);
   }
 }
 </script>

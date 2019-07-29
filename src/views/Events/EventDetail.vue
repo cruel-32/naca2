@@ -117,7 +117,7 @@
                       :items="members"
                       label="참여자"
                       data-vv-name="members"
-                      item-value="uid"
+                      item-value="key"
                       item-text="name"
                       chips
                       deletable-chips
@@ -339,7 +339,7 @@ export default class EventDetail extends Vue {
 
     if(Array.isArray(this.event.memberKeys)){
       this.joinedMemberInfo = this.event.memberKeys.reduce((newJoinedMembersInfo:joinedMembers, memberKey:string):joinedMembers=>{
-        const member:MemberTypes|undefined = this.members.find((member:MemberTypes)=>member.uid === memberKey);
+        const member:MemberTypes|undefined = this.members.find((member:MemberTypes)=>member.key === memberKey);
         if(member){
           //이 날 참석한 회원들의 등급을 분류해서 카운팅하기
           if(member.grade === 0 || member.grade === 1){
@@ -374,8 +374,8 @@ export default class EventDetail extends Vue {
     if(!this.grades.length) gradeStore.getGrades();
     if(!this.members.length) memberStore.getMembers();
     if(this.params){
-      const {uid} = this.params;
-        await eventStore.getEventByUid(uid),
+      const {key} = this.params;
+        await eventStore.getEventByKey(key),
         this.getJoinedMemberInfo();
         this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
     } else {
@@ -400,32 +400,21 @@ export default class EventDetail extends Vue {
       if(this.allMembers) {
         this.event.memberKeys = []
       } else {
-        this.event.memberKeys =  this.members.map(member=>member.uid);
+        this.event.memberKeys =  this.members.map(member=>member.key);
       }
     })
   }
 
   postEvent(e:any){
-    console.log('e : ', e);
-    console.log('this.isNew : ', this.isNew);
 
     this.$validator.validateAll().then((result:any) => {
       if(result){
         if(this.currentUser){
           const params = Object.assign({},this.event,{date: parseInt(this.eventDate.split('-').join(''))});
-          console.log('params : ', params);
-
-          if(this.isNew){
-            console.log('생성');
-            eventStore.createEvent(params);
-
-          } else {
-            console.log('수정');
-            eventStore.updateEvent({
-              uid:this.event.uid,
-              params
-            });
-          }
+          eventStore.postEvent({
+            key:this.event.key,
+            ...params
+          });
         } else {
           dialogStore.showSnackbar({snackColor:'error',snackbarText:'권한이 없습니다'});
         }

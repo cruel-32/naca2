@@ -4,7 +4,7 @@ declare interface DateRange {
 }
 
 declare interface EventTypes {
-    uid?:string;
+    key?:string;
     date:number;
     title:string;
     placeKeys:string[];

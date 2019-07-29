@@ -1,5 +1,5 @@
 declare interface MemberTypes {
-  uid:string;
+  key:string;
   address:string;
   birth:number;
   gender:string;

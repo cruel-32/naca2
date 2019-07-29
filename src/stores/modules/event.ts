@@ -25,8 +25,9 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async getEventByUid(uid:string){//{ state, commit, rootState }
-    const event:EventTypes = await eventApi.getEventByUid(uid);
+  public async getEventByKey(key:string){//{ state, commit, rootState }
+    const event:EventTypes = await eventApi.getEventByKey(key);
+    console.log('getEventByKey event : ', event);
     this.setEvent(event);
   }
 
@@ -58,15 +59,24 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async createEvent(payload:EventTypes){
-    const result = await eventApi.createEvent(payload);
-    console.log('createEvent result : ', result);
-  }
+  public async postEvent(payload:EventTypes){
+    console.log('payload : ', payload);
+    const {key, date, contentKeys, memberKeys, placeKeys, title} = payload;
 
-  @Action
-  public async updateEvent(payload:any){
-    const result = await eventApi.updateEvent(payload.uid, payload.params);
-    console.log('createEvent result : ', result);
+    console.log('date : ', date);
+    console.log('contentKeys : ', contentKeys);
+    console.log('memberKeys : ', memberKeys);
+    console.log('placeKeys : ', placeKeys);
+    console.log('title : ', title);
+
+    if(key){
+      console.log('update');
+    } else {
+      console.log('create');
+    }
+
+    // const result = await eventApi.updateEvent();
+    // console.log('createEvent result : ', result);
   }
 
 }
