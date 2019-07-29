@@ -1,39 +1,14 @@
 # naca2
 
-## Project setup
-```
-npm install
-```
+## nac-admin의 고도화(?) 프로젝트입니다.
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
+기존 프로젝트는 <br/>
+- vue
+- typescript
+- firebase <br/>
+를 맛보기 식으로 마구잡이로 개발했다고 치면 이번 프로젝트는 <br/>
 
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Run your end-to-end tests
-```
-npm run test:e2e
-```
-
-### Run your unit tests
-```
-npm run test:unit
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+- vue + vuex
+- typescript + 추상화 + 어노테이션 활용
+- firebase + 기본기능 활용 및 mongodb와의 차이 체감
+에 중점을 두고 더욱 코드를 간결하고 견고하게 짜는데 집중했습니다. (+ ui/ux 개선은 덤)
