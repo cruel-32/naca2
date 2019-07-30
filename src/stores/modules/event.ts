@@ -61,6 +61,8 @@ class EventStore extends VuexModule {
     return result;
   }
 
+
+
   @Action
   public async deleteEvent(key:string){
     const result:string = await eventApi.deleteEvent(key);

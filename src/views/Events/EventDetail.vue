@@ -303,6 +303,7 @@ export default class EventDetail extends Vue {
 
   //local data
   @Watch('selectedEventDate') setEventDate(date:string){
+    console.log('selectedEventDate setEventDate : ', date);
     this.eventDate = date;
   }
 
@@ -325,6 +326,7 @@ export default class EventDetail extends Vue {
 
   @Watch('event.memberKeys')
   getJoinedMemberInfo(){
+    console.log('getJoinedMemberInfo this.event : ', this.event);
     const today:number = parseInt(this.$moment(new Date()).format("YYYY"));
     const joinedMembersInfo:joinedMembers = {
       totalAge : 0,
@@ -385,6 +387,10 @@ export default class EventDetail extends Vue {
     }
   }
 
+  beforeDestroy(){
+    eventStore.resetEvent();
+  }
+
   toggleSelectAllContents () {
     this.$nextTick(() => {
       if(this.allContents) {
@@ -433,18 +439,22 @@ export default class EventDetail extends Vue {
   }
 
   reset(){
-    console.log('reset');
     eventStore.resetEvent();
   }
 
   @debounce(1000)
-  deleteEvent(){
+  async deleteEvent(){
     if(this.event.key){
-      const result = eventStore.deleteEvent(this.event.key);
-      console.log('deleteEvent result : ', result);
-      // this.$router.push({
-      //   name: 'events',
-      // });
+      const result = await eventStore.deleteEvent(this.event.key);
+      this.viewConfirmDelete = false;
+      console.log('result === success : ', result);
+      console.log('deleteEvent this.event : ', this.event);
+      if(result === 'success'){
+        dialogStore.showSnackbar({snackColor:'success',snackbarText:"삭제되었습니다"});
+        // this.$router.push({
+        //   name: 'events',
+        // });
+      }
     }
   }
 }

@@ -58,10 +58,10 @@ export default {
     },
     deleteEvent : (key:string):Promise<string> => new Promise<string>((res,rej)=>{
         try {
-            const event = API_UTILS.database.ref(`events/${key}`)
+            const eventRef = API_UTILS.database.ref(`events/${key}`)
 
             //멤버별 참여 이벤트도 업데이트 해줘야함. participation 
-            event.remove();
+            eventRef.remove();
             memberApi.deleteMembersParticipation(key);
             res('success');
         } catch(err){
