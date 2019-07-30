@@ -7,14 +7,14 @@ import eventApi from "@/api/events";
 class EventStore extends VuexModule {
   event:EventTypes = {
     date:0,
-    // title:'테스트',
-    // placeKeys:['wervwtbwrtbetrh'],
-    // contentKeys:['qqqweerrtyyy'],
-    // memberKeys:['-LOvteMzU211Morqz6pJ'],
-    title:'',
-    placeKeys:[],
-    contentKeys:[],
-    memberKeys:[],
+    title:'테스트',
+    placeKeys:['wervwtbwrtbetrh'],
+    contentKeys:['qqqweerrtyyy'],
+    memberKeys:['-LOvteMzU211Morqz6pJ'],
+    // title:'',
+    // placeKeys:[],
+    // contentKeys:[],
+    // memberKeys:[],
   };
   events:EventTypes[] = [];
 
@@ -31,7 +31,6 @@ class EventStore extends VuexModule {
   @Action
   public async getEventByKey(key:string){//{ state, commit, rootState }
     const event:EventTypes = await eventApi.getEventByKey(key);
-    console.log('getEventByKey event : ', event);
     this.setEvent(event);
   }
 
@@ -45,20 +44,35 @@ class EventStore extends VuexModule {
   public async resetEvent(){//{ state, commit, rootState }
     this.setEvent({
       date:0,
-      // title:'테스트',
-      // placeKeys:['wervwtbwrtbetrh'],
-      // contentKeys:['qqqweerrtyyy'],
-      // memberKeys:['-LOvteMzU211Morqz6pJ'],
-      title:'',
-      placeKeys:[],
-      contentKeys:[],
-      memberKeys:[],
+      title:'테스트',
+      placeKeys:['wervwtbwrtbetrh'],
+      contentKeys:['qqqweerrtyyy'],
+      memberKeys:['-LOvteMzU211Morqz6pJ'],
+      // title:'',
+      // placeKeys:[],
+      // contentKeys:[],
+      // memberKeys:[],
     });
   }
 
   @Action
   public async updateEvent(payload:EventTypes){
     const result = await eventApi.updateEvent(payload);
+    return result;
+  }
+
+  @Action
+  public async deleteEvent(key:string){
+    const result:string = await eventApi.deleteEvent(key);
+    // if(result === 'success'){
+    //   this.setEvent({
+    //     date:0,
+    //     title:'',
+    //     placeKeys:[],
+    //     contentKeys:[],
+    //     memberKeys:[],
+    //   })
+    // }
     return result;
   }
 

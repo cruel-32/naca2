@@ -219,7 +219,7 @@
                     <v-btn
                       right
                       color="red darken-1"
-                      @click="deleteMeeting()"
+                      @click="deleteEvent()"
                       outline
                       depressed
                     >
@@ -438,8 +438,14 @@ export default class EventDetail extends Vue {
   }
 
   @debounce(1000)
-  deleteMeeting(e:any){
-    console.log('deleteMeeting e : ', e);
+  deleteEvent(){
+    if(this.event.key){
+      const result = eventStore.deleteEvent(this.event.key);
+      console.log('deleteEvent result : ', result);
+      // this.$router.push({
+      //   name: 'events',
+      // });
+    }
   }
 }
 </script>
