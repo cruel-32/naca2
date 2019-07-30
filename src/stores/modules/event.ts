@@ -6,15 +6,16 @@ import eventApi from "@/api/events";
 @Module
 class EventStore extends VuexModule {
   event:EventTypes = {
+    key:null,
     date:0,
-    title:'테스트',
-    placeKeys:['wervwtbwrtbetrh'],
-    contentKeys:['qqqweerrtyyy'],
-    memberKeys:['-LOvteMzU211Morqz6pJ'],
-    // title:'',
-    // placeKeys:[],
-    // contentKeys:[],
-    // memberKeys:[],
+    // title:'테스트',
+    // placeKeys:['wervwtbwrtbetrh'],
+    // contentKeys:['qqqweerrtyyy'],
+    // memberKeys:['-LOvteMzU211Morqz6pJ'],
+    title:'',
+    placeKeys:[],
+    contentKeys:[],
+    memberKeys:[],
   };
   events:EventTypes[] = [];
 
@@ -32,26 +33,29 @@ class EventStore extends VuexModule {
   public async getEventByKey(key:string){//{ state, commit, rootState }
     const event:EventTypes = await eventApi.getEventByKey(key);
     this.setEvent(event);
+    return event;
   }
 
   @Action
   public async getEventsRange(payload:DateRange){//{ state, commit, rootState }
     const events:EventTypes[] = await eventApi.getEventsRange(payload);
     this.setEvents(events)
+    return events;
   }
 
   @Action
   public async resetEvent(){//{ state, commit, rootState }
     this.setEvent({
+      key:null,
       date:0,
-      title:'테스트',
-      placeKeys:['wervwtbwrtbetrh'],
-      contentKeys:['qqqweerrtyyy'],
-      memberKeys:['-LOvteMzU211Morqz6pJ'],
-      // title:'',
-      // placeKeys:[],
-      // contentKeys:[],
-      // memberKeys:[],
+      // title:'테스트',
+      // placeKeys:['wervwtbwrtbetrh'],
+      // contentKeys:['qqqweerrtyyy'],
+      // memberKeys:['-LOvteMzU211Morqz6pJ'],
+      title:'',
+      placeKeys:[],
+      contentKeys:[],
+      memberKeys:[],
     });
   }
 

@@ -89,7 +89,7 @@
 <script lang="ts">
 import { Component, Prop, Vue, Emit } from 'vue-property-decorator';
 
-@Component({})
+@Component
 export default class FooterComp extends Vue {
   fab:boolean = false;
   joinDate:any = parseInt(this.$moment(new Date()).format('YYYYMMDD'));

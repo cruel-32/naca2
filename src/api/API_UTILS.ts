@@ -22,10 +22,13 @@ const googleAuthProvider:any = new firebase.auth.GoogleAuthProvider();
 axios.defaults.baseURL = 'https://nac-admin2.firebaseio.com/nac-admin2';
 // axios.defaults.headers['content-type'] = 'application/json';
 
-const arrayConvertToObj = (array:any[]) => array.reduce((obj,item) =>{
-    obj[item] = firebase.database.ServerValue.TIMESTAMP
-    return obj
-},{})
+const arrayConvertToObj = (array:string[]):{[key:string]:any} =>
+    array.reduce((obj:{[key:string]:any},item:string) =>{
+        if(item){
+            obj[item] = firebase.database.ServerValue.TIMESTAMP
+        }
+        return obj
+},{});
 
 export default {
     firebaseConfig,

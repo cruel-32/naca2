@@ -41,19 +41,15 @@ import { menuStore } from "@/stores/modules/menu"
 
 @Component
 export default class HeaderComp extends Vue {
+  //stores
+  get snackBar(){ return dialogStore.snackBar}
+  get currentUser(){ return accountStore.currentUser }
+  get drawer(){ return menuStore.drawer }
+
+  //local data
   title:string = 'NACA System 2.0';
-  get snackBar(){
-    return dialogStore.snackBar
-  }
-  get currentUser(){
-    return accountStore.currentUser
-  }
-  get drawer(){
-    return menuStore.drawer
-  }
 
   toggleSideCompDrawer(){
-    console.log('toggleSideCompDrawer');
     menuStore.setDrawerAction(!this.drawer);
   }
 
@@ -63,6 +59,7 @@ export default class HeaderComp extends Vue {
       dialogStore.showSnackbar({snackColor:'success', snackbarText:`어서오세요 ${user.displayName}님`});
     }
   }
+  
   async logout(){
     const result = await accountStore.logout();
     if(result){

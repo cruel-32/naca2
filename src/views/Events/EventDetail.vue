@@ -255,6 +255,8 @@ import { placeStore } from "@/stores/modules/place";
 import { gradeStore } from "@/stores/modules/grade";
 import { memberStore } from "@/stores/modules/member";
 import { dialogStore } from "@/stores/modules/dialog";
+import { menuStore } from "@/stores/modules/menu";
+
 import { debounce } from "typescript-debounce-decorator";
 
 import colors from 'vuetify/es5/util/colors';
@@ -274,9 +276,6 @@ interface joinedMembers {
 
 @Component
 export default class EventDetail extends Vue {
-  @Prop() query: any;
-  @Prop() params: any;
-
   //stores
   get contents(){return contentStore.contents}
   get grades(){return gradeStore.grades}
@@ -286,27 +285,11 @@ export default class EventDetail extends Vue {
   get currentUser(){return accountStore.currentUser}
   get snackBar(){return dialogStore.snackBar}
 
-  get someContents (){return this.event.contentKeys && this.event.contentKeys.length > 0 && !this.allContents}
-  get allContents (){return this.event.contentKeys && this.event.contentKeys.length === this.contents.length}
-  get allMembers (){return this.event.memberKeys && this.event.memberKeys.length === this.members.length}
-  get someMembers (){return this.event.memberKeys && this.event.memberKeys.length > 0 && !this.allMembers}
-  get contentsCheckboxIcon (){
-    if (this.allContents) return 'check_box'
-    if (this.someContents) return 'indeterminate_check_box'
-    return 'check_box_outline_blank'
-  }
-  get membersCheckboxIcon () {
-    if (this.allMembers) return 'check_box'
-    if (this.someMembers) return 'indeterminate_check_box'
-    return 'check_box_outline_blank'
-  }
+  //props
+  @Prop() query: any;
+  @Prop() params: any;
 
   //local data
-  @Watch('selectedEventDate') setEventDate(date:string){
-    console.log('selectedEventDate setEventDate : ', date);
-    this.eventDate = date;
-  }
-
   eventDate:string = '';
   selectedEventDate:string = '';
   showEventDate:boolean = false;
@@ -323,10 +306,28 @@ export default class EventDetail extends Vue {
     femaleCount : 0,
   };
 
+  //computed
+  get someContents (){return this.event.contentKeys && this.event.contentKeys.length > 0 && !this.allContents}
+  get allContents (){return this.event.contentKeys && this.event.contentKeys.length === this.contents.length}
+  get allMembers (){return this.event.memberKeys && this.event.memberKeys.length === this.members.length}
+  get someMembers (){return this.event.memberKeys && this.event.memberKeys.length > 0 && !this.allMembers}
+  get contentsCheckboxIcon (){
+    if (this.allContents) return 'check_box'
+    if (this.someContents) return 'indeterminate_check_box'
+    return 'check_box_outline_blank'
+  }
+  get membersCheckboxIcon () {
+    if (this.allMembers) return 'check_box'
+    if (this.someMembers) return 'indeterminate_check_box'
+    return 'check_box_outline_blank'
+  }
+
+  @Watch('selectedEventDate') setEventDate(date:string){
+    this.eventDate = date;
+  }
 
   @Watch('event.memberKeys')
   getJoinedMemberInfo(){
-    console.log('getJoinedMemberInfo this.event : ', this.event);
     const today:number = parseInt(this.$moment(new Date()).format("YYYY"));
     const joinedMembersInfo:joinedMembers = {
       totalAge : 0,
@@ -376,10 +377,14 @@ export default class EventDetail extends Vue {
     if(!this.grades.length) gradeStore.getGrades();
     if(!this.members.length) memberStore.getMembers();
     if(this.params){
+      menuStore.setProgress(true);
       const {key} = this.params;
-        await eventStore.getEventByKey(key),
+      const result = await eventStore.getEventByKey(key);
+      menuStore.setProgress(false);
+      if(result){
         this.getJoinedMemberInfo();
         this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
+      }
     } else {
       this.reset();
       this.selectedEventDate = this.query.date;
@@ -406,20 +411,23 @@ export default class EventDetail extends Vue {
       if(this.allMembers) {
         this.event.memberKeys = []
       } else {
-        this.event.memberKeys =  this.members.map(member=>member.key);
+        this.event.memberKeys =  this.members.map(member=>member.key || '');
       }
     })
   }
 
   updateEvent(e:any){
-
+    menuStore.setProgress(true);
     this.$validator.validateAll().then(async (result:any) => {
       if(result){
         if(this.currentUser){
-          const params = Object.assign({},this.event,{date: parseInt(this.eventDate.split('-').join(''))});
+          const params = Object.assign({},
+            this.event,
+            {date: parseInt(this.eventDate.split('-').join(''))}
+          );
           const result = await eventStore.updateEvent({
-            key:this.event.key,
-            ...params
+            ...params,
+            key:this.event.key
           });
           if(result.key){
             dialogStore.showSnackbar({snackColor:'success',snackbarText:'등록되었습니다'});
@@ -429,13 +437,13 @@ export default class EventDetail extends Vue {
           } else {
             dialogStore.showSnackbar({snackColor:'error',snackbarText:'실패했습니다'});
           }
+          
         } else {
           dialogStore.showSnackbar({snackColor:'error',snackbarText:'권한이 없습니다'});
         }
       }
     });
-
-
+    menuStore.setProgress(false);
   }
 
   reset(){
@@ -444,18 +452,18 @@ export default class EventDetail extends Vue {
 
   @debounce(1000)
   async deleteEvent(){
+    menuStore.setProgress(true);
     if(this.event.key){
       const result = await eventStore.deleteEvent(this.event.key);
       this.viewConfirmDelete = false;
-      console.log('result === success : ', result);
-      console.log('deleteEvent this.event : ', this.event);
       if(result === 'success'){
         dialogStore.showSnackbar({snackColor:'success',snackbarText:"삭제되었습니다"});
-        // this.$router.push({
-        //   name: 'events',
-        // });
+        this.$router.push({
+          name: 'events',
+        });
       }
     }
+    menuStore.setProgress(false);
   }
 }
 </script>

@@ -4,10 +4,10 @@ declare interface DateRange {
 }
 
 declare interface EventTypes {
-    key?:string|null;
+    key:string|null;
     date:number;
     title:string;
     placeKeys:string[];
     contentKeys:string[];
-    memberKeys:string[];
+    memberKeys?:string[];
 }

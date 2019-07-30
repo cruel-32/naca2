@@ -47,6 +47,11 @@ import ProgressComp from "@/components/ProgressComp.vue"
   components: {
     HeaderComp,SideComp,FooterComp,ProgressComp
   },
+  computed: {
+    snackBar(){
+      return dialogStore.snackBar
+    }
+  }
 })
 export default class extends Vue {
   moundted(){
@@ -78,14 +83,13 @@ export default class extends Vue {
     });
   }
   
-  get snackBar(){
-    return dialogStore.snackBar
-  }
   created(){
     accountStore.onAuthStateChanged(); //전체앱 통틀어 한번만 실행
   }
+  
   onScroll(){
   }
+
   closeSnackbar(){
     dialogStore.hideSnackbar();
   }

@@ -28,7 +28,7 @@
                 </v-btn>
               </v-card-text>
               <v-card-actions>
-                <v-btn block dark color="success" @click="goupdateEvent()">
+                <v-btn block dark color="success" @click="goUpdateEvent()">
                   {{clickedYYYYMMDD}} 이벤트 만들기
                 </v-btn>
               </v-card-actions>
@@ -61,9 +61,15 @@ import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
 import { accountStore } from "@/stores/modules/account"
 import { eventStore } from "@/stores/modules/event";
 import { dialogStore } from "@/stores/modules/dialog"
+import { menuStore } from "@/stores/modules/menu"
 
 @Component
-export default class Meeting extends Vue {
+export default class Events extends Vue {
+  //stores
+  get currentUser(){ return accountStore.currentUser }
+  get events(){ return eventStore.events }
+  get snackBar(){ return dialogStore.snackBar }
+
   today:string = this.$moment(new Date).format('YYYY-MM-DD');
   date:string = '';
   clickedYYYYMMDD:any = '';
@@ -75,27 +81,9 @@ export default class Meeting extends Vue {
     "blue-grey",
   ]
 
-  get currentUser(){
-    return accountStore.currentUser
-  }
-
-  get events(){
-    return eventStore.events
-  }
-
-  get snackBar(){
-    return dialogStore.snackBar
-  }
-
-  changePickedDay(date:string){
-    this.clickedYYYYMMDD = date;
-    const clickedDate = parseInt(date.split('-').join(''));
-    this.samedayEvents = this.events.filter((event)=> event.date === clickedDate);
-    this.eventsDialog = true;
-  }
-
   @Watch('pickedYYYYMM')
-  dateChanged(changedDate:any){
+  async dateChanged(changedDate:any){
+    menuStore.setProgress(true);
     this.date = this.today.slice(0,7) === changedDate ? this.today : changedDate;
     if(changedDate.length > 4){
       const changedDateArr = changedDate.split('-')
@@ -103,16 +91,29 @@ export default class Meeting extends Vue {
         startAt: parseInt(changedDateArr.join('')+'01'),
         endAt: parseInt(changedDateArr.join('')+'31'),
       }
-      eventStore.getEventsRange(dateRange);
+      await eventStore.getEventsRange(dateRange);
+      menuStore.setProgress(false);
     }
   }
-  
+
+  changePickedDay(date:string){
+    this.clickedYYYYMMDD = date;
+    const clickedDate = parseInt(date.split('-').join(''));
+    this.samedayEvents = this.events.filter((event)=> event.date === clickedDate);
+
+    if(this.samedayEvents.length == 0){
+      this.goUpdateEvent();
+    } else {
+      this.eventsDialog = true;
+    }
+  }
+
   checkEventDay(eventDay:any){
     const YYYYMMDD:number = parseInt(eventDay.split('-').join(''));
     return this.events.find((event:any)=> event.date === YYYYMMDD) ? true : false;
   }
 
-  goupdateEvent(){
+  goUpdateEvent(){
     if(!this.currentUser){
       dialogStore.showSnackbar({snackColor:'error',snackbarText:'로그인이 필요합니다'});
     } else {
@@ -126,7 +127,6 @@ export default class Meeting extends Vue {
   }
   
   goEventDetail(key:string){
-    console.log('key : ', key);
     this.$router.push(`/event/detail/${key}`);
   }
 }
