@@ -28,7 +28,7 @@
                 </v-btn>
               </v-card-text>
               <v-card-actions>
-                <v-btn block dark color="success" @click="goCreateEvent()">
+                <v-btn block dark color="success" @click="goupdateEvent()">
                   {{clickedYYYYMMDD}} 이벤트 만들기
                 </v-btn>
               </v-card-actions>
@@ -112,7 +112,7 @@ export default class Meeting extends Vue {
     return this.events.find((event:any)=> event.date === YYYYMMDD) ? true : false;
   }
 
-  goCreateEvent(){
+  goupdateEvent(){
     if(!this.currentUser){
       dialogStore.showSnackbar({snackColor:'error',snackbarText:'로그인이 필요합니다'});
     } else {

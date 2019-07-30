@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-slide-y-transition mode="out-in">
       <v-layout column align-center>
-        <form id="create-event-dialog" class="ui form" @submit.prevent="postEvent">
+        <form id="create-event-dialog" class="ui form" @submit.prevent="updateEvent">
           <v-card>
             <v-card-title class="pb-0">
               <span class="headline">
@@ -405,13 +405,13 @@ export default class EventDetail extends Vue {
     })
   }
 
-  postEvent(e:any){
+  updateEvent(e:any){
 
     this.$validator.validateAll().then((result:any) => {
       if(result){
         if(this.currentUser){
           const params = Object.assign({},this.event,{date: parseInt(this.eventDate.split('-').join(''))});
-          eventStore.postEvent({
+          eventStore.updateEvent({
             key:this.event.key,
             ...params
           });

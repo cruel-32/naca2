@@ -14,11 +14,6 @@ export default {
                 }
             })
     }),
-    getEvents : () => API_UTILS.database.ref('events').once('value').then((snapshot:any)=>{
-        console.log('snapshot : ', snapshot);
-
-        return snapshot.val()
-    }),
     getEventsRange : (params:any):Promise<EventTypes[]> => new Promise<EventTypes[]>((resolve)=>{
         API_UTILS.database.ref('events')
             .orderByChild('date')
@@ -34,13 +29,21 @@ export default {
                 resolve(events);
             })
     }),
-    createEvent : (params:EventTypes) => API_UTILS.database.ref('events').once('value').then(snapshot=>{
+    updateEvent : (payload:EventTypes) => {//key값을 넘기면 put, 안넘기면 post
+        const {key, date, contentKeys, memberKeys, placeKeys, title} = payload;
+        const newKey = key ? '' : API_UTILS.database.ref(`events`).push().key;
+        const event = API_UTILS.database.ref(`events/${key || newKey}`)
 
-        return '';
-    }),
-    updateEvent : (key:string, payload:EventTypes):Promise<string> => new Promise<string>((resolve)=>{
-        API_UTILS.database.ref(`events`)
-    })
+        event.update({
+            date,
+            title,
+            contentKeys : contentKeys.length ? API_UTILS.arrayConvertToObj(contentKeys) : {},
+            memberKeys : memberKeys.length ? API_UTILS.arrayConvertToObj(memberKeys) : {},
+            placeKeys : placeKeys.length ? API_UTILS.arrayConvertToObj(placeKeys) : {},
+        })
+
+        return newKey ? {...payload, key:newKey} : payload;
+    }
     
     
 }
