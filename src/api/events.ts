@@ -42,6 +42,8 @@ export default {
             placeKeys : placeKeys.length ? API_UTILS.arrayConvertToObj(placeKeys) : {},
         })
 
+        //멤버별 참여 이벤트도 업데이트 해줘야함. participation 
+
         return newKey ? {...payload, key:newKey} : payload;
     }
     

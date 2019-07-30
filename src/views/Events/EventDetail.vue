@@ -407,14 +407,22 @@ export default class EventDetail extends Vue {
 
   updateEvent(e:any){
 
-    this.$validator.validateAll().then((result:any) => {
+    this.$validator.validateAll().then(async (result:any) => {
       if(result){
         if(this.currentUser){
           const params = Object.assign({},this.event,{date: parseInt(this.eventDate.split('-').join(''))});
-          eventStore.updateEvent({
+          const result = await eventStore.updateEvent({
             key:this.event.key,
             ...params
           });
+          if(result.key){
+            dialogStore.showSnackbar({snackColor:'success',snackbarText:'등록되었습니다'});
+            this.$router.push({
+              name: 'events',
+            });
+          } else {
+            dialogStore.showSnackbar({snackColor:'error',snackbarText:'실패했습니다'});
+          }
         } else {
           dialogStore.showSnackbar({snackColor:'error',snackbarText:'권한이 없습니다'});
         }

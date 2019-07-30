@@ -59,8 +59,7 @@ class EventStore extends VuexModule {
   @Action
   public async updateEvent(payload:EventTypes){
     const result = await eventApi.updateEvent(payload);
-
-    console.log('updateEvent result : ', result);
+    return result;
   }
 
 }
