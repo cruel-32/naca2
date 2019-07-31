@@ -1,13 +1,15 @@
 <template>
   <v-card>
-    <ProgressComp :propData="loading"></ProgressComp>
+    
     <v-card-title>
       <h1 class="headline"><v-icon color="green">people</v-icon> 회원목록</h1>
       <p class="caption" style="margin:0 0 0 10px !important;">
         <span>평균연령 : {{average}}세, </span>
-        <span>남자:{{rate[0]}}명 여자: {{rate[1]}}명</span>
+        <span>남자:{{gender.male}}명 여자: {{gender.female}}명</span>
       </p>
+
       <v-spacer></v-spacer>
+
       <v-text-field
         v-model="search"
         append-icon="search"
@@ -16,9 +18,10 @@
         hide-details
       ></v-text-field>
     </v-card-title>
+
     <v-data-table
       :headers="headers"
-      :items="memberList"
+      :items="members"
       :search="search"
       :rows-per-page-items="options"
       rows-per-page-text="한 페이지당 목록수"
@@ -51,10 +54,83 @@
         </tr>
       </template>
     </v-data-table>
+
+
   </v-card>
 </template>
 
 <script lang="ts">
+import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
+import { accountStore } from "@/stores/modules/account"
+import { memberStore } from "@/stores/modules/member";
+import { dialogStore } from "@/stores/modules/dialog"
+import { menuStore } from "@/stores/modules/menu"
+
+@Component
+export default class Members extends Vue {
+  //stores
+  get currentUser(){ return accountStore.currentUser }
+  get members(){ return memberStore.members }
+  get snackBar(){ return dialogStore.snackBar }
+
+
+
+  average:number = 0;
+  gender:{} = {
+    male : 0,
+    female : 0,
+  }
+  search:string = '';
+
+  options:any[] = [{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}, 10,20,];
+  headers:any[] = [
+    {
+      text: '이름',
+      align: 'left',
+      value: 'name'
+    },
+    {
+      text : '생년월일',
+      align: 'left',
+      value: 'birth'
+    },
+    {
+      text : '나이',
+      align: 'left',
+      value: 'age'
+    },
+    {
+      text : '가입일',
+      align: 'left',
+      value: 'joinDate'
+    },
+    {
+      text : '성별',
+      align: 'left',
+      value: 'gender',
+    },
+    {
+      text : '사는곳',
+      align: 'left',
+      value: 'address',
+    },
+    {
+      text : '회원등급',
+      align: 'left',
+      value: 'grade',
+    },
+    {
+      text : 'D-XX',
+      align: 'left',
+      value: 'exitDay'
+    },
+  ];
+
+  goMemberDetail(key:string){
+    this.$router.push(`/member/detail/${key}`);
+  }
+  
+}
 </script>
 
 <style lang="scss">

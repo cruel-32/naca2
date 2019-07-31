@@ -10,7 +10,7 @@ export default new Router({
     {
       path: '/',
       name: 'home',
-      component: ()=> import('./views/Main/Home.vue'),
+      component: ()=> import('@/views/Main/Home.vue'),
     },
     {
       path: '/events',
@@ -23,7 +23,7 @@ export default new Router({
       props: route=>({
         query : route.query
       }),
-      component: () => import('./views/Events/EventDetail.vue'),
+      component: () => import('@/views/Events/EventDetail.vue'),
     },
     {
       path: '/event/detail/:key',
@@ -31,17 +31,16 @@ export default new Router({
       props: route=>({
         params : route.params
       }),
-      component: () => import('./views/Events/EventDetail.vue'),
+      component: () => import('@/views/Events/EventDetail.vue'),
     },
-    // {
-    //   path: '/members',
-    //   name: 'members',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/Members.vue'),
-    // },
+    {
+      path: '/members',
+      name: 'members',
+      props: (route) => ({
+        query: route.query
+      }),
+      component: () => import('@/views/Members/Members.vue'),
+    },
     // {
     //   path: '/member',
     //   name: 'memberCreate',
