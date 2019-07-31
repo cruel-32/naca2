@@ -1,4 +1,4 @@
-import API_UTILS from './API_UTILS';
+import API_UTILS from '@/utils/API_UTILS';
 
 export default {
     getGrades : () => API_UTILS.database.ref('grades').once('value').then((snapshots:any)=>{

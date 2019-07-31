@@ -1,6 +1,6 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
-import API_UTILS from '@/api/API_UTILS'
+import API_UTILS from '@/utils/API_UTILS'
 import accountApi from '@/api/account'
 
 @Module

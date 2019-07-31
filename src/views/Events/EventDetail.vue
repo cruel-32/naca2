@@ -155,31 +155,31 @@
                       <v-layout wrap>
 
                         <v-flex xs12 sm12 md12>
-                          <span>평균나이 : {{joinedMemberInfo.totalAge && event.memberKeys ? (joinedMemberInfo.totalAge/event.memberKeys.length).toFixed(2) : 0}} 살 </span>
+                          <span>평균나이 : {{ event.memberKeys && ageVO.get('total') > 0? (ageVO.get('total')/ event.memberKeys.length).toFixed(2) : 0}} 살 </span>
                         </v-flex>
 
                         <v-flex xs6 sm3 md2>
-                          <span>운영진 : {{joinedMemberInfo.adminCount}}명</span>
+                          <span>운영진 : {{gradeCountVO.get(0) + gradeCountVO.get(1)}}명</span>
                         </v-flex>
 
                         <v-flex xs6 sm3 md2>
-                          <span>일반회원 : {{joinedMemberInfo.normalCount}}명</span>
+                          <span>일반회원 : {{gradeCountVO.get(2)}}명</span>
                         </v-flex>
 
                         <v-flex xs6 sm3 md2>
-                          <span>신입회원 :{{joinedMemberInfo.newbieCount}}명</span>
+                          <span>신입회원 :{{gradeCountVO.get(3)}}명</span>
                         </v-flex>
 
                         <v-flex xs6 sm3 md2>
-                          <span>특수멤버 : {{joinedMemberInfo.specialCount}}명</span>
+                          <span>특수멤버 : {{gradeCountVO.get(5)}}명</span>
                         </v-flex>
 
                         <v-flex xs12 sm12 md12>
-                          <span>신입회원(미참여) : {{joinedMemberInfo.pnewbieCount}}명</span>
+                          <span>신입회원(미참여) : {{gradeCountVO.get(4)}}명</span>
                         </v-flex>
 
                         <v-flex xs12 sm12 md12>
-                          <span>남자:{{joinedMemberInfo.maleCount}}명 여자: {{joinedMemberInfo.femaleCount}}명</span>
+                          <span>남자:{{genderVO.get('M')}}명 여자: {{genderVO.get('F')}}명</span>
                         </v-flex>
 
                       </v-layout>
@@ -256,33 +256,25 @@ import { gradeStore } from "@/stores/modules/grade";
 import { memberStore } from "@/stores/modules/member";
 import { dialogStore } from "@/stores/modules/dialog";
 import { menuStore } from "@/stores/modules/menu";
-
 import { debounce } from "typescript-debounce-decorator";
 
 import colors from 'vuetify/es5/util/colors';
-import API_UTILS from '@/api/API_UTILS'
+import API_UTILS from '@/utils/API_UTILS'
 import events from '../../api/events';
-
-interface joinedMembers {
-  totalAge:number;
-  adminCount:number;
-  normalCount:number;
-  specialCount:number;
-  newbieCount:number;
-  pnewbieCount:number;
-  maleCount:number;
-  femaleCount:number;
-}
+import member from '../../api/member';
 
 @Component
 export default class EventDetail extends Vue {
   //stores
   get contents(){return contentStore.contents}
   get grades(){return gradeStore.grades}
-  get gradeValues(){return gradeStore.gradeValues}
+  get gradeInfoVO(){return gradeStore.gradeInfoVO}
+  get gradeCountVO(){return gradeStore.gradeCountVO}
   get places(){return placeStore.places}
   get event(){return eventStore.event}
   get members(){return memberStore.members}
+  get ageVO(){return memberStore.ageVO}
+  get genderVO(){return memberStore.genderVO}
   get currentUser(){return accountStore.currentUser}
   get snackBar(){return dialogStore.snackBar}
 
@@ -296,16 +288,6 @@ export default class EventDetail extends Vue {
   showEventDate:boolean = false;
   isNew:boolean = false;
   viewConfirmDelete:boolean = false;
-  joinedMemberInfo:joinedMembers = {
-    totalAge : 0,
-    adminCount : 0,
-    normalCount : 0,
-    specialCount : 0,
-    newbieCount : 0,
-    pnewbieCount : 0,
-    maleCount : 0,
-    femaleCount : 0,
-  };
 
   //computed
   get someContents (){return this.event.contentKeys && this.event.contentKeys.length > 0 && !this.allContents}
@@ -327,51 +309,10 @@ export default class EventDetail extends Vue {
     this.eventDate = date;
   }
 
-  @Watch('event.memberKeys')
-  getJoinedMemberInfo(){
-    const today:number = parseInt(this.$moment(new Date()).format("YYYY"));
-    const joinedMembersInfo:joinedMembers = {
-      totalAge : 0,
-      maleCount : 0,
-      femaleCount : 0,
-      adminCount : 0,
-      normalCount : 0,
-      specialCount : 0,
-      newbieCount : 0,
-      pnewbieCount : 0,
-    };
-
-    if(Array.isArray(this.event.memberKeys)){
-      this.joinedMemberInfo = this.event.memberKeys.reduce((newJoinedMembersInfo:joinedMembers, memberKey:string):joinedMembers=>{
-        const member:MemberTypes|undefined = this.members.find((member:MemberTypes)=>member.key === memberKey);
-        if(member){
-          //이 날 참석한 회원들의 등급을 분류해서 카운팅하기
-          if(member.grade === 0 || member.grade === 1){
-            newJoinedMembersInfo.adminCount+=1
-          } else if(member.grade === 5){
-            newJoinedMembersInfo.specialCount+=1
-          } else {
-            const joinCount:number = member.eventKeys ? (member.eventKeys.length - 1) : 0;
-            if(joinCount >= 4){
-              newJoinedMembersInfo.normalCount+=1
-            } else if(joinCount >= 1){
-              newJoinedMembersInfo.newbieCount+=1
-            } else if(joinCount === 0){
-              newJoinedMembersInfo.pnewbieCount+=1
-            }
-          }
-
-          //나이 총합 구하기
-          joinedMembersInfo.totalAge += (1+today - parseInt(member.birth.toString().slice(0,4)));
-
-          //성별 구하기
-          member.gender === 'M' ? newJoinedMembersInfo.maleCount+=1 : newJoinedMembersInfo.femaleCount+=1;
-        }
-        return newJoinedMembersInfo
-      } ,joinedMembersInfo);
-    }
+  @Watch('event.memberKeys') setVO(memberKeys:string[]){
+    memberStore.membersFiltering(memberKeys);
   }
-  
+
   created(){
     menuStore.setProgress(true);
 
@@ -382,12 +323,10 @@ export default class EventDetail extends Vue {
         placeStore.getPlaces(),
       ]).then(async (results:any)=>{
         const result = await eventStore.getEventByKey(key)
-        console.log('result : ', result);
-
-        await memberStore.getMembersByFilter(result ? result.memberKeys : null);
+        await memberStore.getMembers();
+        memberStore.membersFiltering(  result && result.memberKeys ? result.memberKeys : [] );
 
         if(result){
-          this.getJoinedMemberInfo();
           this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
         }
       })

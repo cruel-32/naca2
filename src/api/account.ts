@@ -1,4 +1,4 @@
-import API_UTILS from './API_UTILS';
+import API_UTILS from '@/utils/API_UTILS';
 
 export default {
     signInGoogle():any {

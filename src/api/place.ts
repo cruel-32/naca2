@@ -1,4 +1,4 @@
-import API_UTILS from './API_UTILS';
+import API_UTILS from '@/utils/API_UTILS';
 
 export default {
     getPlaces : () => API_UTILS.database.ref('places').once('value').then((snapshots:any)=>{

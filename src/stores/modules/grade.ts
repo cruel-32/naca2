@@ -5,7 +5,8 @@ import gradeApi from '@/api/grade'
 @Module
 class GradeStore extends VuexModule {
   grades:GradeTypes[] = [];
-  gradeValues:Map<number,Object> = new Map();
+  gradeInfoVO:Map<number,Object> = new Map();
+  gradeCountVO:Map<number,number> = new Map();
 
   @Mutation
   setGrades(grades:GradeTypes[]){
@@ -18,8 +19,8 @@ class GradeStore extends VuexModule {
     this.setGrades(grades);
 
     this.grades.forEach(grade=>{
-      if(this.gradeValues.get(grade.grade) === undefined){
-        this.gradeValues.set(grade.grade, {name:grade.name,day:grade.day});
+      if(this.gradeInfoVO.get(grade.grade) === undefined){
+        this.gradeInfoVO.set(grade.grade, {name:grade.name,day:grade.day});
       }
     })
   }

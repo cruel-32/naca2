@@ -1,7 +1,7 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
 import eventApi from "@/api/events";
-// import API_UTILS from '@/api/API_UTILS';
+// import API_UTILS from '@/utils/API_UTILS';
 
 @Module
 class EventStore extends VuexModule {

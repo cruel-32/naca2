@@ -4,8 +4,8 @@
     <v-card-title>
       <h1 class="headline"><v-icon color="green">people</v-icon> 회원목록</h1>
       <p class="caption" style="margin:0 0 0 10px !important;">
-        <span>평균연령 : {{average}}세, </span>
-        <span>남자:{{gender.male}}명 여자: {{gender.female}}명</span>
+        <span>평균연령 : {{ members && ageVO.get('total') > 0? (ageVO.get('total')/ members.length).toFixed(2) : 0}}세, </span>
+        <span>남자:{{genderVO.get('M')}}명 여자: {{genderVO.get('F')}}명</span>
       </p>
 
       <v-spacer></v-spacer>
@@ -37,11 +37,9 @@
           <td class="text-xs-left">{{ $moment(props.item.joinDate.toString()).format('YYYY.MM.DD') }}</td>
           <td class="text-xs-left">{{ props.item.gender === 'M' ? '남' : '여' }}</td>
           <td class="text-xs-left">{{ props.item.address }}</td>
-          <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">{{ gradeValues ? gradeValues.get(props.item.grade).name : "" }}</td>
-            <!-- props.item.exitDay < 1 ? 'custom-red' : '',
-            props.item.grade == 0 ? 'custom-green' : '',
-            props.item.grade == 1 ? 'custom-blue' : '',
-            props.item.grade == 5 ? 'custom-blue' : '', -->
+          <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">
+            {{ gradeInfoVO && gradeInfoVO.get(props.item.grade).name }}
+          </td>
           <td class="text-xs-center" >
             {{props.item.lastDate ? $moment(props.item.lastDate.toString()).format('YYYY.MM.DD') : "미참석" }}
           </td>
@@ -79,22 +77,21 @@ export default class Members extends Vue {
   get currentUser(){ return accountStore.currentUser }
   get members(){ return memberStore.members }
   get grades(){ return gradeStore.grades }
-  get gradeValues(){ return gradeStore.gradeValues }
+  get gradeInfoVO(){ return gradeStore.gradeInfoVO }
   get snackBar(){ return dialogStore.snackBar }
-
+  get ageVO(){return memberStore.ageVO}
+  get genderVO(){return memberStore.genderVO}
+  
   //local data
   get year(){
     return parseInt(this.today.toString().slice(0,4))+1;
   }
   today:number = parseInt(this.$moment(new Date()).format('YYYYMMDD'));
-  average:number = 0;
-  gender:{} = {
-    male : 0,
-    female : 0,
-  }
   search:string = '';
+
   sortBy:string = '';
   descending:boolean = false;
+  
   options:any[] = [{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}, 10,20,];
   headers:any[] = [
     {
@@ -150,7 +147,7 @@ export default class Members extends Vue {
   ];
 
   async created(){
-    await memberStore.getMembersByFilter(null);
+    await memberStore.getMembers();
   }
 
   goMeberDetail(key:string){
