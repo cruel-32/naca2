@@ -30,4 +30,4 @@ class DialogStore extends VuexModule {
   }
 }
 
-export const dialogStore = new DialogStore({store, name: "DialogStore" })
+export const dialogStore = new DialogStore({store, name: "dialogStore" })

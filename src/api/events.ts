@@ -47,7 +47,7 @@ export default {
 
             //멤버별 참여를 삭제후 다시 넣어줌
             await memberApi.deleteMembersParticipation(key);
-            if(memberKeys) await memberApi.insertMembersParticipation(memberKeys, key);
+            if(memberKeys) await memberApi.insertMembersParticipation(memberKeys, key, date);
         } catch(err){
             console.error(err);
         }

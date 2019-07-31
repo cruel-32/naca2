@@ -22,34 +22,40 @@
     <v-data-table
       :headers="headers"
       :items="members"
+      :sort-by.sync="sortBy"
+      :sort-desc.sync="descending"
       :search="search"
       :rows-per-page-items="options"
       rows-per-page-text="한 페이지당 목록수"
       class="elevation-1 custom-table"
     >
       <template slot="items" slot-scope="props" >
-        <tr @click="meberDetail(props.item.key)">
+        <tr @click="goMeberDetail(props.item.key)">
           <td class="text-xs-left">{{ props.item.name }}</td>
-          <td class="text-xs-left">{{ props.item.birth }}</td>
-          <td class="text-xs-left">{{ props.item.age }}세</td>
-          <td class="text-xs-left">{{ props.item.joinDate }}</td>
+          <td class="text-xs-left">{{ props.item.birth && $moment(props.item.birth.toString()).format('YYYY.MM.DD')}}</td>
+          <td class="text-xs-left">{{ props.item.birth && (year - parseInt(props.item.birth.toString().slice(0,4))) }}세</td>
+          <td class="text-xs-left">{{ $moment(props.item.joinDate.toString()).format('YYYY.MM.DD') }}</td>
           <td class="text-xs-left">{{ props.item.gender === 'M' ? '남' : '여' }}</td>
           <td class="text-xs-left">{{ props.item.address }}</td>
-          <td class="text-xs-center"
-            :class="['text-xs-center',
-                      props.item.exitDay < 1 ? 'custom-red' : '',
-                      props.item.grade == 0 ? 'custom-green' : '',
-                      props.item.grade == 1 ? 'custom-blue' : '',
-                      props.item.grade == 5 ? 'custom-blue' : '',
-                    ]"
-          >{{ parseGradeString(props.item.grade) }}</td>
-          <td class="text-xs-left" >
-            <span
-              :class="['text-xs-center',
-                props.item.exitDay <= 10 ? 'custom-red' : '',
-                (props.item.exitDay > 10 && props.item.exitDay < 21) ? 'custom-amber' : '',
-              ]"
-            >{{props.item.exitDay}}일</span>
+          <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">{{ gradeValues ? gradeValues.get(props.item.grade).name : "" }}</td>
+            <!-- props.item.exitDay < 1 ? 'custom-red' : '',
+            props.item.grade == 0 ? 'custom-green' : '',
+            props.item.grade == 1 ? 'custom-blue' : '',
+            props.item.grade == 5 ? 'custom-blue' : '', -->
+          <td class="text-xs-center" >
+            {{props.item.lastDate ? $moment(props.item.lastDate.toString()).format('YYYY.MM.DD') : "미참석" }}
+          </td>
+          <td class="text-xs-center" >
+            {{props.item.dPlus}}
+          </td>
+          <td v-bind:class="['text-xs-center', `status-${props.item.status}`]">
+            {{
+              props.item.status === 'red' ? '강퇴대상' :
+                (props.item.status === 'blue' ? '운영진' :
+                  (props.item.status === 'green' ? '모임장' :
+                    props.item.dMinus
+                  ))
+            }}
           </td>
         </tr>
       </template>
@@ -64,6 +70,7 @@ import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
 import { accountStore } from "@/stores/modules/account"
 import { memberStore } from "@/stores/modules/member";
 import { dialogStore } from "@/stores/modules/dialog"
+import { gradeStore } from "@/stores/modules/grade"
 import { menuStore } from "@/stores/modules/menu"
 
 @Component
@@ -71,17 +78,23 @@ export default class Members extends Vue {
   //stores
   get currentUser(){ return accountStore.currentUser }
   get members(){ return memberStore.members }
+  get grades(){ return gradeStore.grades }
+  get gradeValues(){ return gradeStore.gradeValues }
   get snackBar(){ return dialogStore.snackBar }
 
-
-
+  //local data
+  get year(){
+    return parseInt(this.today.toString().slice(0,4))+1;
+  }
+  today:number = parseInt(this.$moment(new Date()).format('YYYYMMDD'));
   average:number = 0;
   gender:{} = {
     male : 0,
     female : 0,
   }
   search:string = '';
-
+  sortBy:string = '';
+  descending:boolean = false;
   options:any[] = [{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}, 10,20,];
   headers:any[] = [
     {
@@ -120,16 +133,31 @@ export default class Members extends Vue {
       value: 'grade',
     },
     {
-      text : 'D-XX',
-      align: 'left',
-      value: 'exitDay'
+      text : '마지막 참석일',
+      align: 'center',
+      value: 'lastDate'
+    },
+    {
+      text : '마지막참여일+',
+      align: 'center',
+      value: 'dPlus'
+    },
+    {
+      text : '남은일수',
+      align: 'center',
+      value: 'dMinus'
     },
   ];
 
-  goMemberDetail(key:string){
+  async created(){
+    await memberStore.getMembersByFilter(null);
+  }
+
+  goMeberDetail(key:string){
     this.$router.push(`/member/detail/${key}`);
   }
-  
+
+
 }
 </script>
 
@@ -140,16 +168,17 @@ export default class Members extends Vue {
   }
 }
 
-.custom-red { 
+.status-red { 
   color:red !important
 }
-.custom-amber { 
+.status-yellow { 
   color:#ffa000!important
 }
-.custom-blue { 
+.status-blue { 
   color:#1976d2!important
 }
-.custom-green { 
+.status-green { 
   color:green !important
 }
+
 </style>

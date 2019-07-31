@@ -1,13 +1,25 @@
 import API_UTILS from './API_UTILS';
 
 export default {
-    getMembers : () => API_UTILS.database.ref('members').once('value').then((snapshots:any)=>{
+    getMembers : (memberKeys:any|null) => API_UTILS.database.ref('members').once('value').then((snapshots:any)=>{
         const members:MemberTypes[] = [];
+
         snapshots.forEach((snapshot:any)=>{
             const child = snapshot.val();
             child.key = snapshot.key;
-            child.participation = child.participation ? Object.keys(child.participation) : [];
-            members.push(child);
+            if(memberKeys === null || memberKeys.includes(child.key)){
+                if(child.participation){
+                    const keys = [];
+                    const dateList:number[] = [];
+                    for (let [key, value] of Object.entries(child.participation)) {
+                        keys.push(key);
+                        dateList.push(<number>value);
+                    }
+                    child.participation = keys;
+                    child.lastDate = Math.max(...dateList);
+                }
+                members.push(child);
+            }
         })
         return members
     }),
@@ -21,13 +33,13 @@ export default {
                 });
             })
     ,
-    insertMembersParticipation : (memberKeys:string[], key:string)=> {
+    insertMembersParticipation : (memberKeys:string[], key:string, date:number)=> {
         let result = 'success';
         try {
             memberKeys.forEach(memberKey=>{
                 API_UTILS.database.ref(`members/${memberKey}/participation`)
                     .update({
-                        [key] : API_UTILS.firebase.database.ServerValue.TIMESTAMP
+                        [key] : date
                     })
             });
         } catch(error){

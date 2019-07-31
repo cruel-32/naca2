@@ -8,5 +8,10 @@ declare interface MemberTypes {
   mail:string;
   outDay:number
   eventKeys:string[];
+  participation:string[];
+  lastDate:number;
   phone:number;
+  dPlus:number;
+  dMinus:number;
+  status:string;
 }

@@ -30,14 +30,14 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async getEventByKey(key:string){//{ state, commit, rootState }
+  public async getEventByKey(key:string):Promise<EventTypes>{//{ state, commit, rootState }
     const event:EventTypes = await eventApi.getEventByKey(key);
     this.setEvent(event);
     return event;
   }
 
   @Action
-  public async getEventsRange(payload:DateRange){//{ state, commit, rootState }
+  public async getEventsRange(payload:DateRange):Promise<EventTypes[]>{//{ state, commit, rootState }
     const events:EventTypes[] = await eventApi.getEventsRange(payload);
     this.setEvents(events)
     return events;
@@ -60,15 +60,13 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async updateEvent(payload:EventTypes){
+  public async updateEvent(payload:EventTypes):Promise<EventTypes>{
     const result = await eventApi.updateEvent(payload);
     return result;
   }
 
-
-
   @Action
-  public async deleteEvent(key:string){
+  public async deleteEvent(key:string):Promise<string>{
     const result:string = await eventApi.deleteEvent(key);
     // if(result === 'success'){
     //   this.setEvent({

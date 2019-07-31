@@ -279,6 +279,7 @@ export default class EventDetail extends Vue {
   //stores
   get contents(){return contentStore.contents}
   get grades(){return gradeStore.grades}
+  get gradeValues(){return gradeStore.gradeValues}
   get places(){return placeStore.places}
   get event(){return eventStore.event}
   get members(){return memberStore.members}
@@ -331,13 +332,13 @@ export default class EventDetail extends Vue {
     const today:number = parseInt(this.$moment(new Date()).format("YYYY"));
     const joinedMembersInfo:joinedMembers = {
       totalAge : 0,
+      maleCount : 0,
+      femaleCount : 0,
       adminCount : 0,
       normalCount : 0,
       specialCount : 0,
       newbieCount : 0,
       pnewbieCount : 0,
-      maleCount : 0,
-      femaleCount : 0,
     };
 
     if(Array.isArray(this.event.memberKeys)){
@@ -371,25 +372,33 @@ export default class EventDetail extends Vue {
     }
   }
   
-  async created(){
-    if(!this.contents.length) contentStore.getContents();
-    if(!this.places.length) placeStore.getPlaces();
-    if(!this.grades.length) gradeStore.getGrades();
-    if(!this.members.length) memberStore.getMembers();
+  created(){
+    menuStore.setProgress(true);
+
     if(this.params){
-      menuStore.setProgress(true);
       const {key} = this.params;
-      const result = await eventStore.getEventByKey(key);
-      menuStore.setProgress(false);
-      if(result){
-        this.getJoinedMemberInfo();
-        this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
-      }
+      API_UTILS.axios.all([
+        contentStore.getContents(), 
+        placeStore.getPlaces(),
+      ]).then(async (results:any)=>{
+        const result = await eventStore.getEventByKey(key)
+        console.log('result : ', result);
+
+        await memberStore.getMembersByFilter(result ? result.memberKeys : null);
+
+        if(result){
+          this.getJoinedMemberInfo();
+          this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
+        }
+      })
+
     } else {
       this.reset();
       this.selectedEventDate = this.query.date;
       this.isNew = true;
     }
+
+    menuStore.setProgress(false);
   }
 
   beforeDestroy(){
