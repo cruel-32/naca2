@@ -9,5 +9,5 @@ declare interface EventTypes {
     title:string;
     placeKeys:string[];
     contentKeys:string[];
-    memberKeys?:string[];
+    memberKeys:string[];
 }

@@ -30,10 +30,11 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async getEventByKey(key:string):Promise<EventTypes>{//{ state, commit, rootState }
-    const event:EventTypes = await eventApi.getEventByKey(key);
-    this.setEvent(event);
-    return event;
+  public async getEventByKey(key:string){//{ state, commit, rootState }
+    if(key){
+      const event:EventTypes = await eventApi.getEventByKey(key);
+      this.setEvent(event);
+    }
   }
 
   @Action

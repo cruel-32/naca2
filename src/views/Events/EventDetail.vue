@@ -315,28 +315,21 @@ export default class EventDetail extends Vue {
 
   created(){
     menuStore.setProgress(true);
-
-    if(this.params){
-      const {key} = this.params;
-      API_UTILS.axios.all([
-        contentStore.getContents(), 
-        placeStore.getPlaces(),
-      ]).then(async (results:any)=>{
-        const result = await eventStore.getEventByKey(key)
-        await memberStore.getMembers();
-        memberStore.membersFiltering(  result && result.memberKeys ? result.memberKeys : [] );
-
-        if(result){
-          this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
-        }
-      })
-
-    } else {
-      this.reset();
-      this.selectedEventDate = this.query.date;
-      this.isNew = true;
-    }
-
+    this.reset();
+    API_UTILS.axios.all([
+      contentStore.getContents(), 
+      placeStore.getPlaces(),
+      memberStore.getMembers(),
+      eventStore.getEventByKey(this.params && this.params.key),
+    ]).then(async (results:any)=>{
+      memberStore.membersFiltering( this.event.memberKeys );
+      if(this.event.key){
+        this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
+      } else {
+        this.selectedEventDate = this.query.date;
+        this.isNew = true;
+      }
+    })
     menuStore.setProgress(false);
   }
 
