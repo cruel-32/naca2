@@ -16,7 +16,7 @@
       :multi-line="true"
       :timeout="snackBar.time"
     >
-      {{ snackBar.snackbarText }}
+      {{ snackBar.snackText }}
       <v-btn
         dark
         flat

@@ -7,7 +7,7 @@ class DialogStore extends VuexModule {
     time:2000,
     isShowSnackbar:false,
     snackColor:"success",
-    snackbarText:"",
+    snackText:"",
   }
 
   @Mutation

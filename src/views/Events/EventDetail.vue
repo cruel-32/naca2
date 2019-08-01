@@ -371,16 +371,16 @@ export default class EventDetail extends Vue {
             key:this.event.key
           });
           if(result.key){
-            dialogStore.showSnackbar({snackColor:'success',snackbarText:'등록되었습니다'});
+            dialogStore.showSnackbar({snackColor:'success',snackText:'등록되었습니다'});
             this.$router.push({
               name: 'events',
             });
           } else {
-            dialogStore.showSnackbar({snackColor:'error',snackbarText:'실패했습니다'});
+            dialogStore.showSnackbar({snackColor:'error',snackText:'실패했습니다'});
           }
           
         } else {
-          dialogStore.showSnackbar({snackColor:'error',snackbarText:'권한이 없습니다'});
+          dialogStore.showSnackbar({snackColor:'error',snackText:'권한이 없습니다'});
         }
       }
     });
@@ -395,15 +395,18 @@ export default class EventDetail extends Vue {
   async deleteEvent(){
     menuStore.setProgress(true);
     if(this.event.key){
-      const result = await eventStore.deleteEvent(this.event.key);
-      this.viewConfirmDelete = false;
-      if(result === 'success'){
-        dialogStore.showSnackbar({snackColor:'success',snackbarText:"삭제되었습니다"});
-        this.$router.push({
-          name: 'events',
-        });
-      }
+      const result:SnackbarTypes = await eventStore.deleteEvent(this.event.key);
+      dialogStore.showSnackbar(result);
+    } else {
+      dialogStore.showSnackbar({
+        snackColor : 'error',
+        snackText : '삭제실패했습니다'
+      });
     }
+    this.viewConfirmDelete = false;
+    this.$router.push({
+      name : 'events'
+    });
     menuStore.setProgress(false);
   }
 }

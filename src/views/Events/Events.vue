@@ -115,7 +115,7 @@ export default class Events extends Vue {
 
   goUpdateEvent(){
     if(!this.currentUser){
-      dialogStore.showSnackbar({snackColor:'error',snackbarText:'로그인이 필요합니다'});
+      dialogStore.showSnackbar({snackColor:'error',snackText:'로그인이 필요합니다'});
     } else {
       this.$router.push({
         path:`/event/detail`,

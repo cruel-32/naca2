@@ -54,15 +54,21 @@ export default {
 
         return {...payload, key};
     },
-    deleteEvent : (key:string):Promise<string> => new Promise<string>((res,rej)=>{
+    deleteEvent : (key:string):Promise<SnackbarTypes> => new Promise<SnackbarTypes>((res,rej)=>{
         try {
             const eventRef = API_UTILS.database.ref(`events/${key}`)
             eventRef.remove();
             memberApi.deleteMembersParticipation(key);
-            res('success');
+            res({
+                snackColor:'success',
+                snackText: '삭제성공했습니다',
+            });
         } catch(err){
             console.error('del : ', err);
-            rej('failed');
+            rej({
+                snackColor:'error',
+                snackText: '삭제실패했습니다',
+            });
         }
     })
     

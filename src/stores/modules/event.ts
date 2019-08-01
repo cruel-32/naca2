@@ -67,8 +67,8 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async deleteEvent(key:string):Promise<string>{
-    const result:string = await eventApi.deleteEvent(key);
+  public async deleteEvent(key:string):Promise<SnackbarTypes>{
+    const result:SnackbarTypes = await eventApi.deleteEvent(key);
     // if(result === 'success'){
     //   this.setEvent({
     //     date:0,
@@ -78,7 +78,7 @@ class EventStore extends VuexModule {
     //     memberKeys:[],
     //   })
     // }
-    return result;
+    return result
   }
 
 }
