@@ -14,4 +14,5 @@ declare interface MemberTypes {
   dPlus:number;
   dMinus:number;
   status:string;
+  name:string;
 }

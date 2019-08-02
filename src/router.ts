@@ -41,24 +41,23 @@ export default new Router({
       }),
       component: () => import('@/views/Members/Members.vue'),
     },
-    // {
-    //   path: '/member',
-    //   name: 'memberCreate',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query : route.query
-    //   }),
-    //   component: () => import('./views/MemberCreate.vue'),
-    // },
-    // {
-    //   path: '/member/:key',
-    //   name: 'memberUpdate',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query : route.query
-    //   }),
-    //   component: () => import('./views/MemberCreate.vue'),
-    // },
+    {
+      path: '/member/detail',
+      name: 'memberCreate',
+      props: (route) => ({
+        query : route.query
+      }),
+      component: () => import('@/views/Members/MemberDetail.vue'),
+    },
+    {
+      path: '/member/detail/:key',
+      name: 'memberUpdate',
+      props: (route) => ({
+        params : route.params,
+      }),
+      component: () => import('@/views/Members/MemberDetail.vue'),
+    },
+    
     // {
     //   path: '/statistics',
     //   name: 'statistics',

@@ -3,10 +3,28 @@ import store from '@/stores'
 import memberApi from '@/api/member'
 import {gradeStore} from "./grade";
 import moment from 'moment';
-import { initializeApp } from 'firebase';
+import {classGrade} from '@/declare/enums/member';
 
 @Module
 class MemberStore extends VuexModule {
+  member:MemberTypes = {
+    key:null,
+    address:'',
+    birth:0,
+    gender:'F',
+    grade:0,
+    joinDate:0,
+    mail:'',
+    outDay:0,
+    eventKeys:[],
+    participation:[],
+    lastDate:0,
+    phone:0,
+    dPlus:0,
+    dMinus:0,
+    status:'',
+    name:'',
+  }
   members:MemberTypes[] = [];
 
   ageVO:Map<string,number> = new Map();
@@ -20,18 +38,45 @@ class MemberStore extends VuexModule {
     this.members = members;
   }
 
+  @Mutation
+  private setMember(member:MemberTypes){
+    this.member = member;
+  }
+
+  @Action
+  public async resetEvent(){
+    this.setMember({
+      key:null,
+      address:'',
+      birth:0,
+      gender:'F',
+      grade:0,
+      joinDate:0,
+      mail:'',
+      outDay:0,
+      eventKeys:[],
+      participation:[],
+      lastDate:0,
+      phone:0,
+      dPlus:0,
+      dMinus:0,
+      status:'',
+      name:'',
+    });
+  }
+
   @Action
   initializeVO(){
     this.ageVO.set('total', 0);
     this.genderVO.set('M', 0);
     this.genderVO.set('F', 0);
-    gradeStore.gradeCountVO.set(0, 0);
-    gradeStore.gradeCountVO.set(1, 0);
-    gradeStore.gradeCountVO.set(2, 0);
-    gradeStore.gradeCountVO.set(3, 0);
-    gradeStore.gradeCountVO.set(4, 0);
-    gradeStore.gradeCountVO.set(5, 0);
-    gradeStore.gradeCountVO.set(6, 0);
+    gradeStore.gradeCountVO.set(classGrade.ADMIN, 0);
+    gradeStore.gradeCountVO.set(classGrade.MANAGER, 0);
+    gradeStore.gradeCountVO.set(classGrade.MEMBER, 0);
+    gradeStore.gradeCountVO.set(classGrade.NEW_MEMBER, 0);
+    gradeStore.gradeCountVO.set(classGrade.INTERN_MEMBER, 0);
+    gradeStore.gradeCountVO.set(classGrade.SPECIAL_MEMBER, 0);
+    gradeStore.gradeCountVO.set(classGrade.DRPOPPED_MEMBER, 0);
   }
 
   @Action
@@ -55,9 +100,9 @@ class MemberStore extends VuexModule {
     const dMinus = gradeInfo.day - dPlus;
     let status = "normal";
 
-    if(member.grade === 0){
+    if(member.grade === classGrade.ADMIN){
       status = `green`
-    } else if(member.grade === 1 || member.grade === 5){
+    } else if(member.grade === classGrade.MANAGER || member.grade === classGrade.SPECIAL_MEMBER){
       status = `blue`
     } else if(dMinus <= 0) {
       status = "red";

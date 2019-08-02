@@ -155,7 +155,7 @@
                       <v-layout wrap>
 
                         <v-flex xs12 sm12 md12>
-                          <span>평균나이 : {{ event.memberKeys && ageVO.get('total') > 0? (ageVO.get('total')/ event.memberKeys.length).toFixed(2) : 0}} 살 </span>
+                          <span>평균나이 : {{event.memberKeys && ageVO.get('total') > 0? (ageVO.get('total')/ event.memberKeys.length).toFixed(2) : 0}} 살 </span>
                         </v-flex>
 
                         <v-flex xs6 sm3 md2>
@@ -171,11 +171,11 @@
                         </v-flex>
 
                         <v-flex xs6 sm3 md2>
-                          <span>특수멤버 : {{gradeCountVO.get(5)}}명</span>
+                          <span>특수회원 : {{gradeCountVO.get(5)}}명</span>
                         </v-flex>
 
                         <v-flex xs12 sm12 md12>
-                          <span>신입회원(미참여) : {{gradeCountVO.get(4)}}명</span>
+                          <span>준회원 : {{gradeCountVO.get(4)}}명</span>
                         </v-flex>
 
                         <v-flex xs12 sm12 md12>
@@ -258,10 +258,7 @@ import { dialogStore } from "@/stores/modules/dialog";
 import { menuStore } from "@/stores/modules/menu";
 import { debounce } from "typescript-debounce-decorator";
 
-import colors from 'vuetify/es5/util/colors';
 import API_UTILS from '@/utils/API_UTILS'
-import events from '../../api/events';
-import member from '../../api/member';
 
 @Component
 export default class EventDetail extends Vue {

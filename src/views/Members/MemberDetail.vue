@@ -2,8 +2,7 @@
   <v-container fluid>
     <v-slide-y-transition mode="out-in">
       <v-layout column align-center>
-        <ProgressComp :propData="loading"></ProgressComp>
-        <form id="create-meeting-dialog" class="ui form" @submit.prevent="putMember">
+        <form id="create-meeting-dialog" class="ui form" @submit.prevent="postMember">
           <v-card>
             <v-card-title class="pb-0">
               <span class="headline">
@@ -16,19 +15,19 @@
                     <v-flex xs12 sm6 md4>
                       <v-menu
                         :close-on-content-click="false"
-                        v-model="viewJoinDate"
+                        v-model="viewJoinCalander"
                         lazy
                         full-width
                       >
                         <v-text-field
                           slot="activator"
-                          v-model="joinDate"
+                          v-model="member.joinDate"
                           label="가입일을 입력하세요"
                           readonly
                         ></v-text-field>
                         <v-date-picker
-                          v-model="joinDate"
-                          @input="viewJoinDate = false"
+                          v-model="member.joinDate"
+                          @input="viewJoinCalander = false"
                           full-width
                           locale="ko"
                           ></v-date-picker>
@@ -202,6 +201,55 @@
 </template>
 
 <script lang="ts">
+import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
+import { accountStore } from "@/stores/modules/account"
+import { eventStore } from "@/stores/modules/event";
+import { contentStore } from "@/stores/modules/content";
+import { placeStore } from "@/stores/modules/place";
+import { gradeStore } from "@/stores/modules/grade";
+import { memberStore } from "@/stores/modules/member";
+import { dialogStore } from "@/stores/modules/dialog";
+import { menuStore } from "@/stores/modules/menu";
+import { debounce } from "typescript-debounce-decorator";
+
+import colors from 'vuetify/es5/util/colors';
+import API_UTILS from '@/utils/API_UTILS'
+import events from '../../api/events';
+import member from '../../api/member';
+
+@Component
+export default class MemberDetail extends Vue {
+  //stores
+  get contents(){return contentStore.contents}
+  get grades(){return gradeStore.grades}
+  get gradeInfoVO(){return gradeStore.gradeInfoVO}
+  get gradeCountVO(){return gradeStore.gradeCountVO}
+  get places(){return placeStore.places}
+  get event(){return eventStore.event}
+  get member(){return memberStore.member}
+  get ageVO(){return memberStore.ageVO}
+  get genderVO(){return memberStore.genderVO}
+  get currentUser(){return accountStore.currentUser}
+  get snackBar(){return dialogStore.snackBar}
+
+  //props
+  @Prop() query: any;
+  @Prop() params: any;
+
+  viewJoinCalander:boolean = false;
+
+  created(){
+    console.log('memberDetail')
+    // memberStore.getMemberByKey();
+  }
+
+  postMember(){
+    console.log('postMember');
+  }
+
+}
+
+
 </script>
 
 <style scoped lang="scss">

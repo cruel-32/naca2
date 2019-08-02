@@ -49,10 +49,13 @@
           <td v-bind:class="['text-xs-center', `status-${props.item.status}`]">
             {{
               props.item.status === 'red' ? '강퇴대상' :
-                (props.item.status === 'blue' ? '운영진' :
-                  (props.item.status === 'green' ? '모임장' :
-                    props.item.dMinus
-                  ))
+                (props.item.status === 'blue' && props.item.grade == 1 ? '운영진' :
+                  (props.item.status === 'blue' && props.item.grade == 5 ? '특수회원' :
+                    (props.item.status === 'green' ? '모임장' :
+                      props.item.dMinus
+                    )
+                  )
+                )
             }}
           </td>
         </tr>
@@ -70,6 +73,7 @@ import { memberStore } from "@/stores/modules/member";
 import { dialogStore } from "@/stores/modules/dialog"
 import { gradeStore } from "@/stores/modules/grade"
 import { menuStore } from "@/stores/modules/menu"
+
 
 @Component
 export default class Members extends Vue {
