@@ -8,10 +8,6 @@ class EventStore extends VuexModule {
   event:EventTypes = {
     key:null,
     date:0,
-    // title:'테스트',
-    // placeKeys:['wervwtbwrtbetrh'],
-    // contentKeys:['qqqweerrtyyy'],
-    // memberKeys:['-LOvteMzU211Morqz6pJ'],
     title:'',
     placeKeys:[],
     contentKeys:[],
@@ -30,7 +26,7 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async getEventByKey(key:string){//{ state, commit, rootState }
+  public async getEventByKey(key:string){
     if(key){
       const event:EventTypes = await eventApi.getEventByKey(key);
       this.setEvent(event);
@@ -38,21 +34,17 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async getEventsRange(payload:DateRange):Promise<EventTypes[]>{//{ state, commit, rootState }
+  public async getEventsRange(payload:DateRange):Promise<EventTypes[]>{
     const events:EventTypes[] = await eventApi.getEventsRange(payload);
     this.setEvents(events)
     return events;
   }
 
   @Action
-  public async resetEvent(){//{ state, commit, rootState }
+  public resetEvent(){
     this.setEvent({
       key:null,
       date:0,
-      // title:'테스트',
-      // placeKeys:['wervwtbwrtbetrh'],
-      // contentKeys:['qqqweerrtyyy'],
-      // memberKeys:['-LOvteMzU211Morqz6pJ'],
       title:'',
       placeKeys:[],
       contentKeys:[],
@@ -69,15 +61,6 @@ class EventStore extends VuexModule {
   @Action
   public async deleteEvent(key:string):Promise<SnackbarTypes>{
     const result:SnackbarTypes = await eventApi.deleteEvent(key);
-    // if(result === 'success'){
-    //   this.setEvent({
-    //     date:0,
-    //     title:'',
-    //     placeKeys:[],
-    //     contentKeys:[],
-    //     memberKeys:[],
-    //   })
-    // }
     return result
   }
 

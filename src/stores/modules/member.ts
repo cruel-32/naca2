@@ -7,13 +7,19 @@ import {classGrade} from '@/declare/enums/member';
 
 @Module
 class MemberStore extends VuexModule {
+  ageVO:Map<string,number> = new Map();
+  genderVO:Map<string,number> = new Map();
+
+  today = moment(new Date());
+  thisYear = parseInt(this.today.format('YYYY'));
+  
   member:MemberTypes = {
     key:null,
     address:'',
-    birth:0,
+    birth:parseInt(this.today.format('YYYYMMDD')),
     gender:'F',
-    grade:0,
-    joinDate:0,
+    grade:4,
+    joinDate: parseInt(this.today.format('YYYYMMDD')),
     mail:'',
     outDay:0,
     eventKeys:[],
@@ -24,14 +30,10 @@ class MemberStore extends VuexModule {
     dMinus:0,
     status:'',
     name:'',
-  }
+  };
   members:MemberTypes[] = [];
 
-  ageVO:Map<string,number> = new Map();
-  genderVO:Map<string,number> = new Map();
-
-  today = moment(new Date());
-  thisYear = parseInt(this.today.format('YYYY'));
+  
 
   @Mutation
   private setMembers(members:MemberTypes[]){
@@ -48,10 +50,10 @@ class MemberStore extends VuexModule {
     this.setMember({
       key:null,
       address:'',
-      birth:0,
+      birth:parseInt(this.today.format('YYYYMMDD')),
       gender:'F',
-      grade:0,
-      joinDate:0,
+      grade:4,
+      joinDate: parseInt(this.today.format('YYYYMMDD')),
       mail:'',
       outDay:0,
       eventKeys:[],

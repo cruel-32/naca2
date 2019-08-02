@@ -312,7 +312,6 @@ export default class EventDetail extends Vue {
 
   created(){
     menuStore.setProgress(true);
-    this.reset();
     API_UTILS.axios.all([
       contentStore.getContents(), 
       placeStore.getPlaces(),
@@ -382,10 +381,6 @@ export default class EventDetail extends Vue {
       }
     });
     menuStore.setProgress(false);
-  }
-
-  reset(){
-    eventStore.resetEvent();
   }
 
   @debounce(1000)
