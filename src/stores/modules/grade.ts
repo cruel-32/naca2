@@ -6,7 +6,7 @@ import { classGrade } from '@/declare/enums/member';
 @Module
 class GradeStore extends VuexModule {
   grades:GradeTypes[] = [];
-  gradeInfoVO:Map<number,Object> = new Map();
+  gradeInfoVO:Map<number,GradeTypes> = new Map();
   gradeCountVO:Map<number,number> = new Map();
 
   @Mutation
@@ -40,8 +40,14 @@ class GradeStore extends VuexModule {
     }
     const grades = await gradeApi.getGrades();
     grades.forEach(grade=>{
+      console.log('grade : ', grade);
       if(this.gradeInfoVO.get(grade.grade) === undefined){
-        this.gradeInfoVO.set(grade.grade, {name:grade.name,day:grade.day});
+        this.gradeInfoVO.set(grade.grade, {
+          grade:grade.grade,
+          name:grade.name,
+          day:grade.day,
+          key:grade.key,
+        });
       }
     })
     this.setGrades(grades);

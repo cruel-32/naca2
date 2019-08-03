@@ -164,6 +164,7 @@ class MemberStore extends VuexModule {
     }
     if(key){
       const member:MemberTypes = await memberApi.getMemberByKey(key);
+      this.addColumn(member);
       this.setMember(member);
       if(member){
         msg.snackColor = 'success';

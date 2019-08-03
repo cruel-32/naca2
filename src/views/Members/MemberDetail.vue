@@ -1,4 +1,4 @@
-<template>
+grad<template>
   <v-container fluid>
     <v-slide-y-transition mode="out-in">
       <v-layout column align-center>
@@ -100,34 +100,43 @@
 
                     <v-flex xs12 sm6 md4>
                       <v-text-field
-                        v-model="member.grade"
+                        v-model="gradeText"
                         label="등급"
                         readonly
                         disabled
                       ></v-text-field>
                     </v-flex>
 
-                    <!-- <v-flex xs12 sm6 md4 v-if="params && params.key">
+                    <v-flex xs12 sm6 md4 v-if="params && params.key">
                       <v-text-field
-                        v-model="lastDay"
+                        v-model="lastDateString"
                         label="최근 참여 벙 날짜"
                         readonly
                         disabled
                       ></v-text-field>
-                    </v-flex> -->
+                    </v-flex>
 
-                    <!-- <v-flex xs12 sm6 md4 v-if="this.params.key && !member.outDay">
+                    <v-flex xs12 sm6 md4 v-if="this.params && this.params.key">
                       <v-text-field
-                        v-model="exitDay"
+                        v-model="dMinusString"
+                        label="마지막 벙 참석일로부터 D+XX"
+                        readonly
+                        disabled
+                      ></v-text-field>
+                    </v-flex>
+
+                    <v-flex xs12 sm6 md4 v-if="this.params && this.params.key">
+                      <v-text-field
+                        v-model="dPlusString"
                         label="강퇴까지 남은 일수 (D-XX)"
                         readonly
                         disabled
                       ></v-text-field>
                     </v-flex>
 
-                    <v-flex xs12 sm6 md4 v-if="this.params.key && member.outDay">
+                    <!-- <v-flex xs12 sm6 md4 v-if="this.params && this.params.key && member.outDay">
                       <v-text-field
-                        v-model="outDay"
+                        v-model="member.outDay"
                         label="탈퇴날짜"
                         readonly
                         disabled
@@ -251,6 +260,7 @@ export default class MemberDetail extends Vue {
   get joinDateString(){
     return this.$moment(this.member.joinDate.toString()).format('YYYY-MM-DD')
   }
+
   set joinDateString(YYYY_MM_DD:string){
     this.member.joinDate = parseInt(this.$moment(YYYY_MM_DD).format('YYYYMMDD'));
   }
@@ -262,6 +272,26 @@ export default class MemberDetail extends Vue {
   set birthString(YYYY_MM_DD:string){
     this.member.birth = parseInt(this.$moment(YYYY_MM_DD).format('YYYYMMDD'));
   }
+
+  get gradeText(){
+    const info:GradeTypes|undefined = gradeStore.gradeInfoVO.get(this.member.grade);
+    return info ? info.name : "";
+  }
+
+  get lastDateString(){
+    return this.$moment(this.member.lastDate.toString()).format('YYYY-MM-DD')
+  }
+
+  get dPlusString(){
+    return `D-${this.member.dPlus}일`
+  }
+
+  get dMinusString(){
+    return `D-${this.member.dMinus}일`
+  }
+
+  
+
 
   //props
   @Prop() query: any;
@@ -295,7 +325,10 @@ export default class MemberDetail extends Vue {
       console.log('done : ', done);
       memberStore.setMembersInfoByKeys( this.event.memberKeys );
       menuStore.setProgress(false);
+      console.log('this.member : ', this.member);
     })
+    console.log('gradeStore.gradeInfoVO : ', gradeStore.gradeInfoVO.get(0) )
+    console.log('gradeStore.grades : ', gradeStore.grades);
     menuStore.setProgress(false);
   }
 
