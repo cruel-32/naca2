@@ -16,7 +16,7 @@ class MemberStore extends VuexModule {
   member:MemberTypes = {
     key:null,
     address:'',
-    birth:parseInt(this.today.format('YYYYMMDD')),
+    birth:19951231,
     gender:'F',
     grade:4,
     joinDate: parseInt(this.today.format('YYYYMMDD')),
@@ -50,7 +50,7 @@ class MemberStore extends VuexModule {
     this.setMember({
       key:null,
       address:'',
-      birth:parseInt(this.today.format('YYYYMMDD')),
+      birth:19951231,
       gender:'F',
       grade:4,
       joinDate: parseInt(this.today.format('YYYYMMDD')),
@@ -140,7 +140,19 @@ class MemberStore extends VuexModule {
     });
   }
 
+  @Action
+  public async updateEvent(payload:MemberTypes):Promise<MemberTypes>{
+    console.log('payload : ', payload);
+    // const result = await eventApi.updateEvent(payload);
+    return new Promise(()=>{});
+  }
 
+  @Action
+  public async deleteEvent(key:string):Promise<SnackbarTypes>{
+    console.log('key : ', key);
+    // const result = await eventApi.updateEvent(payload);
+    return new Promise(()=>{});
+  }
 
 }
 

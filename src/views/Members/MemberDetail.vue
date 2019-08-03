@@ -2,7 +2,7 @@
   <v-container fluid>
     <v-slide-y-transition mode="out-in">
       <v-layout column align-center>
-        <form id="create-meeting-dialog" class="ui form" @submit.prevent="postMember">
+        <form id="create-meeting-dialog" class="ui form" @submit.prevent="updateMember">
           <v-card>
             <v-card-title class="pb-0">
               <span class="headline">
@@ -28,7 +28,6 @@
                           readonly
                         ></v-text-field>
                         <v-date-picker
-                          ref="picker"
                           v-model="joinDateString"
                           @input="viewJoinCalandar = false"
                           full-width
@@ -50,15 +49,18 @@
                           v-model="birthString"
                           label="생년월일을 입력하세요"
                           v-validate="'required'"
+                          :error-messages="errors.collect('date')"
                           readonly
+                          data-vv-name="birth"
                         ></v-text-field>
                         <v-date-picker
+                          ref="birthPicker"
                           v-model="birthString"
                           max="1995-12-31"
                           min="1985-01-01"
                           full-width
                           locale="ko"
-                          @change="saveBirth"
+                          @input="viewBirthCalandar = false"
                         ></v-date-picker>
                       </v-menu>
                     </v-flex>
@@ -223,8 +225,18 @@ import { debounce } from "typescript-debounce-decorator";
 import colors from 'vuetify/es5/util/colors';
 import API_UTILS from '@/utils/API_UTILS'
 
+
+interface HTMLInputEleBirthPicker extends HTMLInputElement{
+  activePicker:string;
+}
+
 @Component
 export default class MemberDetail extends Vue {
+ 
+  public $refs!: {
+    birthPicker: HTMLInputEleBirthPicker
+  }
+
   //stores
   get contents(){return contentStore.contents}
   get grades(){return gradeStore.grades}
@@ -256,9 +268,11 @@ export default class MemberDetail extends Vue {
   @Prop() query: any;
   @Prop() params: any;
 
-  @Watch('birthString')
-  setBirth(YYYY_MM_DD:string){
-    // YYYY_MM_DD && setTimeout(() => (this.$refs.picker.activePicker = 'YEAR'))
+  @Watch('viewBirthCalandar')
+  setActiveBirthPicker(){
+    setTimeout(()=>{
+      this.$refs.birthPicker.activePicker = 'YEAR';
+    })
   }
 
   viewJoinCalandar:boolean = false;
@@ -267,17 +281,33 @@ export default class MemberDetail extends Vue {
   genders:Array<string> = ['F','M'];
 
   created(){
-    console.log('memberDetail')
     // memberStore.getMemberByKey();
-    console.log('memberDetail genders : ', this.genders);
   }
 
-  postMember(){
-    console.log('postMember this.member : ', this.member);
-  }
+  @debounce(1000)
+  async updateMember(){
+    menuStore.setProgress(true);
+    console.log('updateMember this.member : ', this.member);
+    this.$validator.validateAll().then(async (result:any) => {
+      if(result){
+        if(this.currentUser){
+          const result = await memberStore.updateEvent(this.member);
+          if(result.key){
+            dialogStore.showSnackbar({snackColor:'success',snackText:'등록되었습니다'});
+            this.$router.push({
+              name: 'events',
+            });
+          } else {
+            dialogStore.showSnackbar({snackColor:'error',snackText:'실패했습니다'});
+          }
+        } else {
+          dialogStore.showSnackbar({snackColor:'error',snackText:'권한이 없습니다'});
+        }
+      }
+    })
 
-  saveBirth(){
-    console.log('saveBirth');
+
+    menuStore.setProgress(false);
   }
 
 }

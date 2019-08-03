@@ -353,6 +353,7 @@ export default class EventDetail extends Vue {
     })
   }
 
+  @debounce(1000)
   updateEvent(e:any){
     menuStore.setProgress(true);
     this.$validator.validateAll().then(async (result:any) => {

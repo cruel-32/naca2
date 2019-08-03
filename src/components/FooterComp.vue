@@ -42,7 +42,7 @@
         dark
         color="green"
         @click="showSnackbar({snackColor: 'info', snackText: '퀵메뉴 : 신규멤버를 생성합니다'})"
-        :to="{name : 'memberCreate', query :{'joinDate' : this.joinDate}}"
+        :to="{name : 'memberCreate'}"
       >
         <v-icon>person_add</v-icon>
       </v-btn>
@@ -52,7 +52,7 @@
         dark
         color="indigo"
         @click="showSnackbar({snackColor:'info',snackText:'퀵메뉴 : 오늘 날짜로 모임을 생성합니다'})"
-        :to="{path : `/event/${this.joinDate}`}"
+        :to="{path : `/event/detail`, query:{date:this.joinDate}}"
       >
         <v-icon>add_alarm</v-icon>
       </v-btn>
@@ -93,7 +93,7 @@ export default class FooterComp extends Vue {
   get snackBar(){return dialogStore.snackBar}
 
   fab:boolean = false;
-  joinDate:any = parseInt(this.$moment(new Date()).format('YYYYMMDD'));
+  joinDate:any = this.$moment(new Date()).format('YYYY-MM-DD');
 
   // get pageColor() {
   //   console.log('this.$route : ', this.$route);
