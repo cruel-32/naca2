@@ -12,9 +12,19 @@ class PlaceStore extends VuexModule {
   }
 
   @Action
-  async getPlaces(){
-    const places = await placeApi.getPlaces();
+  async getPlaces():Promise<SnackbarTypes>{
+    const places:PlaceTypes[] = await placeApi.getPlaces();
     this.setPlaces(places);
+
+    const msg:SnackbarTypes = {
+      snackColor:'error',
+      snackText:'places 가져오기 실패'
+    }
+    if(places){
+      msg.snackColor = 'success';
+      msg.snackText = 'places 가져오기 성공';
+    }
+    return msg
   }
 
 }

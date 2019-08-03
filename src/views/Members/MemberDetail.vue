@@ -201,8 +201,6 @@
                 </v-btn>
 
               </v-card-actions>
-
-
           </v-card>
         </form>
       </v-layout>
@@ -221,6 +219,7 @@ import { memberStore } from "@/stores/modules/member";
 import { dialogStore } from "@/stores/modules/dialog";
 import { menuStore } from "@/stores/modules/menu";
 import { debounce } from "typescript-debounce-decorator";
+import { classGrade } from '@/declare/enums/member';
 
 import colors from 'vuetify/es5/util/colors';
 import API_UTILS from '@/utils/API_UTILS'
@@ -275,19 +274,34 @@ export default class MemberDetail extends Vue {
     })
   }
 
+  isNew:boolean = true;
   viewJoinCalandar:boolean = false;
   viewBirthCalandar:boolean = false;
   viewConfirmDelete:boolean = false;
   genders:Array<string> = ['F','M'];
 
-  created(){
-    // memberStore.getMemberByKey();
+  async created(){
+    menuStore.setProgress(true);
+    if(this.params && this.params.key){
+      this.isNew = false;
+    }
+    if(this.query && this.query.date){
+      this.member.joinDate = this.query.date;
+    }
+    Promise.all([
+      gradeStore.getGrades(),
+      memberStore.getMemberByKey(this.params ? this.params.key : ''),
+    ]).then(async (done)=>{
+      console.log('done : ', done);
+      memberStore.setMembersInfoByKeys( this.event.memberKeys );
+      menuStore.setProgress(false);
+    })
+    menuStore.setProgress(false);
   }
 
   @debounce(1000)
   async updateMember(){
     menuStore.setProgress(true);
-    console.log('updateMember this.member : ', this.member);
     this.$validator.validateAll().then(async (result:any) => {
       if(result){
         if(this.currentUser){
@@ -305,7 +319,6 @@ export default class MemberDetail extends Vue {
         }
       }
     })
-
 
     menuStore.setProgress(false);
   }

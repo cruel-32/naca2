@@ -12,9 +12,19 @@ class ContentStore extends VuexModule {
   }
 
   @Action
-  async getContents(){
-    const contents = await contentApi.getContents();
+  async getContents():Promise<SnackbarTypes>{
+    const contents:ContentTypes[] = await contentApi.getContents();
     this.setContents(contents);
+
+    const msg:SnackbarTypes = {
+      snackColor:'error',
+      snackText:'contents 가져오기 실패'
+    }
+    if(contents){
+      msg.snackColor = 'success';
+      msg.snackText = 'contents 가져오기 성공';
+    }
+    return msg
   }
 
 }

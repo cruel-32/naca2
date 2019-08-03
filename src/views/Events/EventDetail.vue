@@ -25,7 +25,7 @@
                     >
                       <template v-slot:activator="{ on }">
                         <v-text-field
-                          v-model="eventDate"
+                          v-model="selectedEventDate"
                           label="Date (read only text field)"
                           readonly
                           v-on="on"
@@ -179,7 +179,7 @@
                         </v-flex>
 
                         <v-flex xs12 sm12 md12>
-                          <span>남자:{{genderVO.get('M')}}명 여자: {{genderVO.get('F')}}명</span>
+                          <span>남자:{{genderCountVO.get('M')}}명 여자: {{genderCountVO.get('F')}}명</span>
                         </v-flex>
 
                       </v-layout>
@@ -188,6 +188,7 @@
                 </v-layout>
               </v-container>
             </v-card-text>
+
             <v-card-actions>
               <v-btn
                 color="error"
@@ -271,7 +272,7 @@ export default class EventDetail extends Vue {
   get event(){return eventStore.event}
   get members(){return memberStore.members}
   get ageVO(){return memberStore.ageVO}
-  get genderVO(){return memberStore.genderVO}
+  get genderCountVO(){return memberStore.genderCountVO}
   get currentUser(){return accountStore.currentUser}
   get snackBar(){return dialogStore.snackBar}
 
@@ -280,10 +281,10 @@ export default class EventDetail extends Vue {
   @Prop() params: any;
 
   //local data
-  eventDate:string = '';
-  selectedEventDate:string = '';
+  // eventDate:string = '';
+  // selectedEventDate:string = '';
   showEventDate:boolean = false;
-  isNew:boolean = false;
+  isNew:boolean = true;
   viewConfirmDelete:boolean = false;
 
   //computed
@@ -302,31 +303,37 @@ export default class EventDetail extends Vue {
     return 'check_box_outline_blank'
   }
 
-  @Watch('selectedEventDate') setEventDate(date:string){
-    this.eventDate = date;
+  get selectedEventDate(){
+    return this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
   }
 
-  @Watch('event.memberKeys') setVO(memberKeys:string[]){
-    memberStore.membersFiltering(memberKeys);
+  set selectedEventDate(YYYY_MM_DD:string){
+    this.event.date = parseInt(this.$moment(YYYY_MM_DD).format('YYYYMMDD'));
   }
 
-  created(){
+  @Watch('event.memberKeys') setCountVO(memberKeys:string[]){
+    console.log('setCountVO : ', memberKeys);
+    memberStore.setMembersInfoByKeys(memberKeys);
+  }
+
+  async created(){
     menuStore.setProgress(true);
-    API_UTILS.axios.all([
+    if(this.params && this.params.key){
+      this.isNew = false;
+    }
+    if(this.query && this.query.date){
+      this.event.date = parseInt(this.query.date.split('-').join(''));
+    }
+
+    Promise.all([
       contentStore.getContents(), 
       placeStore.getPlaces(),
       memberStore.getMembers(),
-      eventStore.getEventByKey(this.params && this.params.key),
-    ]).then(async (results:any)=>{
-      memberStore.membersFiltering( this.event.memberKeys );
-      if(this.event.key){
-        this.selectedEventDate = this.event.date && this.$moment(this.event.date.toString()).format('YYYY-MM-DD')
-      } else {
-        this.selectedEventDate = this.query.date;
-        this.isNew = true;
-      }
+      eventStore.getEventByKey(this.params ? this.params.key : '')
+    ]).then(async (done)=>{
+      memberStore.setMembersInfoByKeys( this.event.memberKeys );
+      menuStore.setProgress(false);
     })
-    menuStore.setProgress(false);
   }
 
   beforeDestroy(){
@@ -359,14 +366,7 @@ export default class EventDetail extends Vue {
     this.$validator.validateAll().then(async (result:any) => {
       if(result){
         if(this.currentUser){
-          const params = Object.assign({},
-            this.event,
-            {date: parseInt(this.eventDate.split('-').join(''))}
-          );
-          const result = await eventStore.updateEvent({
-            ...params,
-            key:this.event.key
-          });
+          const result = await eventStore.updateEvent(this.event);
           if(result.key){
             dialogStore.showSnackbar({snackColor:'success',snackText:'등록되었습니다'});
             this.$router.push({
@@ -402,6 +402,7 @@ export default class EventDetail extends Vue {
     });
     menuStore.setProgress(false);
   }
+
 }
 </script>
 

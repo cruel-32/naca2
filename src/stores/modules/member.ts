@@ -1,14 +1,14 @@
 import { VuexModule, Module, Mutation, Action } from "vuex-class-modules";
 import store from '@/stores'
 import memberApi from '@/api/member'
-import {gradeStore} from "./grade";
+import { gradeStore } from "./grade";
 import moment from 'moment';
-import {classGrade} from '@/declare/enums/member';
+import { classGrade } from '@/declare/enums/member';
 
 @Module
 class MemberStore extends VuexModule {
   ageVO:Map<string,number> = new Map();
-  genderVO:Map<string,number> = new Map();
+  genderCountVO:Map<string,number> = new Map();
 
   today = moment(new Date());
   thisYear = parseInt(this.today.format('YYYY'));
@@ -32,8 +32,6 @@ class MemberStore extends VuexModule {
     name:'',
   };
   members:MemberTypes[] = [];
-
-  
 
   @Mutation
   private setMembers(members:MemberTypes[]){
@@ -67,36 +65,31 @@ class MemberStore extends VuexModule {
     });
   }
 
-  @Action
-  initializeVO(){
+  @Mutation
+  initializeCountVO(){
+    this.ageVO = new Map();
+    this.genderCountVO = new Map();
     this.ageVO.set('total', 0);
-    this.genderVO.set('M', 0);
-    this.genderVO.set('F', 0);
-    gradeStore.gradeCountVO.set(classGrade.ADMIN, 0);
-    gradeStore.gradeCountVO.set(classGrade.MANAGER, 0);
-    gradeStore.gradeCountVO.set(classGrade.MEMBER, 0);
-    gradeStore.gradeCountVO.set(classGrade.NEW_MEMBER, 0);
-    gradeStore.gradeCountVO.set(classGrade.INTERN_MEMBER, 0);
-    gradeStore.gradeCountVO.set(classGrade.SPECIAL_MEMBER, 0);
-    gradeStore.gradeCountVO.set(classGrade.DRPOPPED_MEMBER, 0);
+    this.genderCountVO.set('M', 0);
+    this.genderCountVO.set('F', 0);
+    gradeStore.initializeCountVO();
   }
 
   @Action
-  setVO(member:MemberTypes){
+  setCountVO(member:MemberTypes){
     const birthYear = parseInt(moment(member.birth.toString()).format('YYYY'));
 
     const total = this.ageVO.get('total');
     this.ageVO.set('total', (total || 0) +(1+this.thisYear-birthYear) );
 
-    const genderCount = this.genderVO.get(member.gender);
-    this.genderVO.set(member.gender, (genderCount || 0)+1);
+    const genderCount = this.genderCountVO.get(member.gender);
+    this.genderCountVO.set(member.gender, (genderCount || 0)+1);
 
-    const gradeCount = gradeStore.gradeCountVO.get(member.grade);
-    gradeStore.gradeCountVO.set(member.grade, (gradeCount || 0)+1);
+    gradeStore.gradeCountUp(member.grade);
   }
 
   @Action
-  parseMember(member:MemberTypes){
+  addColumn(member:MemberTypes){
     const gradeInfo:any = gradeStore.gradeInfoVO.get(member.grade);
     const dPlus = this.today.diff(member.lastDate ? member.lastDate.toString() : member.joinDate.toString(), 'days');
     const dMinus = gradeInfo.day - dPlus;
@@ -120,24 +113,33 @@ class MemberStore extends VuexModule {
   }
 
   @Action
-  public async membersFiltering(memberKeys:string[]){
-    this.initializeVO();
+  public async setMembersInfoByKeys(memberKeys:string[]){
+    this.initializeCountVO();
     this.members.filter(member=> memberKeys.includes(<string>member.key)).forEach((member:MemberTypes)=>{
-      this.parseMember(member);
-      this.setVO(member);
+      this.setCountVO(member);
     });
   }
 
   @Action
-  public async getMembers(){
+  public async getMembers():Promise<SnackbarTypes>{
     await gradeStore.getGrades();
-    const members = await memberApi.getMembers();
-    this.initializeVO();
+    this.initializeCountVO();
+    const members:MemberTypes[] = await memberApi.getMembers();
+    members.forEach(member=>{
+      this.addColumn(member);
+    })
     this.setMembers(members);
-    this.members.forEach((member:MemberTypes)=>{
-      this.parseMember(member);
-      this.setVO(member);
-    });
+    
+
+    const msg:SnackbarTypes = {
+      snackColor:'error',
+      snackText:'members 가져오기 실패'
+    }
+    if(members){
+      msg.snackColor = 'success';
+      msg.snackText = 'members 가져오기 성공';
+    }
+    return msg
   }
 
   @Action
@@ -153,6 +155,24 @@ class MemberStore extends VuexModule {
     // const result = await eventApi.updateEvent(payload);
     return new Promise(()=>{});
   }
+
+  @Action
+  public async getMemberByKey(key:string):Promise<SnackbarTypes>{
+    const msg:SnackbarTypes = {
+      snackColor:'error',
+      snackText:'member 가져오기 실패'
+    }
+    if(key){
+      const member:MemberTypes = await memberApi.getMemberByKey(key);
+      this.setMember(member);
+      if(member){
+        msg.snackColor = 'success';
+        msg.snackText = 'member 가져오기 성공';
+      }
+    }
+    return msg
+  }
+
 
 }
 

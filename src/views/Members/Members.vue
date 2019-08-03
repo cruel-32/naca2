@@ -5,7 +5,7 @@
       <h1 class="headline"><v-icon color="green">people</v-icon> 회원목록</h1>
       <p class="caption" style="margin:0 0 0 10px !important;">
         <span>평균연령 : {{ members && ageVO.get('total') > 0? (ageVO.get('total')/ members.length).toFixed(2) : 0}}세, </span>
-        <span>남자:{{genderVO.get('M')}}명 여자: {{genderVO.get('F')}}명</span>
+        <span>남자:{{genderCountVO.get('M')}}명 여자: {{genderCountVO.get('F')}}명</span>
       </p>
 
       <v-spacer></v-spacer>
@@ -84,7 +84,7 @@ export default class Members extends Vue {
   get gradeInfoVO(){ return gradeStore.gradeInfoVO }
   get snackBar(){ return dialogStore.snackBar }
   get ageVO(){return memberStore.ageVO}
-  get genderVO(){return memberStore.genderVO}
+  get genderCountVO(){return memberStore.genderCountVO}
   
   //local data
   get year(){
@@ -152,12 +152,13 @@ export default class Members extends Vue {
 
   async created(){
     await memberStore.getMembers();
+    await memberStore.setMembersInfoByKeys(this.members.map(member=>member.key||''));
   }
 
   goMeberDetail(key:string){
     this.$router.push(`/member/detail/${key}`);
   }
-
+  
 
 }
 </script>

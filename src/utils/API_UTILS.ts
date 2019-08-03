@@ -30,6 +30,19 @@ const arrayConvertToObj = (array:string[]):{[key:string]:any} =>
         return obj
 },{});
 
+const objConvertToKeysAndValues = <VALUE>(object:{[key:string]:VALUE} ):KeysAndValues<VALUE>=>{
+    const keys:string[] = [];
+    const values:VALUE[] = [];
+
+    for(let [key,value] of Object.entries(object)){
+        keys.push(key);
+        values.push(value);
+    }
+    return {
+        keys, values
+    }
+}
+
 export default {
     firebaseConfig,
     database,
@@ -39,4 +52,5 @@ export default {
     firebase,
     axios,
     arrayConvertToObj,
+    objConvertToKeysAndValues
 }

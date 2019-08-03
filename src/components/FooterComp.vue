@@ -52,7 +52,7 @@
         dark
         color="indigo"
         @click="showSnackbar({snackColor:'info',snackText:'퀵메뉴 : 오늘 날짜로 모임을 생성합니다'})"
-        :to="{path : `/event/detail`, query:{date:this.joinDate}}"
+        :to="{path : `/event/detail`}"
       >
         <v-icon>add_alarm</v-icon>
       </v-btn>

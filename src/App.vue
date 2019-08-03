@@ -85,6 +85,7 @@ export default class extends Vue {
   
   created(){
     accountStore.onAuthStateChanged(); //전체앱 통틀어 한번만 실행
+    console.log('App launched');
   }
   
   onScroll(){
