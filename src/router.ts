@@ -68,24 +68,25 @@ export default new Router({
       component: () => import('@/views/Dashboard/Dashboard.vue'),
     },
 
-    // {
-    //   path: '/statistics/membersParti',
-    //   name: 'membersParti',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/MembersParti.vue'),
-    // },
-    // {
-    //   path: '/statistics/membersParti/:key',
-    //   name: 'membersPartiDetail',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/MembersPartiDetail.vue'),
-    // },
+    {
+      path: '/dashboard/members',
+      name: 'dashboard-members',
+      props: (route) => ({
+        params : route.params,
+        query: route.query
+      }),
+      component: () => import('@/views/Dashboard/DashboardMembers.vue'),
+    },
+
+    {
+      path: '/dashboard/member/detail/:key',
+      name: 'membersPartiDetail',
+      props: (route) => ({
+        params : route.params,
+      }),
+      component: () => import('@/views/Dashboard/DashboardMemberDetail.vue'),
+    },
+
     // {
     //   path: '/statistics/membersAge',
     //   name: 'membersAge',

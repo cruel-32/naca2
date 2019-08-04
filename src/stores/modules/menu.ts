@@ -27,7 +27,7 @@ class MenuStore extends VuexModule {
     {
       title: '회원별 참여도 통계',
       subtitle: "회원별 참여날짜 및 기타 통계를 봅니다.",
-      link: '/dashboard/membersParti'
+      link: '/dashboard/members'
     },
     { divider: true},
     {

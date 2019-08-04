@@ -28,22 +28,12 @@
 
 <script lang="ts">
 import { Component, Prop, Vue, Watch, Emit } from 'vue-property-decorator';
-import { accountStore } from "@/stores/modules/account"
-import { eventStore } from "@/stores/modules/event";
-import { dialogStore } from "@/stores/modules/dialog"
 import { menuStore } from "@/stores/modules/menu"
 
 @Component
 export default class Events extends Vue {
   //stores
-  get currentUser(){ return accountStore.currentUser }
-  get events(){ return eventStore.events }
-  get snackBar(){ return dialogStore.snackBar }
   get dashboardMenu(){ return menuStore.dashboardMenu }
-
-  created(){
-    console.log('dashboard home');
-  }
 
 }
 </script>
