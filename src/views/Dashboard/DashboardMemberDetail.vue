@@ -1,93 +1,70 @@
-grad<template>
-  <v-container fluid>
-    <v-slide-y-transition mode="out-in">
-      <v-layout column align-center>
-          <v-card>
-            <v-card-title class="pb-0">
-              <span class="headline">
-                <v-icon color="green">insert_chart</v-icon> {{member.name}}님의 통계
-              </span>
-            </v-card-title>
-            <v-card-text class="pa-0">
-                <v-container grid-list-md>
-                  <v-layout wrap>
+<template>
+  <v-layout column align-center>
+    <v-container grid-list-md>
+      <v-layout wrap pt-3>
+      
+        <v-flex xs12 sm12 md12 class="sticky title">
+          <h1 class="headline">
+            <v-icon color="green">insert_chart</v-icon> {{member.name}}님의 통계
+            <v-btn class="ma-2" small tile outline color="success" @click="$router.push(`/member/detail/${member.key}`)">
+              회원정보보기
+            </v-btn>
+          </h1>
+        </v-flex>
 
-                    <v-flex xs12 sm6 md6>
-                      <v-subheader>최근 참여일</v-subheader>
-                      <v-btn
-                        outline
-                        depressed
-                        block
-                        @click="goEventDetail(recentPartiDate.key)"
-                      >
-                        {{recentPartiDate.value}}
-                      </v-btn>
-                    </v-flex>
+        <v-flex xs6 sm6 md6 class="sticky range">
+          <v-menu
+            v-model="viewStartAt"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            full-width
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="startAt"
+                label="통계 범위 선택 (from)"
+                persistent-hint
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="startAt" type="month" no-title @input="viewStartAt = false"></v-date-picker>
+          </v-menu>
+        </v-flex>
 
-                    <v-flex xs12 sm6 md6>
-                      <v-subheader>처음 참여일</v-subheader>
-                      <v-btn
-                        outline
-                        depressed
-                        block
-                        @click="goEventDetail(firstPartiDate.key)"
-                      >
-                        {{firstPartiDate.value}}
-                      </v-btn>
-                    </v-flex>
+        <v-flex xs6 sm6 md6 class="sticky range">
+          <v-menu
+            v-model="viewEndAt"
+            :close-on-content-click="false"
+            transition="scale-transition"
+            offset-y
+            full-width
+          >
+            <template v-slot:activator="{ on }">
+              <v-text-field
+                v-model="endAt"
+                label="통계 범위 선택 (to)"
+                persistent-hint
+                v-on="on"
+              ></v-text-field>
+            </template>
+            <v-date-picker v-model="endAt" type="month" no-title @input="viewEndAt = false"></v-date-picker>
+          </v-menu>
+        </v-flex>
 
-                    <!-- <v-range-slider
-                      v-model="range"
-                      :max="max"
-                      :min="min"
-                      hide-details
-                      class="align-center"
-                    >
-                      <template v-slot:prepend>
-                        <v-text-field
-                          v-model="range[0]"
-                          class="mt-0 pt-0"
-                          hide-details
-                          single-line
-                          type="number"
-                          style="width: 60px"
-                        ></v-text-field>
-                      </template>
-                      <template v-slot:append>
-                        <v-text-field
-                          v-model="range[1]"
-                          class="mt-0 pt-0"
-                          hide-details
-                          single-line
-                          type="number"
-                          style="width: 60px"
-                        ></v-text-field>
-                      </template>
-                    </v-range-slider> -->
+        <v-flex xs12 sm6 md6>
+          <v-subheader>월별 참여 횟수</v-subheader>
+          <div id="partiChart" class="chart"></div>
+        </v-flex>
 
+        <v-flex xs12 sm6 md6>
+          <v-subheader>만난 회원 목록</v-subheader>
+          <div id="familiarMembersChart" class="chart"></div>
+        </v-flex>
 
-                    <v-flex xs12 sm6 md6>
-                      <v-subheader>최근</v-subheader>
-                      <div id="chart"></div>
-                    </v-flex>
-
-                  </v-layout>
-                </v-container>
-              </v-card-text>
-
-              <!-- <v-btn
-                right
-                @click="viewConfirmDelete = false"
-                outline
-                depressed
-              >
-                Cancel
-              </v-btn> -->
-
-          </v-card>
       </v-layout>
-    </v-slide-y-transition>
-  </v-container>
+    </v-container>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -117,6 +94,9 @@ export default class DashboardMemberDetail extends Vue {
   get currentUser(){return accountStore.currentUser}
   get snackBar(){return dialogStore.snackBar}
   get events(){return eventStore.events}
+  get members(){return memberStore.members}
+  get places(){return placeStore.places}
+  get contents(){return contentStore.contents}
 
   get joinDateString(){
     return this.$moment(this.member.joinDate.toString()).format('YYYY-MM-DD')
@@ -151,56 +131,157 @@ export default class DashboardMemberDetail extends Vue {
     return `${this.member.dMinus}일이 남았습니다`
   }
 
-  get recentPartiDate(){
-    let recentPartiDate:KeyAndValue<string> = {
-      key:'',
-      value:'미참여'
-    };
+  endAt:string = this.$moment(new Date()).format('YYYY-MM');
+  startAt:string = this.$moment(new Date()).add(-4, 'months').format('YYYY-MM');
+  dateRange:DateRange = {
+    startAt: this.$moment(new Date()).add(-4, 'months').format('YYYYMM'),
+    endAt: this.$moment(new Date()).format('YYYYMM'),
+  }
 
-    if(this.member.participation && this.member.participation.length > 0){
-      const firstEvent = this.events.find((event)=> event.key === this.member.participation[0].key)
-      if(firstEvent){
-        recentPartiDate = {
-          key : firstEvent.key || '',
-          value : `${this.$moment(firstEvent.date.toString()).format('YYYY-MM-DD')} - ${firstEvent.title}`,
+  monthTickCount:number = 0;
+  monthLabels:string[] = [];
+  filteredEventsVO:Map<string,object[]> = new Map();
+  joinedEventsVO:Map<string,object[]> = new Map();
+  familiarMembersVO:Map<string,any> = new Map();
+  familiarPlacesVO:Map<string,number> = new Map();
+  familiarContentsVO:Map<string,number> = new Map();
+
+  @Watch('startAt')
+  @Watch('endAt')
+  setDateRange(){
+    this.dateRange = {
+      startAt: parseInt(`${this.$moment(this.startAt).format('YYYYMM')}01`),
+      endAt: parseInt(`${this.$moment(this.endAt).format('YYYYMM')}31`),
+    };
+    eventStore.getEventsRange(this.dateRange);
+  }
+  viewStartAt:boolean = false;
+  viewEndAt:boolean = false;
+
+  resetChartInfo(){
+    this.monthTickCount = 0;
+    this.monthLabels = [];
+    this.filteredEventsVO = new Map();
+    this.joinedEventsVO = new Map();
+    this.familiarMembersVO = new Map();
+    this.familiarPlacesVO = new Map();
+    this.familiarContentsVO = new Map();
+  }
+
+  seperateEvents(){
+    this.monthTickCount = this.$moment(this.endAt).diff(this.startAt, 'months');
+    for(let i=0; i<=this.monthTickCount; i++){
+      const YYYY_MM = this.$moment(this.startAt).add(i, 'months').format('YYYY.MM');
+      this.monthLabels.push(YYYY_MM);
+    }
+  }
+  
+  setEventsVO(){
+    this.events.forEach((event:EventTypes)=>{
+      const key = event.key;
+      const YYYYMMDD = event.date.toString();
+      const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;
+      const YYYY_MM_DD = `${YYYY_MM}.${YYYYMMDD.slice(6,8)}`;
+      const eventDates = this.filteredEventsVO.get(YYYY_MM);
+      const joinedEvents = this.member.participation.filter((joinedEvent:EventTypes) => joinedEvent.key === key);
+      const eventInfo = {key, date:YYYY_MM_DD};
+
+      if(Array.isArray(eventDates)){//모든 이벤트를 월별로 나눠 map에 담는다. key:이벤트년월 value:이벤트날짜들
+        eventDates.push(eventInfo);
+      } else {
+        this.filteredEventsVO.set(YYYY_MM, [eventInfo]);
+      } 
+
+      if(joinedEvents.length > 0){
+        const joinedEventDates = this.joinedEventsVO.get(YYYY_MM);
+
+        if(joinedEventDates){//참여한 이벤트를 월별로 나눠 map에 담는다. key:이벤트년월 value:이벤트날짜들
+          joinedEventDates.push(eventInfo);
+        } else {
+          this.joinedEventsVO.set(YYYY_MM, [eventInfo]);
         }
       }
-    }
-    return recentPartiDate
+    })
   }
 
-  get firstPartiDate(){
-    let recentPartiDate:KeyAndValue<string> = {
-      key:'',
-      value:'미참여'
-    };
+  setFamilarVO(){
+    this.member.participation.forEach(participation=>{
+      const joinedEvent = this.events.find(event=> event.key === participation.key);
 
-    if(this.member.participation && this.member.participation.length > 0){
-      const firstEvent = this.events.find((event)=> event.key === this.member.participation[this.member.participation.length-1].key)
-      if(firstEvent){
-        recentPartiDate = {
-          key : firstEvent.key || '',
-          value : `${this.$moment(firstEvent.date.toString()).format('YYYY-MM-DD')} - ${firstEvent.title}`,
-        }
+      if(joinedEvent){
+        joinedEvent.contentKeys.forEach(contentKey=>{
+          const count = this.familiarContentsVO.get(contentKey);
+          this.familiarContentsVO.set(contentKey, (count || 0) + 1);
+        })
+
+        joinedEvent.memberKeys.forEach(memberKey=>{
+          const memberVO = this.familiarMembersVO.get(memberKey);
+          const memberObj = this.members.find((member:MemberTypes)=> member.key === memberKey);
+
+          this.familiarMembersVO.set(memberKey, {
+            count : memberVO ? (memberVO.count) + 1 : 1,
+            name : memberObj ? memberObj.name : '',
+          });
+        })
+
+        joinedEvent.placeKeys.forEach(placeKey=>{
+          const count = this.familiarPlacesVO.get(placeKey);
+          this.familiarPlacesVO.set(placeKey, (count || 0) + 1);
+        })
       }
-    }
-    return recentPartiDate
+    })
   }
 
-  //차트 관련
-  chart:any;
-  options:any = {
-    chart: {
-      type: 'line'
-    },
-    series: [{
-      name: 'sales',
-      data: [30,40,35,50,49,60,70,91,125]
-    }],
-    xaxis: {
-      categories: [1991,1992,1993,1994,1995,1996,1997, 1998,1999]
+  @Watch('events')
+  setDashboardData(){
+    if(this.member.key){
+      menuStore.setProgress(true);
+      this.resetChartInfo();
+      this.seperateEvents();
+      this.setEventsVO();
+      this.setFamilarVO();
+      this.updateChart('partiChart');
+      menuStore.setProgress(false);
     }
   }
+
+  // charts:any = {
+  //   partiChart : null,
+    // partiChartOptions : {
+    //   chart: {type: 'bar'},
+    //   series: [],
+    //   xaxis: {categories:[]}
+    // },
+  //   familarMembers : null,
+  //   familarMembersOptions : {
+  //     chart: {type: 'bar'},
+  //     series: [],
+  //     xaxis: {categories:[]}
+  //   }
+  // }
+
+  charts:Map<string, any> = new Map([
+    ["partiChart", {chart:null, option: {
+      animate	: false,
+      updateSyncedCharts	: false,
+      chart: {type: 'bar', height: 350},
+      series: [],
+      xaxis: {categories:[]}
+    }}],
+    ["familiarMembersChart", {chart:null, option: {
+      animate	: false,
+      updateSyncedCharts	: false,
+      plotOptions: {
+          bar: {
+              horizontal: true,
+          }
+      },
+      chart: {type: 'bar', height: 700},
+      series: [],
+      xaxis: {categories:[]}
+    }}],
+  ]);
+
 
   async created(){
     menuStore.setProgress(true);
@@ -211,27 +292,88 @@ export default class DashboardMemberDetail extends Vue {
       });
       this.$router.back();
     }
-    const dateRange:DateRange = {
-      startAt:20181001,
-      endAt: parseInt(this.$moment(new Date()).format('YYYYMMDD')),
-    }
+    this.setDateRange();
     Promise.all([
+      contentStore.getContents(), 
+      placeStore.getPlaces(),
       gradeStore.getGrades(),
+      eventStore.getEventsRange(this.dateRange),
       memberStore.getMembersInActive(),
-      eventStore.getEventsRange(dateRange),
       memberStore.getMemberByKey(this.params ? this.params.key : ''),
     ]).then(async (done)=>{
-      console.log('done : ', done);
       // memberStore.setMembersInfoByKeys( this.event.memberKeys );
+      this.setDashboardData();
+      this.chartReady();
       menuStore.setProgress(false);
     })
     menuStore.setProgress(false);
   }
 
-  mounted(){
-    console.log('this.$el : ', this.$el);
-    this.chart = new ApexCharts(this.$el.querySelector("#chart"), this.options);
-    this.chart.render();
+
+  updateChart(id:string){
+    const chartObj = this.charts.get(id);
+    
+
+    if(chartObj.chart){
+      if(id === 'partiChart'){
+        const newSeries:any[] = [
+          {data:[],name: '참여한 이벤트 횟수'},
+          {data:[],name: '월별 열린 이벤트 횟수'},
+        ];
+
+        for(let i=0; i<=this.monthTickCount; i++){
+          const joined = this.joinedEventsVO.get(this.monthLabels[i]);
+          const events = this.filteredEventsVO.get(this.monthLabels[i]);
+
+          newSeries[0].data.push(joined ? joined.length : 0);
+          newSeries[1].data.push(events ? events.length : 0);
+        }
+
+        chartObj.option.xaxis.categories = this.monthLabels;
+        chartObj.option.series = newSeries;
+      } else if(id === 'familiarMembersChart'){
+        const newSeries:any[] = [
+          {data:[],name: '만난 회원'},
+        ];
+
+        const newMemberLabels:string[] = []
+
+        for(let [key, value] of this.familiarMembersVO){
+          if(value){
+            newMemberLabels.push(value.name);
+            newSeries[0].data.push(value.count);
+          }
+        }
+        chartObj.option.xaxis.categories = newMemberLabels;
+        chartObj.option.series = newSeries;
+      }
+      chartObj.chart.updateOptions(chartObj.option)
+    }
+  }
+
+  chartReady(){
+    for(let [key,value] of this.charts.entries()){
+      if(value){
+        value.chart = new ApexCharts(
+          this.$el.querySelector(`#${key}`),
+          value.option
+        );
+        value.chart.render();
+      }
+    }
+
+    const io = new IntersectionObserver(entries => {
+      entries.forEach((entry:any) => {
+        if(entry.isIntersecting){
+          this.updateChart(entry.target.id);
+          io.unobserve(entry.target);
+        }
+      });
+    });
+
+    Array.from(this.$el.querySelectorAll('.chart')).forEach(chart => {
+      io.observe(chart);
+    });
   }
 
   beforeDestroy(){
@@ -259,5 +401,17 @@ export default class DashboardMemberDetail extends Vue {
 .v-subheader {
   height:24px;
   padding-left:10px;
+}
+
+.sticky {
+  position:sticky;
+  background-color:#fff;
+  z-index: 10;
+  &.title {
+    top:60px;
+  }
+  &.range {
+    top:100px;
+  }
 }
 </style>

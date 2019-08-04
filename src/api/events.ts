@@ -24,9 +24,12 @@ export default {
             .once('value',(snapshots:any)=>{
                 const events:EventTypes[] = [];
                 snapshots.forEach((snapshot:any)=>{
-                    const child = snapshot.val();
-                    child.key = snapshot.key;
-                    events.push(child);
+                    const event = snapshot.val();
+                    event.key = snapshot.key;
+                    event.contentKeys = event.contentKeys ? Object.keys(event.contentKeys) : [];
+                    event.memberKeys = event.memberKeys ? Object.keys(event.memberKeys) : [];
+                    event.placeKeys = event.placeKeys ? Object.keys(event.placeKeys) : [];
+                    events.push(event);
                 })
                 resolve(events);
             })

@@ -1,250 +1,245 @@
 <template>
-  <v-container fluid>
-    <v-slide-y-transition mode="out-in">
-      <v-layout column align-center>
-        <form id="create-event-dialog" class="ui form" @submit.prevent="updateEvent">
-          <v-card>
-            <v-card-title class="pb-0">
-              <span class="headline">
-                {{isNew ? "이벤트 생성" : "이벤트 수정"}}
-              </span>
-            </v-card-title>
-          
-            <v-card-text class="pa-0">
-              <v-container grid-list-md>
-                <v-layout wrap>
-                  <v-flex xs12 sm6 md6>
-                    <v-menu
-                      v-model="showEventDate"
-                      :close-on-content-click="false"
-                      transition="scale-transition"
-                      offset-y
-                      full-width
-                      max-width="290px"
-                      min-width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="selectedEventDate"
-                          label="Date (read only text field)"
-                          readonly
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-date-picker v-model="selectedEventDate" no-title @input="showEventDate = false"></v-date-picker>
-                    </v-menu>
-                 </v-flex>
-
-                  <!-- <v-flex xs12 sm6 md6>
+  <v-layout column align-center >
+    <form id="create-event-dialog" class="ui form" @submit.prevent="updateEvent">
+      <v-card class="pt-3 pa-3">
+        <v-card-title class="pb-0">
+          <span class="headline">
+            {{isNew ? "이벤트 생성" : "이벤트 수정"}}
+          </span>
+        </v-card-title>
+      
+        <v-card-text class="pa-0">
+          <v-container grid-list-md>
+            <v-layout wrap>
+              <v-flex xs12 sm6 md6>
+                <v-menu
+                  v-model="showEventDate"
+                  :close-on-content-click="false"
+                  transition="scale-transition"
+                  offset-y
+                  full-width
+                  max-width="290px"
+                  min-width="290px"
+                >
+                  <template v-slot:activator="{ on }">
                     <v-text-field
-                      v-model="eventDate"
-                      label="이벤트 날짜"
-                      required
+                      v-model="selectedEventDate"
+                      label="Date (read only text field)"
                       readonly
-                      disabled
+                      v-on="on"
                     ></v-text-field>
-                  </v-flex> -->
-                  
-                  <v-flex xs12 sm6 md6>
-                    <v-text-field
-                      v-validate="'required|min:1|max:20'"
-                      v-model="event.title"
-                      :counter="20"
-                      label="타이틀"
-                      data-vv-name="title"
-                      :error-messages="errors.collect('title')"
-                      clearable
-                    ></v-text-field>
-                  </v-flex>
+                  </template>
+                  <v-date-picker v-model="selectedEventDate" no-title @input="showEventDate = false"></v-date-picker>
+                </v-menu>
+              </v-flex>
 
-                  <v-flex xs12>
-                    <v-select
-                      v-model="event.placeKeys"
-                      :items="places"
-                      label="장소"
-                      data-vv-name="place"
-                      item-value="key"
-                      item-text="name"
-                      chips
-                      deletable-chips
-                      :error-messages="errors.collect('place')"
-                      multiple
-                      dense
-                      v-validate="'required|min:1'"
-                    ></v-select>
-                  </v-flex>
+              <!-- <v-flex xs12 sm6 md6>
+                <v-text-field
+                  v-model="eventDate"
+                  label="이벤트 날짜"
+                  required
+                  readonly
+                  disabled
+                ></v-text-field>
+              </v-flex> -->
+              
+              <v-flex xs12 sm6 md6>
+                <v-text-field
+                  v-validate="'required|min:1|max:20'"
+                  v-model="event.title"
+                  :counter="20"
+                  label="타이틀"
+                  data-vv-name="title"
+                  :error-messages="errors.collect('title')"
+                  clearable
+                ></v-text-field>
+              </v-flex>
 
-                  <v-flex xs12>
-                    <v-select
-                      v-validate="'required|min:1'"
-                      :error-messages="errors.collect('contents')"
-                      v-model="event.contentKeys"
-                      :items="contents"
-                      label="컨텐츠"
-                      data-vv-name="contents"
-                      item-value="key"
-                      item-text="name"
-                      chips
-                      deletable-chips
-                      multiple
-                      dense
-                    >
-                      <v-list-tile
-                        slot="prepend-item"
-                        @click="toggleSelectAllContents"
-                      >
-                        <v-list-tile-action>
-                          <v-icon :color="event.contentKeys && event.contentKeys.length > 0 ? 'indigo darken-4' : ''">{{contentsCheckboxIcon}}</v-icon>
-                        </v-list-tile-action>
-                        <v-list-tile-title>
-                          {{event.contentKeys && event.contentKeys.length === contents.length ? 'Deselect All' : 'Select All'}}
-                        </v-list-tile-title>
-                      </v-list-tile>
-                      <v-divider
-                        slot="prepend-item"
-                        class="mt-2"
-                      ></v-divider>
-                      <v-divider
-                        slot="append-item"
-                        class="mb-2"
-                      ></v-divider>
-                    </v-select>
-                  </v-flex>
+              <v-flex xs12>
+                <v-select
+                  v-model="event.placeKeys"
+                  :items="places"
+                  label="장소"
+                  data-vv-name="place"
+                  item-value="key"
+                  item-text="name"
+                  chips
+                  deletable-chips
+                  :error-messages="errors.collect('place')"
+                  multiple
+                  dense
+                  v-validate="'required|min:1'"
+                ></v-select>
+              </v-flex>
 
-                  <v-flex xs12>
-                    <v-select
-                      v-model="event.memberKeys"
-                      :items="members"
-                      label="참여자"
-                      data-vv-name="members"
-                      item-value="key"
-                      item-text="name"
-                      chips
-                      deletable-chips
-                      multiple
-                      dense
-                      :messages="[`필수입력값이 아니므로 이벤트 생성 후 입력가능. ${event.memberKeys ? event.memberKeys.length : 0}명 선택`]"
-                    >
-                      <v-list-tile
-                        slot="prepend-item"
-                        @click="toggleSelectAllMembers"
-                      >
-                        <v-list-tile-action>
-                          <v-icon :color="event.memberKeys && event.memberKeys.length > 0 ? 'indigo darken-4' : ''">{{membersCheckboxIcon}}</v-icon>
-                        </v-list-tile-action>
-                        <v-list-tile-title>
-                          {{event.memberKeys && event.memberKeys.length == members.length ? 'Deselect All' : 'Select All'}}
-                        </v-list-tile-title>
-                      </v-list-tile>
-                      <v-divider
-                        slot="prepend-item"
-                        class="mt-2"
-                      ></v-divider>
-                      <v-divider
-                        slot="append-item"
-                        class="mb-2"
-                      ></v-divider>
-                    </v-select>
-                  </v-flex>
+              <v-flex xs12>
+                <v-select
+                  v-validate="'required|min:1'"
+                  :error-messages="errors.collect('contents')"
+                  v-model="event.contentKeys"
+                  :items="contents"
+                  label="컨텐츠"
+                  data-vv-name="contents"
+                  item-value="key"
+                  item-text="name"
+                  chips
+                  deletable-chips
+                  multiple
+                  dense
+                >
+                  <v-list-tile
+                    slot="prepend-item"
+                    @click="toggleSelectAllContents"
+                  >
+                    <v-list-tile-action>
+                      <v-icon :color="event.contentKeys && event.contentKeys.length > 0 ? 'indigo darken-4' : ''">{{contentsCheckboxIcon}}</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-title>
+                      {{event.contentKeys && event.contentKeys.length === contents.length ? 'Deselect All' : 'Select All'}}
+                    </v-list-tile-title>
+                  </v-list-tile>
+                  <v-divider
+                    slot="prepend-item"
+                    class="mt-2"
+                  ></v-divider>
+                  <v-divider
+                    slot="append-item"
+                    class="mb-2"
+                  ></v-divider>
+                </v-select>
+              </v-flex>
 
-                  <v-card>
-                    <v-card-title class="pb-0">
-                      <span class="title">이 날의 이벤트정보</span>
-                    </v-card-title>
-                    <v-container grid-list-md>
-                      <v-layout wrap>
+              <v-flex xs12>
+                <v-select
+                  v-model="event.memberKeys"
+                  :items="members"
+                  label="참여자"
+                  data-vv-name="members"
+                  item-value="key"
+                  item-text="name"
+                  chips
+                  deletable-chips
+                  multiple
+                  dense
+                  :messages="[`필수입력값이 아니므로 이벤트 생성 후 입력가능. ${event.memberKeys ? event.memberKeys.length : 0}명 선택`]"
+                >
+                  <v-list-tile
+                    slot="prepend-item"
+                    @click="toggleSelectAllMembers"
+                  >
+                    <v-list-tile-action>
+                      <v-icon :color="event.memberKeys && event.memberKeys.length > 0 ? 'indigo darken-4' : ''">{{membersCheckboxIcon}}</v-icon>
+                    </v-list-tile-action>
+                    <v-list-tile-title>
+                      {{event.memberKeys && event.memberKeys.length == members.length ? 'Deselect All' : 'Select All'}}
+                    </v-list-tile-title>
+                  </v-list-tile>
+                  <v-divider
+                    slot="prepend-item"
+                    class="mt-2"
+                  ></v-divider>
+                  <v-divider
+                    slot="append-item"
+                    class="mb-2"
+                  ></v-divider>
+                </v-select>
+              </v-flex>
 
-                        <v-flex xs12 sm12 md12>
-                          <span>평균나이 : {{event.memberKeys && ageVO.get('total') > 0? (ageVO.get('total')/ event.memberKeys.length).toFixed(2) : 0}} 살 </span>
-                        </v-flex>
+              <v-card>
+                <v-card-title class="pb-0">
+                  <span class="title">이 날의 이벤트정보</span>
+                </v-card-title>
+                <v-container grid-list-md>
+                  <v-layout wrap>
 
-                        <v-flex xs6 sm3 md2>
-                          <span>운영진 : {{gradeCountVO.get(0) + gradeCountVO.get(1)}}명</span>
-                        </v-flex>
+                    <v-flex xs12 sm12 md12>
+                      <span>평균나이 : {{event.memberKeys && ageVO.get('total') > 0? (ageVO.get('total')/ event.memberKeys.length).toFixed(2) : 0}} 살 </span>
+                    </v-flex>
 
-                        <v-flex xs6 sm3 md2>
-                          <span>일반회원 : {{gradeCountVO.get(2)}}명</span>
-                        </v-flex>
+                    <v-flex xs6 sm3 md2>
+                      <span>운영진 : {{gradeCountVO.get(0) + gradeCountVO.get(1)}}명</span>
+                    </v-flex>
 
-                        <v-flex xs6 sm3 md2>
-                          <span>신입회원 :{{gradeCountVO.get(3)}}명</span>
-                        </v-flex>
+                    <v-flex xs6 sm3 md2>
+                      <span>일반회원 : {{gradeCountVO.get(2)}}명</span>
+                    </v-flex>
 
-                        <v-flex xs6 sm3 md2>
-                          <span>특수회원 : {{gradeCountVO.get(5)}}명</span>
-                        </v-flex>
+                    <v-flex xs6 sm3 md2>
+                      <span>신입회원 :{{gradeCountVO.get(3)}}명</span>
+                    </v-flex>
 
-                        <v-flex xs12 sm12 md12>
-                          <span>준회원 : {{gradeCountVO.get(4)}}명</span>
-                        </v-flex>
+                    <v-flex xs6 sm3 md2>
+                      <span>특수회원 : {{gradeCountVO.get(5)}}명</span>
+                    </v-flex>
 
-                        <v-flex xs12 sm12 md12>
-                          <span>남자:{{genderCountVO.get('M')}}명 여자: {{genderCountVO.get('F')}}명</span>
-                        </v-flex>
+                    <v-flex xs12 sm12 md12>
+                      <span>준회원 : {{gradeCountVO.get(4)}}명</span>
+                    </v-flex>
 
-                      </v-layout>
-                    </v-container>
-                  </v-card>
-                </v-layout>
-              </v-container>
-            </v-card-text>
+                    <v-flex xs12 sm12 md12>
+                      <span>남자:{{genderCountVO.get('M')}}명 여자: {{genderCountVO.get('F')}}명</span>
+                    </v-flex>
 
-            <v-card-actions>
-              <v-btn
-                color="error"
-                v-if="!isNew"
-                @click="viewConfirmDelete = true"
-                depressed
-                outline
-              >
-                Delete
-              </v-btn>
-              <v-dialog
-                v-model="viewConfirmDelete"
-              >
-                <v-card>
-                  <v-card-title class="headline">정말 지우시겠습니까?</v-card-title>
-                  <v-card-text>
-                    이 이벤트를 삭제하면 복구할 수 없습니다.
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-spacer></v-spacer>
-                    <v-btn
-                      right
-                      @click="viewConfirmDelete = false"
-                      outline
-                      depressed
-                    >
-                      Cancel
-                    </v-btn>
-                    <v-btn
-                      right
-                      color="red darken-1"
-                      @click="deleteEvent()"
-                      outline
-                      depressed
-                    >
-                      Delete
-                    </v-btn>
-                  </v-card-actions>
-                </v-card>
-              </v-dialog>
-              <v-spacer></v-spacer>
-              <v-btn
-                color="success"
-                type="submit"
-                outline
-                depressed
-              >
-                {{isNew ? 'Create' : 'Update'}}
-              </v-btn>
-            </v-card-actions>
+                  </v-layout>
+                </v-container>
+              </v-card>
+            </v-layout>
+          </v-container>
+        </v-card-text>
 
-          </v-card>
-        </form>
-      </v-layout>
-    </v-slide-y-transition>
-  </v-container>
+        <v-card-actions>
+          <v-btn
+            color="error"
+            v-if="!isNew"
+            @click="viewConfirmDelete = true"
+            depressed
+            outline
+          >
+            Delete
+          </v-btn>
+          <v-dialog
+            v-model="viewConfirmDelete"
+          >
+            <v-card>
+              <v-card-title class="headline">정말 지우시겠습니까?</v-card-title>
+              <v-card-text>
+                이 이벤트를 삭제하면 복구할 수 없습니다.
+              </v-card-text>
+              <v-card-actions>
+                <v-spacer></v-spacer>
+                <v-btn
+                  right
+                  @click="viewConfirmDelete = false"
+                  outline
+                  depressed
+                >
+                  Cancel
+                </v-btn>
+                <v-btn
+                  right
+                  color="red darken-1"
+                  @click="deleteEvent()"
+                  outline
+                  depressed
+                >
+                  Delete
+                </v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-spacer></v-spacer>
+          <v-btn
+            color="success"
+            type="submit"
+            outline
+            depressed
+          >
+            {{isNew ? 'Create' : 'Update'}}
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </form>
+  </v-layout>
 </template>
 
 <script lang="ts">

@@ -34,6 +34,7 @@ declare interface MemberTypes {
     mail:string;
     outDay:number
     participation:any[];
+    firstDate:KeyAndValue<number>;
     lastDate:KeyAndValue<number>;
     phone:number;
     dPlus:number;

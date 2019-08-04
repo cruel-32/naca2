@@ -1,242 +1,245 @@
-grad<template>
-  <v-container fluid>
-    <v-slide-y-transition mode="out-in">
-      <v-layout column align-center>
-        <form id="create-meeting-dialog" class="ui form" @submit.prevent="updateMember">
-          <v-card>
-            <v-card-title class="pb-0">
-              <span class="headline">
-                <v-icon color="green">people</v-icon> {{params && params.key ? "회원정보 수정": "신입 회원정보 입력"}}
-              </span>
-            </v-card-title>
-            <v-card-text class="pa-0">
-                <v-container grid-list-md>
-                  <v-layout wrap>
+<template>
+  <v-layout column align-center>
+    <form id="create-meeting-dialog" class="ui form" @submit.prevent="updateMember">
+      <v-card class="pt-3 pa-3" >
+        <v-card-title class="pb-0">
+          <span class="headline">
+            <v-icon color="green">people</v-icon> {{params && params.key ? "회원정보 수정": "신입 회원정보 입력"}}
+          </span>
+        </v-card-title>
+        <v-card-text class="pa-0">
+            <v-container grid-list-md>
+              <v-layout wrap>
 
-                    <v-flex xs12 sm6 md4>
-                      <v-menu
-                        :close-on-content-click="false"
-                        v-model="viewJoinCalandar"
-                        lazy
-                        full-width
-                      >
-                        <v-text-field
-                          slot="activator"
-                          v-model="joinDateString"
-                          v-validate="'required'"
-                          label="가입일을 입력하세요"
-                          readonly
-                        ></v-text-field>
-                        <v-date-picker
-                          v-model="joinDateString"
-                          @input="viewJoinCalandar = false"
-                          full-width
-                          locale="ko"
-                          ></v-date-picker>
-                      </v-menu>
-                    </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-menu
+                    :close-on-content-click="false"
+                    v-model="viewJoinCalandar"
+                    lazy
+                    full-width
+                  >
+                    <v-text-field
+                      slot="activator"
+                      v-model="joinDateString"
+                      v-validate="'required'"
+                      label="가입일을 입력하세요"
+                      readonly
+                    ></v-text-field>
+                    <v-date-picker
+                      v-model="joinDateString"
+                      @input="viewJoinCalandar = false"
+                      full-width
+                      locale="ko"
+                      ></v-date-picker>
+                  </v-menu>
+                </v-flex>
 
-                    <v-flex xs12 sm6 md4>
-                      <v-menu
-                        ref="birthCalandar"
-                        :close-on-content-click="false"
-                        v-model="viewBirthCalandar"
-                        lazy
-                        full-width
-                      >   
-                        <v-text-field
-                          slot="activator"
-                          v-model="birthString"
-                          label="생년월일을 입력하세요"
-                          v-validate="'required'"
-                          :error-messages="errors.collect('date')"
-                          readonly
-                          data-vv-name="birth"
-                        ></v-text-field>
-                        <v-date-picker
-                          ref="birthPicker"
-                          v-model="birthString"
-                          max="1995-12-31"
-                          min="1985-01-01"
-                          full-width
-                          locale="ko"
-                          @input="viewBirthCalandar = false"
-                        ></v-date-picker>
-                      </v-menu>
-                    </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-menu
+                    ref="birthCalandar"
+                    :close-on-content-click="false"
+                    v-model="viewBirthCalandar"
+                    lazy
+                    full-width
+                  >   
+                    <v-text-field
+                      slot="activator"
+                      v-model="birthString"
+                      label="생년월일을 입력하세요"
+                      v-validate="'required'"
+                      :error-messages="errors.collect('date')"
+                      readonly
+                      data-vv-name="birth"
+                    ></v-text-field>
+                    <v-date-picker
+                      ref="birthPicker"
+                      v-model="birthString"
+                      max="1995-12-31"
+                      min="1985-01-01"
+                      full-width
+                      locale="ko"
+                      @input="viewBirthCalandar = false"
+                    ></v-date-picker>
+                  </v-menu>
+                </v-flex>
 
-                    <v-flex xs12 sm6 md4>
-                      <v-text-field
-                        v-validate="'required|min:2|max:10'"
-                        v-model="member.name"
-                        :counter="10"
-                        :error-messages="errors.collect('name')"
-                        label="이름"
-                        data-vv-name="name"
-                        clearable
-                      ></v-text-field>
-                    </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field
+                    v-validate="'required|min:2|max:10'"
+                    v-model="member.name"
+                    :counter="10"
+                    :error-messages="errors.collect('name')"
+                    label="이름"
+                    data-vv-name="name"
+                    clearable
+                  ></v-text-field>
+                </v-flex>
 
-                    <v-flex xs12 sm6 md4>
-                      <v-text-field
-                        v-validate="'required|min:2|max:20'"
-                        v-model="member.address"
-                        :counter="20"
-                        :error-messages="errors.collect('address')"
-                        label="사는곳"
-                        data-vv-name="address"
-                        clearable
-                      ></v-text-field>
-                    </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field
+                    v-validate="'required|min:2|max:20'"
+                    v-model="member.address"
+                    :counter="20"
+                    :error-messages="errors.collect('address')"
+                    label="사는곳"
+                    data-vv-name="address"
+                    clearable
+                  ></v-text-field>
+                </v-flex>
 
-                    <v-flex xs12 sm6 md4>
-                      <v-text-field
-                        v-model="member.job"
-                        label="직업"
-                        data-vv-name="job"
-                        clearable
-                      ></v-text-field>
-                    </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-text-field
+                    v-model="member.job"
+                    label="직업"
+                    data-vv-name="job"
+                    clearable
+                  ></v-text-field>
+                </v-flex>
 
-                    <!-- <v-flex xs12 sm6 md4>
-                      <v-text-field
-                        v-model="gradeText"
-                        label="등급"
-                        readonly
-                        disabled
-                      ></v-text-field>
-                    </v-flex> -->
+                <!-- <v-flex xs12 sm6 md4>
+                  <v-text-field
+                    v-model="gradeText"
+                    label="등급"
+                    readonly
+                    disabled
+                  ></v-text-field>
+                </v-flex> -->
 
-                    <v-flex xs12>
-                      <v-select
-                        v-model="member.grade"
-                        :items="grades"
-                        label="등급"
-                        data-vv-name="grade"
-                        item-value="grade"
-                        item-text="name"
-                        :error-messages="errors.collect('grade')"
-                        dense
-                        v-validate="'required|min:1'"
-                      ></v-select>
-                    </v-flex>
+                <v-flex xs12 sm6 md4>
+                  <v-select
+                    v-model="member.grade"
+                    :items="grades"
+                    label="등급"
+                    data-vv-name="grade"
+                    item-value="grade"
+                    item-text="name"
+                    :error-messages="errors.collect('grade')"
+                    dense
+                    v-validate="'required|min:1'"
+                  ></v-select>
+                </v-flex>
 
-                    <v-flex xs12 sm6 md4 v-if="params && params.key && member.participation.length > 0">
-                      <v-text-field
-                        v-model="lastDateString"
-                        label="최근 참여 이벤트 날짜"
-                        readonly
-                        disabled
-                      ></v-text-field>
-                      <v-btn v-if="member.participation.length > 0"
-                        class="custom-button"
-                        color="success"
-                        outline
-                        depressed
-                        block
-                        @click="$router.push(`/event/detail/${member.lastDate.key}`)"
-                      >{{lastDateString}} 이벤트 보러가기</v-btn>
-                    </v-flex>
+                <v-flex xs12 sm6 md4 v-if="this.params && this.params.key">
+                  <v-text-field
+                    v-model="dPlusString"
+                    :label="member.participation.length > 0? '마지막 이벤트 참석일로부터 D+XX' : '가입일로부터 D+XX' "
+                    readonly
+                    disabled
+                  ></v-text-field>
+                </v-flex>
 
-                    <v-flex xs12 sm6 md4 v-if="this.params && this.params.key">
-                      <v-text-field
-                        v-model="dPlusString"
-                        :label="member.participation.length > 0? '마지막 이벤트 참석일로부터 D+XX' : '가입일로부터 D+XX' "
-                        readonly
-                        disabled
-                      ></v-text-field>
-                    </v-flex>
+                <v-flex xs12 sm6 md4 v-if="this.params && this.params.key">
+                  <v-text-field
+                    v-model="dMinusString"
+                    label="강퇴까지 남은 일수 (D-XX)"
+                    readonly
+                    disabled
+                  ></v-text-field>
+                </v-flex>
 
-                    <v-flex xs12 sm6 md4 v-if="this.params && this.params.key">
-                      <v-text-field
-                        v-model="dMinusString"
-                        label="강퇴까지 남은 일수 (D-XX)"
-                        readonly
-                        disabled
-                      ></v-text-field>
-                    </v-flex>
+                <!-- <v-flex xs12 sm6 md4 v-if="this.params && this.params.key && member.outDay">
+                  <v-text-field
+                    v-model="member.outDay"
+                    label="탈퇴날짜"
+                    readonly
+                    disabled
+                  ></v-text-field>
+                </v-flex> -->
 
-                    <!-- <v-flex xs12 sm6 md4 v-if="this.params && this.params.key && member.outDay">
-                      <v-text-field
-                        v-model="member.outDay"
-                        label="탈퇴날짜"
-                        readonly
-                        disabled
-                      ></v-text-field>
-                    </v-flex> -->
+                <v-flex xs12 sm6 md6 v-if="params && params.key && member.participation.length > 0">
+                  <v-subheader>처음 참여 이벤트 날짜</v-subheader>
+                  <v-btn v-if="member.participation.length > 0"
+                    class="custom-button"
+                    color="success"
+                    outline
+                    depressed
+                    block
+                    @click="$router.push(`/event/detail/${member.firstDate.key}`)"
+                  >{{firstDateString}} 이벤트 보러가기</v-btn>
+                </v-flex>
 
-                    <v-flex xs12 sm6 md4>
-                      <v-radio-group v-model="member.gender" color='success' :row="true">
-                        <v-radio
-                          v-for="gender in genders"
-                          :key="gender"
-                          :label="`${gender === 'F' ? '여성' : '남성'}`"
-                          :value="gender"
-                        ></v-radio>
-                      </v-radio-group>
-                    </v-flex>
+                <v-flex xs12 sm6 md6 v-if="params && params.key && member.participation.length > 0">
+                  <v-subheader>최근 참여 이벤트 날짜</v-subheader>
+                  <v-btn v-if="member.participation.length > 0"
+                    class="custom-button"
+                    color="success"
+                    outline
+                    depressed
+                    block
+                    @click="$router.push(`/event/detail/${member.lastDate.key}`)"
+                  >{{lastDateString}} 이벤트 보러가기</v-btn>
+                </v-flex>
 
-                  </v-layout>
-                </v-container>
-              </v-card-text>
+                <v-flex xs12 sm6 md4>
+                  <v-radio-group v-model="member.gender" color='success' :row="true">
+                    <v-radio
+                      v-for="gender in genders"
+                      :key="gender"
+                      :label="`${gender === 'F' ? '여성' : '남성'}`"
+                      :value="gender"
+                    ></v-radio>
+                  </v-radio-group>
+                </v-flex>
 
-              <v-card-actions>
-                <v-btn
-                  color="error"
-                  v-if="params && params.key"
-                  @click="viewConfirmDelete = true"
-                  depressed
-                  outline
-                >
-                  Delete
-                </v-btn>
-                <v-dialog
-                  v-model="viewConfirmDelete"
-                >
-                  <v-card>
-                    <v-card-title class="headline">정말 강퇴하시겠습니까?</v-card-title>
-                    <v-card-text>
-                      회원을 강퇴합니다.
-                    </v-card-text>
-                    <v-card-actions>
-                      <v-spacer></v-spacer>
-                      <v-btn
-                        right
-                        @click="viewConfirmDelete = false"
-                        outline
-                        depressed
-                      >
-                        Cancel
-                      </v-btn>
-                      <v-btn
-                        right
-                        color="red darken-1"
-                        @click="deleteMember()"
-                        outline
-                        depressed
-                      >
-                        Delete
-                      </v-btn>
-                    </v-card-actions>
-                  </v-card>
-                </v-dialog>
-                <v-spacer></v-spacer>
+              </v-layout>
+            </v-container>
+          </v-card-text>
 
-                <v-btn
-                  color="success"
-                  type="submit"
-                  outline
-                  depressed
-                >
-                  {{params && params.key ? 'Update' : 'Create'}}
-                </v-btn>
+          <v-card-actions>
+            <v-btn
+              color="error"
+              v-if="params && params.key"
+              @click="viewConfirmDelete = true"
+              depressed
+              outline
+            >
+              Delete
+            </v-btn>
+            <v-dialog
+              v-model="viewConfirmDelete"
+            >
+              <v-card>
+                <v-card-title class="headline">정말 강퇴하시겠습니까?</v-card-title>
+                <v-card-text>
+                  회원을 강퇴합니다.
+                </v-card-text>
+                <v-card-actions>
+                  <v-spacer></v-spacer>
+                  <v-btn
+                    right
+                    @click="viewConfirmDelete = false"
+                    outline
+                    depressed
+                  >
+                    Cancel
+                  </v-btn>
+                  <v-btn
+                    right
+                    color="red darken-1"
+                    @click="deleteMember()"
+                    outline
+                    depressed
+                  >
+                    Delete
+                  </v-btn>
+                </v-card-actions>
+              </v-card>
+            </v-dialog>
+            <v-spacer></v-spacer>
 
-              </v-card-actions>
-          </v-card>
-        </form>
-      </v-layout>
-    </v-slide-y-transition>
-  </v-container>
+            <v-btn
+              color="success"
+              type="submit"
+              outline
+              depressed
+            >
+              {{params && params.key ? 'Update' : 'Create'}}
+            </v-btn>
+
+          </v-card-actions>
+      </v-card>
+    </form>
+  </v-layout>
 </template>
 
 <script lang="ts">
@@ -297,6 +300,10 @@ export default class MemberDetail extends Vue {
   get gradeText(){
     const info:GradeTypes|undefined = gradeStore.gradeInfoVO.get(this.member.grade);
     return info ? info.name : "";
+  }
+
+  get firstDateString(){
+    return this.$moment(this.member.firstDate.value.toString()).format('YYYY-MM-DD')
   }
 
   get lastDateString(){

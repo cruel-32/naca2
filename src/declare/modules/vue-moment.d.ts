@@ -6,5 +6,6 @@ declare module 'vue/types/vue' {
   interface Vue {
     $moment: any,
     $validator: Validator,
+    ApexCharts:ApexCharts,
   }
 }

@@ -1,59 +1,55 @@
 <template>
-  <v-container fluid>
-    <v-slide-y-transition mode="out-in">
-      <v-layout column align-center>
-        <v-card class="pt-3 pa-3">
-          <h1 class="headline">
-            <v-icon color="#009688">date_range</v-icon>
-            이달의 이벤트 목록
-          </h1>
-          <p class="pt-2 caption">
-            *이벤트를 생성 혹은 수정,삭제하고나 하는 날짜를 클릭하세요<br/>
-            *이미 이벤트가 있는 날은 초록색으로 마킹되어 있습니다<br/>
-          </p>
+  <v-layout column align-center>
+    <v-card class="pt-3 pa-3" >
+      <h1 class="headline">
+        <v-icon color="#009688">date_range</v-icon>
+        이달의 이벤트 목록
+      </h1>
+      <p class="pt-2 caption">
+        *이벤트를 생성 혹은 수정,삭제하고나 하는 날짜를 클릭하세요<br/>
+        *이미 이벤트가 있는 날은 초록색으로 마킹되어 있습니다<br/>
+      </p>
 
-          <v-dialog
-            v-model="eventsDialog"
-            max-width="290"
-          >
-            <v-card>
-              <v-card-text>
-                <v-card-title class="headline">{{samedayEvents.length}}개의 이벤트가 있습니다</v-card-title>
-                <v-btn block
-                   v-for="(event) of samedayEvents"
-                  :key="event.key"
-                  @click="goEventDetail(event.key)"
-                >
-                  {{event.title}}
-                </v-btn>
-              </v-card-text>
-              <v-card-actions>
-                <v-btn block dark color="success" @click="goUpdateEvent()">
-                  {{clickedYYYYMMDD}} 이벤트 만들기
-                </v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-
-          <v-date-picker
-            full-width
-            v-model="date"
-            ref="picker"
-            event-color="green lighten-1"
-            :reactive="true"
-            :picker-date.sync="pickedYYYYMM"
-            :events="checkEventDay"
-            @change="changePickedDay"
-            locale="ko"
-          ></v-date-picker>
-
-        </v-card>
+      <v-dialog
+        v-model="eventsDialog"
+        max-width="290"
+      >
         <v-card>
-          이 달의 이벤트 횟수 : {{events && events.length}}
+          <v-card-text>
+            <v-card-title class="headline">{{samedayEvents.length}}개의 이벤트가 있습니다</v-card-title>
+            <v-btn block
+                v-for="(event) of samedayEvents"
+              :key="event.key"
+              @click="goEventDetail(event.key)"
+            >
+              {{event.title}}
+            </v-btn>
+          </v-card-text>
+          <v-card-actions>
+            <v-btn block dark color="success" @click="goUpdateEvent()">
+              {{clickedYYYYMMDD}} 이벤트 만들기
+            </v-btn>
+          </v-card-actions>
         </v-card>
-      </v-layout>
-    </v-slide-y-transition>
-  </v-container>
+      </v-dialog>
+
+      <v-date-picker
+        full-width
+        v-model="date"
+        ref="picker"
+        event-color="green lighten-1"
+        :reactive="true"
+        :picker-date.sync="pickedYYYYMM"
+        :events="checkEventDay"
+        @change="changePickedDay"
+        locale="ko"
+      ></v-date-picker>
+
+      <div style="text-align:center;">
+        이 달의 이벤트 횟수 : {{events && events.length}}
+      </div>
+    </v-card>
+  </v-layout>
 </template>
 
 <script lang="ts">

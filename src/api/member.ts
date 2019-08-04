@@ -12,7 +12,13 @@ export default {
                     const VOarray = API_UTILS.objConvertToArray<number>(member.participation);
                     member.participation = VOarray;
                     member.participation.sort((next:KeyAndValue<number>,prev:KeyAndValue<number>):number => prev.value - next.value);
-                    member.lastDate = member.participation.length > 0 ? member.participation[0]: {Key:'', value:member.joinDate};
+                    if(member.participation && member.participation.length > 0){
+                        member.lastDate = member.participation[0]
+                        member.firstDate = member.participation[member.participation.length-1]
+                    } else {
+                        member.lastDate = {Key:'', value:member.joinDate};
+                        member.firstDate = {Key:'', value:member.joinDate};
+                    }
                     resolve(member);
                 }
             })
@@ -29,7 +35,9 @@ export default {
                     const VOarray = API_UTILS.objConvertToArray<number>(member.participation);
                     member.participation = VOarray;
                     member.participation.sort((next:KeyAndValue<number>,prev:KeyAndValue<number>):number => prev.value - next.value);
-                    member.lastDate = member.participation.length > 0 ? member.participation[0] : {Key:'', value:member.joinDate};
+
+                    member.lastDate = member.participation[0]
+                    member.firstDate = member.participation[member.participation.length-1]
                 } else {
                     member.lastDate = {Key:'', value:member.joinDate};
                 }
