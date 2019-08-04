@@ -4,7 +4,7 @@ import memberApi from "@/api/member";
 export default {
     getEventByKey : (key:string):Promise<EventTypes> => new Promise<EventTypes>((resolve)=>{
         API_UTILS.database.ref(`events/${key}`)
-            .on('value',(snapshot:any)=>{
+            .once('value',(snapshot:any)=>{
                 const event = snapshot.val();
                 console.log('api getEventByKey event : ', event);
                 if(event){
@@ -21,7 +21,7 @@ export default {
             .orderByChild('date')
             .startAt(params.startAt)
             .endAt(params.endAt)
-            .on('value',(snapshots:any)=>{
+            .once('value',(snapshots:any)=>{
                 const events:EventTypes[] = [];
                 snapshots.forEach((snapshot:any)=>{
                     const child = snapshot.val();
@@ -50,7 +50,6 @@ export default {
         console.log('msg : ', msg);
         const results = await memberApi.insertMembersParticipation(memberKeys, key, date);
         console.log('results : ', results);
-
         return {...payload, key};
     },
     deleteEvent : (key:string):Promise<string> => new Promise<string>((res,rej)=>{

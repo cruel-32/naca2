@@ -18,9 +18,36 @@ class MenuStore extends VuexModule {
     },
     {
       icon: 'insert_chart', iconClass: 'amber lighten-1 white--text', color:"blue-grey",
-      title: '통계보기', subtitle: '여러가지 통계 보기', link: "statistics",
+      title: '통계보기', subtitle: '여러가지 통계 보기', link: "dashboard",
     }
   ];
+
+  // { header: '통계목록',icon:'insert_chart'},
+   dashboardMenu:any = [
+    {
+      title: '회원별 참여도 통계',
+      subtitle: "회원별 참여날짜 및 기타 통계를 봅니다.",
+      link: '/dashboard/membersParti'
+    },
+    { divider: true},
+    {
+      title: '회원 나이대 통계',
+      subtitle: "평균연령 및 나이대별 회원 분포도 등의 통계를 봅니다.",
+      link: '/dashboard/membersAge'
+    },
+    { divider: true},
+    {
+      title: '월별 모임 관련 통계',
+      subtitle: "월별 모임 관련 통계를 봅니다.",
+      link: '/dashboard/eventsMonth'
+    },
+    { divider: true},
+    {
+      title: '연별 모임 관련 통계',
+      subtitle: "연별 모임 관련 통계를 봅니다.",
+      link: '/dashboard/eventsYear'
+    },
+  ]
 
   @Mutation
   setDrawer(drawer:boolean){

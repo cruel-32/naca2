@@ -98,19 +98,50 @@ grad<template>
                       ></v-text-field>
                     </v-flex>
 
-                    <v-flex xs12 sm6 md4>
+                    <!-- <v-flex xs12 sm6 md4>
                       <v-text-field
                         v-model="gradeText"
                         label="등급"
                         readonly
                         disabled
                       ></v-text-field>
+                    </v-flex> -->
+
+                    <v-flex xs12>
+                      <v-select
+                        v-model="member.grade"
+                        :items="grades"
+                        label="등급"
+                        data-vv-name="grade"
+                        item-value="grade"
+                        item-text="name"
+                        :error-messages="errors.collect('grade')"
+                        dense
+                        v-validate="'required|min:1'"
+                      ></v-select>
                     </v-flex>
 
-                    <v-flex xs12 sm6 md4 v-if="params && params.key">
+                    <v-flex xs12 sm6 md4 v-if="params && params.key && member.participation.length > 0">
                       <v-text-field
                         v-model="lastDateString"
-                        label="최근 참여 벙 날짜"
+                        label="최근 참여 이벤트 날짜"
+                        readonly
+                        disabled
+                      ></v-text-field>
+                      <v-btn v-if="member.participation.length > 0"
+                        class="custom-button"
+                        color="success"
+                        outline
+                        depressed
+                        block
+                        @click="$router.push(`/event/detail/${member.lastDate.key}`)"
+                      >{{lastDateString}} 이벤트 보러가기</v-btn>
+                    </v-flex>
+
+                    <v-flex xs12 sm6 md4 v-if="this.params && this.params.key">
+                      <v-text-field
+                        v-model="dPlusString"
+                        :label="member.participation.length > 0? '마지막 이벤트 참석일로부터 D+XX' : '가입일로부터 D+XX' "
                         readonly
                         disabled
                       ></v-text-field>
@@ -119,15 +150,6 @@ grad<template>
                     <v-flex xs12 sm6 md4 v-if="this.params && this.params.key">
                       <v-text-field
                         v-model="dMinusString"
-                        label="마지막 벙 참석일로부터 D+XX"
-                        readonly
-                        disabled
-                      ></v-text-field>
-                    </v-flex>
-
-                    <v-flex xs12 sm6 md4 v-if="this.params && this.params.key">
-                      <v-text-field
-                        v-model="dPlusString"
                         label="강퇴까지 남은 일수 (D-XX)"
                         readonly
                         disabled
@@ -251,7 +273,6 @@ export default class MemberDetail extends Vue {
   get gradeInfoVO(){return gradeStore.gradeInfoVO}
   get gradeCountVO(){return gradeStore.gradeCountVO}
   get places(){return placeStore.places}
-  get event(){return eventStore.event}
   get member(){return memberStore.member}
   get currentUser(){return accountStore.currentUser}
   get snackBar(){return dialogStore.snackBar}
@@ -279,19 +300,16 @@ export default class MemberDetail extends Vue {
   }
 
   get lastDateString(){
-    return this.$moment(this.member.lastDate.toString()).format('YYYY-MM-DD')
+    return this.$moment(this.member.lastDate.value.toString()).format('YYYY-MM-DD')
   }
 
   get dPlusString(){
-    return `D-${this.member.dPlus}일`
+    return `${this.member.dPlus}일이 지났습니다`
   }
 
   get dMinusString(){
-    return `D-${this.member.dMinus}일`
+    return `${this.member.dMinus}일이 남았습니다`
   }
-
-  
-
 
   //props
   @Prop() query: any;
@@ -323,13 +341,14 @@ export default class MemberDetail extends Vue {
       memberStore.getMemberByKey(this.params ? this.params.key : ''),
     ]).then(async (done)=>{
       console.log('done : ', done);
-      memberStore.setMembersInfoByKeys( this.event.memberKeys );
+      // memberStore.setMembersInfoByKeys( this.event.memberKeys );
       menuStore.setProgress(false);
-      console.log('this.member : ', this.member);
     })
-    console.log('gradeStore.gradeInfoVO : ', gradeStore.gradeInfoVO.get(0) )
-    console.log('gradeStore.grades : ', gradeStore.grades);
     menuStore.setProgress(false);
+  }
+
+  beforeDestroy(){
+    memberStore.resetMember();
   }
 
   @debounce(1000)
@@ -338,11 +357,11 @@ export default class MemberDetail extends Vue {
     this.$validator.validateAll().then(async (result:any) => {
       if(result){
         if(this.currentUser){
-          const result = await memberStore.updateEvent(this.member);
-          if(result.key){
+          const result = await memberStore.updateMember(this.member);
+          if(result.snackColor === 'success'){
             dialogStore.showSnackbar({snackColor:'success',snackText:'등록되었습니다'});
             this.$router.push({
-              name: 'events',
+              name: 'members',
             });
           } else {
             dialogStore.showSnackbar({snackColor:'error',snackText:'실패했습니다'});
@@ -352,9 +371,26 @@ export default class MemberDetail extends Vue {
         }
       }
     })
-
     menuStore.setProgress(false);
   }
+
+  @debounce(1000)
+  async deleteMember(){
+    menuStore.setProgress(true);
+    if(this.currentUser){
+      const result = await memberStore.deleteMember(this.member.key ? this.member.key : '');
+      console.log('result : ', result);
+      dialogStore.showSnackbar(result);
+    } else {
+      dialogStore.showSnackbar({snackColor:'error',snackText:'권한이 없습니다'});
+    }
+    this.viewConfirmDelete = false;
+    this.$router.push({
+      name : 'members'
+    });
+    menuStore.setProgress(false);
+  }
+
 
 }
 
@@ -364,5 +400,9 @@ export default class MemberDetail extends Vue {
 <style scoped lang="scss">
 .v-card {
   box-shadow:none;
+}
+.custom-button {
+  margin-top: -10px;
+  margin-bottom:10px;
 }
 </style>

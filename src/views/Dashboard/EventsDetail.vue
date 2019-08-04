@@ -15,7 +15,7 @@
               <v-container grid-list-md>
                 <v-layout wrap>
                   <v-flex xs12 sm6 md4 mb-3>
-                    <strong class="cus-title">이달의 벙 목록 ({{dates && dates.length}} 번)</strong>
+                    <strong class="cus-title">이달의 이벤트 목록 ({{dates && dates.length}} 번)</strong>
                     <v-layout wrap mt-1>
                       <v-flex xs12 sm12 md12 v-for="(meeting,index) in dates" :key="index">
                         {{$moment(meeting).format('YYYY.MM.DD')}} -

@@ -1,5 +1,5 @@
-declare interface KeysAndValues<VALUE> {
-    keys:string[];
-    values:VALUE[];
+declare interface KeyAndValue<VALUE> {
+    key:string;
+    value:VALUE;
 }
  

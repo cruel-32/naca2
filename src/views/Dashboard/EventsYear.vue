@@ -6,11 +6,11 @@
         <v-card class="pt-3 pa-3">
           <h1 class="headline">
             <v-icon color="#009688">date_range</v-icon>
-            이달의 모임(벙) 목록
+            이달의 이벤트 목록
           </h1>
           <p class="pt-2 caption">
-            *모임을 생성 혹은 수정,삭제하고나 하는 날짜를 클릭하세요<br/>
-            *이미 모임이 있는 날은 초록색으로 마킹되어 있습니다<br/>
+            *이벤트를 생성 혹은 수정,삭제하고나 하는 날짜를 클릭하세요<br/>
+            *이미 이벤트가 있는 날은 초록색으로 마킹되어 있습니다<br/>
           </p>
           <v-date-picker
             v-model="date"

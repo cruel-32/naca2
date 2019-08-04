@@ -22,14 +22,14 @@ class MemberStore extends VuexModule {
     joinDate: parseInt(this.today.format('YYYYMMDD')),
     mail:'',
     outDay:0,
-    eventKeys:[],
     participation:[],
-    lastDate:0,
+    lastDate:{key:'', value:0},
     phone:0,
     dPlus:0,
     dMinus:0,
     status:'',
     name:'',
+    job:'',
   };
   members:MemberTypes[] = [];
 
@@ -44,7 +44,7 @@ class MemberStore extends VuexModule {
   }
 
   @Action
-  public async resetEvent(){
+  public async resetMember(){
     this.setMember({
       key:null,
       address:'',
@@ -54,14 +54,14 @@ class MemberStore extends VuexModule {
       joinDate: parseInt(this.today.format('YYYYMMDD')),
       mail:'',
       outDay:0,
-      eventKeys:[],
       participation:[],
-      lastDate:0,
+      lastDate:{key:'', value:0},
       phone:0,
       dPlus:0,
       dMinus:0,
       status:'',
       name:'',
+      job:'',
     });
   }
 
@@ -91,7 +91,7 @@ class MemberStore extends VuexModule {
   @Action
   addColumn(member:MemberTypes){
     const gradeInfo:any = gradeStore.gradeInfoVO.get(member.grade);
-    const dPlus = this.today.diff(member.lastDate ? member.lastDate.toString() : member.joinDate.toString(), 'days');
+    const dPlus = this.today.diff(member.lastDate.value ? member.lastDate.value.toString() : member.joinDate.toString(), 'days');
     const dMinus = gradeInfo.day - dPlus;
     let status = "normal";
 
@@ -100,9 +100,9 @@ class MemberStore extends VuexModule {
     } else if(member.grade === classGrade.MANAGER || member.grade === classGrade.SPECIAL_MEMBER){
       status = `blue`
     } else if(dMinus <= 0) {
-      status = "red";
+      status = `red`;
     } else if(dMinus <= 20){
-      status = "yellow";
+      status = `yellow`;
     }
 
     Object.assign(member,{
@@ -123,13 +123,13 @@ class MemberStore extends VuexModule {
   @Action
   public async getMembers():Promise<SnackbarTypes>{
     await gradeStore.getGrades();
+    this.setMembers([]);
     this.initializeCountVO();
     const members:MemberTypes[] = await memberApi.getMembers();
     members.forEach(member=>{
       this.addColumn(member);
     })
     this.setMembers(members);
-    
 
     const msg:SnackbarTypes = {
       snackColor:'error',
@@ -143,17 +143,56 @@ class MemberStore extends VuexModule {
   }
 
   @Action
-  public async updateEvent(payload:MemberTypes):Promise<MemberTypes>{
-    console.log('payload : ', payload);
-    // const result = await eventApi.updateEvent(payload);
-    return new Promise(()=>{});
+  public async getMembersInActive():Promise<SnackbarTypes>{
+    await gradeStore.getGrades();
+    this.setMembers([]);
+    this.initializeCountVO();
+    const members:MemberTypes[] = await memberApi.getMembersInActive();
+    members.forEach(member=>{
+      this.addColumn(member);
+    })
+    this.setMembers(members);
+
+    const msg:SnackbarTypes = {
+      snackColor:'error',
+      snackText:'members 가져오기 실패'
+    }
+    if(members){
+      msg.snackColor = 'success';
+      msg.snackText = 'members 가져오기 성공';
+    }
+    return msg
   }
 
   @Action
-  public async deleteEvent(key:string):Promise<SnackbarTypes>{
+  public async updateMember(payload:MemberTypes):Promise<SnackbarTypes>{
+    const error = await memberApi.updateMember(payload);
+    const msg:SnackbarTypes = {
+      snackColor:'error',
+      snackText:'members 가져오기 실패'
+    }
+    if(!error){
+      msg.snackColor = 'success';
+      msg.snackText = 'members 가져오기 성공';
+    }
+    return msg
+  }
+
+  @Action
+  public async deleteMember(key:string):Promise<SnackbarTypes>{
     console.log('key : ', key);
-    // const result = await eventApi.updateEvent(payload);
-    return new Promise(()=>{});
+    const msg:SnackbarTypes = {
+      snackColor:'error',
+      snackText:'members 삭제 실패'
+    }
+    if(key){
+      const error = await memberApi.deleteMember(key);
+      if(!error){
+        msg.snackColor = 'success';
+        msg.snackText = 'members 삭제 성공';
+      }
+    }
+    return msg
   }
 
   @Action

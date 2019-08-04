@@ -58,15 +58,16 @@ export default new Router({
       component: () => import('@/views/Members/MemberDetail.vue'),
     },
     
-    // {
-    //   path: '/statistics',
-    //   name: 'statistics',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/Statistics.vue'),
-    // },
+    {
+      path: '/dashboard',
+      name: 'dashboard',
+      props: (route) => ({
+        params : route.params,
+        query: route.query
+      }),
+      component: () => import('@/views/Dashboard/Dashboard.vue'),
+    },
+
     // {
     //   path: '/statistics/membersParti',
     //   name: 'membersParti',

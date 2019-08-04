@@ -123,7 +123,7 @@
                       deletable-chips
                       multiple
                       dense
-                      :messages="[`필수입력값이 아니므로 모임 생성 후 입력가능. ${event.memberKeys ? event.memberKeys.length : 0}명 선택`]"
+                      :messages="[`필수입력값이 아니므로 이벤트 생성 후 입력가능. ${event.memberKeys ? event.memberKeys.length : 0}명 선택`]"
                     >
                       <v-list-tile
                         slot="prepend-item"
@@ -149,7 +149,7 @@
 
                   <v-card>
                     <v-card-title class="pb-0">
-                      <span class="title">이 날의 모임정보</span>
+                      <span class="title">이 날의 이벤트정보</span>
                     </v-card-title>
                     <v-container grid-list-md>
                       <v-layout wrap>
@@ -205,7 +205,7 @@
                 <v-card>
                   <v-card-title class="headline">정말 지우시겠습니까?</v-card-title>
                   <v-card-text>
-                    이 모임을 삭제하면 복구할 수 없습니다.
+                    이 이벤트를 삭제하면 복구할 수 없습니다.
                   </v-card-text>
                   <v-card-actions>
                     <v-spacer></v-spacer>
@@ -328,7 +328,7 @@ export default class EventDetail extends Vue {
     Promise.all([
       contentStore.getContents(), 
       placeStore.getPlaces(),
-      memberStore.getMembers(),
+      memberStore.getMembersInActive(),
       eventStore.getEventByKey(this.params ? this.params.key : '')
     ]).then(async (done)=>{
       memberStore.setMembersInfoByKeys( this.event.memberKeys );

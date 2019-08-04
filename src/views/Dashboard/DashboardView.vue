@@ -6,7 +6,7 @@
         <v-card class="pt-3 pa-3">
           <h1 class="headline">
             <v-icon color="#009688">date_range</v-icon>
-            월별 모임 통계
+            월별 이벤트 통계
           </h1>
           <p class="pt-2 caption">
             *보고싶은 월을 선택하세요

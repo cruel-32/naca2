@@ -33,14 +33,14 @@ declare interface MemberTypes {
     joinDate:number
     mail:string;
     outDay:number
-    eventKeys:string[];
-    participation:string[];
-    lastDate:number;
+    participation:any[];
+    lastDate:KeyAndValue<number>;
     phone:number;
     dPlus:number;
     dMinus:number;
     status:string;
     name:string;
+    job:string;
 }
 
 declare interface PlaceTypes {

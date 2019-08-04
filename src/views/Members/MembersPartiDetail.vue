@@ -13,21 +13,21 @@
               <v-container grid-list-md>
                 <v-layout wrap>
                   <v-flex xs12 sm6 md4>
-                    <strong class="cus-title">처음 벙 참여일</strong>
+                    <strong class="cus-title">처음 이벤트 참여일</strong>
                     <router-link v-if="firstMeeting" :to="{path:firstMeeting.link}">{{firstMeeting.date}} {{firstMeeting.name}}</router-link>
                     <div v-else>
-                      <span>참여한 벙이 없습니다.</span>
+                      <span>참여한 이벤트가 없습니다.</span>
                     </div>
                   </v-flex>
                   <v-flex xs12 sm6 md4>
-                    <strong class="cus-title">최근 벙 참여일</strong>
+                    <strong class="cus-title">최근 이벤트 참여일</strong>
                     <router-link v-if="lastMeeting" :to="{path:lastMeeting.link}">{{lastMeeting.date}} {{lastMeeting.name}}</router-link>
                     <div v-else>
-                      <span>참여한 벙이 없습니다.</span>
+                      <span>참여한 이벤트가 없습니다.</span>
                     </div>
                   </v-flex>
                   <v-flex xs12 sm6 md4>
-                    <strong class="cus-title">벙 참여 횟수</strong>
+                    <strong class="cus-title">이벤트 참여 횟수</strong>
                     <span>{{meetingCount}} 번</span>
                   </v-flex>
                   <v-flex xs12 sm6 md4>
@@ -65,7 +65,7 @@
                     </div>
                   </v-flex>
                   <v-flex xs12 sm6 md4>
-                    <strong class="cus-title">참여한 모든 벙 보기</strong>
+                    <strong class="cus-title">참여한 모든 이벤트 보기</strong>
                     <ul class="member-list w100" v-if="participatedMeetings.length">
                       <li v-for="participatedMeeting in participatedMeetings" :key="participatedMeeting.date">
                         <span>{{participatedMeeting.date}}</span> - <router-link :to="{path:`/meeting/${participatedMeeting.key}`}">{{participatedMeeting.title}}</router-link>

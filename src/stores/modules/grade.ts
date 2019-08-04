@@ -40,7 +40,6 @@ class GradeStore extends VuexModule {
     }
     const grades = await gradeApi.getGrades();
     grades.forEach(grade=>{
-      console.log('grade : ', grade);
       if(this.gradeInfoVO.get(grade.grade) === undefined){
         this.gradeInfoVO.set(grade.grade, {
           grade:grade.grade,

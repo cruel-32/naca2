@@ -41,10 +41,10 @@
             {{ gradeInfoVO && gradeInfoVO.get(props.item.grade).name }}
           </td>
           <td class="text-xs-center" >
-            {{props.item.lastDate ? $moment(props.item.lastDate.toString()).format('YYYY.MM.DD') : "미참석" }}
+            {{props.item.lastDate.value ? $moment(props.item.lastDate.value.toString()).format('YYYY.MM.DD') : "미참석" }}
           </td>
           <td class="text-xs-center" >
-            {{props.item.dPlus}}
+            {{props.item.dPlus}}일
           </td>
           <td v-bind:class="['text-xs-center', `status-${props.item.status}`]">
             {{
@@ -52,7 +52,7 @@
                 (props.item.status === 'blue' && props.item.grade == 1 ? '운영진' :
                   (props.item.status === 'blue' && props.item.grade == 5 ? '특수회원' :
                     (props.item.status === 'green' ? '모임장' :
-                      props.item.dMinus
+                      props.item.dMinus + '일'
                     )
                   )
                 )
@@ -151,7 +151,7 @@ export default class Members extends Vue {
   ];
 
   async created(){
-    await memberStore.getMembers();
+    await memberStore.getMembersInActive();
     await memberStore.setMembersInfoByKeys(this.members.map(member=>member.key||''));
   }
 
