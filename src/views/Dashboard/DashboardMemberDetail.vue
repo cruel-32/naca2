@@ -62,6 +62,11 @@
           <div id="familiarMembersChart" class="chart"></div>
         </v-flex>
 
+        <v-flex xs12 sm6 md6>
+          <v-subheader>선호 컨텐츠 카테고리</v-subheader>
+          <div id="familiarContentsChart" class="chart"></div>
+        </v-flex>
+
       </v-layout>
     </v-container>
   </v-layout>
@@ -228,77 +233,97 @@ export default class DashboardMemberDetail extends Vue {
   
   setPrivateVO(){
     const myKey = this.member.key;
-    this.member.participation.forEach(participation=>{
-      const joinedEvent = this.events.find(event=> event.key === participation.key);
+    if(this.member.participation){
 
-      if(joinedEvent){
-        const key = joinedEvent.key;
-        const YYYYMMDD = joinedEvent.date.toString();
-        const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;
-        const YYYY_MM_DD = `${YYYY_MM}.${YYYYMMDD.slice(6,8)}`;
-        const eventInfo = {key, date:YYYY_MM_DD};
+    
+      this.member.participation.forEach(participation=>{
+        const joinedEvent = this.events.find(event=> event.key === participation.key);
 
-        const joinedEventDates = this.joinedEventsVO.get(YYYY_MM);
-        if(joinedEventDates){//참여한 이벤트를 월별로 나눠 map에 담는다. key:이벤트년월 value:이벤트날짜들
-          joinedEventDates.push(eventInfo);
-        } else {
-          this.joinedEventsVO.set(YYYY_MM, [eventInfo]);
-        }
+        if(joinedEvent){
+          const key = joinedEvent.key;
+          const YYYYMMDD = joinedEvent.date.toString();
+          const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;
+          const YYYY_MM_DD = `${YYYY_MM}.${YYYYMMDD.slice(6,8)}`;
+          const eventInfo = {key, date:YYYY_MM_DD};
 
-        joinedEvent.contentKeys.forEach(contentKey=>{
-          const count = this.familiarContentsVO.get(contentKey);
-          this.familiarContentsVO.set(contentKey, (count || 0) + 1);
-        })
-
-        joinedEvent.memberKeys.forEach(memberKey=>{
-          if(myKey !== memberKey){//본인제외
-            const memberVO = this.familiarMembersVO.get(memberKey);
-            const memberObj = this.members.find((member:MemberTypes)=> member.key === memberKey);
-
-            this.familiarMembersVO.set(memberKey, {
-              count : memberVO ? (memberVO.count) + 1 : 1,
-              name : memberObj ? memberObj.name : '탈퇴한회원',
-            });
+          const joinedEventDates = this.joinedEventsVO.get(YYYY_MM);
+          if(joinedEventDates){//참여한 이벤트를 월별로 나눠 map에 담는다. key:이벤트년월 value:이벤트날짜들
+            joinedEventDates.push(eventInfo);
+          } else {
+            this.joinedEventsVO.set(YYYY_MM, [eventInfo]);
           }
-        })
 
-        joinedEvent.placeKeys.forEach(placeKey=>{
-          const count = this.familiarPlacesVO.get(placeKey);
-          this.familiarPlacesVO.set(placeKey, (count || 0) + 1);
-        })
-      }
-    })
+          joinedEvent.contentKeys.forEach(contentKey=>{
+            const count = this.familiarContentsVO.get(contentKey);
+            this.familiarContentsVO.set(contentKey, (count || 0) + 1);
+          })
+
+          joinedEvent.memberKeys.forEach(memberKey=>{
+            if(myKey !== memberKey){//본인제외
+              const memberVO = this.familiarMembersVO.get(memberKey);
+              const memberObj = this.members.find((member:MemberTypes)=> member.key === memberKey);
+
+              this.familiarMembersVO.set(memberKey, {
+                count : memberVO ? (memberVO.count) + 1 : 1,
+                name : memberObj ? memberObj.name : '탈퇴한회원',
+              });
+            }
+          })
+
+          joinedEvent.placeKeys.forEach(placeKey=>{
+            const count = this.familiarPlacesVO.get(placeKey);
+            this.familiarPlacesVO.set(placeKey, (count || 0) + 1);
+          })
+        }
+      })
+    }
   }
 
   charts:Map<string, any> = new Map([
-    ["partiChart", {chart:null, option: {
-      animate: false,
-      updateSyncedCharts: true,
-      plotOptions: {
-          bar: {
-              horizontal: true,
-          }
-      },
-      chart: {
-        type: 'bar',
-      },
-      series: [],
-      xaxis: {categories:[]}
-    }}],
-    ["familiarMembersChart", {chart:null, option: {
-      animate: false,
-      updateSyncedCharts: true,
-      plotOptions: {
-          bar: {
-              horizontal: true,
-          }
-      },
-      chart: {
-        type: 'bar',
-      },
-      series: [],
-      xaxis: {categories:[]},
-    }}],
+    ["partiChart", {
+      chart:null,
+      option: {
+        animate: true,
+        updateSyncedCharts: true,
+        plotOptions: {
+            bar: {
+                horizontal: true,
+            }
+        },
+        chart: {
+          type: 'bar',
+        },
+        series: [],
+        xaxis: {categories:[]}
+      }
+    }],
+    ["familiarMembersChart", {
+      chart:null,
+      option: {
+        animate: true,
+        updateSyncedCharts: true,
+        plotOptions: {
+            bar: {
+                horizontal: true,
+            }
+        },
+        chart: {
+          type: 'bar',
+        },
+        series: [],
+        xaxis: {categories:[]},
+      }
+    }],
+    ["familiarContentsChart", {
+      chart:null,
+      option : {
+        chart: {
+            type: 'donut',
+            width: '100%',
+        },
+        series: [],
+      }
+    }]
   ]);
 
   async created(){
@@ -327,6 +352,9 @@ export default class DashboardMemberDetail extends Vue {
     menuStore.setProgress(false);
   }
 
+  getPartiChartOption(){
+
+  }
 
   updateChart(id:string){
     const chartObj = this.charts.get(id);
@@ -334,7 +362,7 @@ export default class DashboardMemberDetail extends Vue {
       if(id === 'partiChart'){
         const newSeries:any[] = [
           {data:[],name: '참여한 이벤트 횟수'},
-          {data:[],name: '월별 열린 이벤트 횟수'},
+          {data:[],name: '열린 이벤트 횟수'},
         ];
 
         for(let i=0; i<=this.tickCount; i++){
@@ -347,7 +375,7 @@ export default class DashboardMemberDetail extends Vue {
 
         chartObj.option.xaxis.categories = this.rangeLabels;
         chartObj.option.series = newSeries;
-        chartObj.option.chart.height = this.tickCount*90;
+        chartObj.option.chart.height = (this.tickCount*80)+100;
 
       } else if(id === 'familiarMembersChart'){
         const newSeries:any[] = [
@@ -356,15 +384,21 @@ export default class DashboardMemberDetail extends Vue {
 
         const newMemberLabels:string[] = []
 
-        for(let [key, value] of this.familiarMembersVO){
-          if(value){
-            newMemberLabels.push(value.name);
-            newSeries[0].data.push(value.count);
+        if(this.familiarMembersVO.size > 0){
+          for(let [key, value] of this.familiarMembersVO){
+            if(value){
+              newMemberLabels.push(value.name);
+              newSeries[0].data.push(value.count);
+            }
           }
+        } else {
+          newMemberLabels.push('참여기록없음');
+          newSeries[0].data.push(0);
         }
+
         chartObj.option.xaxis.categories = newMemberLabels;
         chartObj.option.series = newSeries;
-        chartObj.option.chart.height = newMemberLabels.length*30;
+        chartObj.option.chart.height = (newMemberLabels.length*25)+100;
 
         const self = this;
         chartObj.option.chart.events = {
@@ -375,6 +409,29 @@ export default class DashboardMemberDetail extends Vue {
             }
           }
         }
+      } else if(id === 'familiarContentsChart'){
+        console.log('familiarContentsChart');
+        const newSeries:any[] = [];
+
+        const newContentsLabels:string[] = []
+
+        if(this.familiarContentsVO.size > 0){
+          for(let [key, value] of this.familiarContentsVO){
+            if(value){
+              const content = this.contents.find((content:ContentTypes)=> key === content.key);
+              if(content && content.name){
+                newContentsLabels.push(content.name);
+              }
+              newSeries.push(value);
+            }
+          }
+        } else {
+          newContentsLabels.push('참여기록없음');
+          newSeries.push(0);
+        }
+
+        chartObj.option.labels = newContentsLabels;
+        chartObj.option.series = newSeries;
       }
       chartObj.chart.updateOptions(chartObj.option)
     }
