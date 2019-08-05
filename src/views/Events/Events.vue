@@ -88,8 +88,8 @@ export default class Events extends Vue {
         endAt: parseInt(changedDateArr.join('')+'31'),
       }
       await eventStore.getEventsRange(dateRange);
-      menuStore.setProgress(false);
     }
+    menuStore.setProgress(false);
   }
 
   changePickedDay(date:string){
@@ -111,7 +111,7 @@ export default class Events extends Vue {
 
   goUpdateEvent(){
     if(!this.currentUser){
-      dialogStore.showSnackbar({snackColor:'error',snackText:'로그인이 필요합니다'});
+      dialogStore.showSnackbar({snackColor:'error', snackText:'로그인이 필요합니다'});
     } else {
       this.$router.push({
         path:`/event/detail`,
