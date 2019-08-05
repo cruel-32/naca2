@@ -205,6 +205,7 @@ export default class DashboardMemberDetail extends Vue {
   }
 
   setFamilarVO(){
+    const key = this.member.key;
     this.member.participation.forEach(participation=>{
       const joinedEvent = this.events.find(event=> event.key === participation.key);
 
@@ -215,13 +216,15 @@ export default class DashboardMemberDetail extends Vue {
         })
 
         joinedEvent.memberKeys.forEach(memberKey=>{
-          const memberVO = this.familiarMembersVO.get(memberKey);
-          const memberObj = this.members.find((member:MemberTypes)=> member.key === memberKey);
+          if(key !== memberKey){//본인제외
+            const memberVO = this.familiarMembersVO.get(memberKey);
+            const memberObj = this.members.find((member:MemberTypes)=> member.key === memberKey);
 
-          this.familiarMembersVO.set(memberKey, {
-            count : memberVO ? (memberVO.count) + 1 : 1,
-            name : memberObj ? memberObj.name : '',
-          });
+            this.familiarMembersVO.set(memberKey, {
+              count : memberVO ? (memberVO.count) + 1 : 1,
+              name : memberObj ? memberObj.name : '탈퇴한회원',
+            });
+          }
         })
 
         joinedEvent.placeKeys.forEach(placeKey=>{
@@ -264,7 +267,14 @@ export default class DashboardMemberDetail extends Vue {
     ["partiChart", {chart:null, option: {
       animate	: false,
       updateSyncedCharts	: false,
-      chart: {type: 'bar', height: 350},
+      plotOptions: {
+          bar: {
+              horizontal: true,
+          }
+      },
+      chart: {
+        type: 'bar',
+      },
       series: [],
       xaxis: {categories:[]}
     }}],
@@ -276,11 +286,15 @@ export default class DashboardMemberDetail extends Vue {
               horizontal: true,
           }
       },
-      chart: {type: 'bar', height: 700},
+      chart: {
+        type: 'bar',
+      },
       series: [],
-      xaxis: {categories:[]}
+      xaxis: {categories:[]},
     }}],
   ]);
+
+  
 
 
   async created(){
@@ -331,6 +345,8 @@ export default class DashboardMemberDetail extends Vue {
 
         chartObj.option.xaxis.categories = this.monthLabels;
         chartObj.option.series = newSeries;
+        chartObj.option.chart.height = this.monthTickCount*90;
+
       } else if(id === 'familiarMembersChart'){
         const newSeries:any[] = [
           {data:[],name: '만난 회원'},
@@ -346,6 +362,17 @@ export default class DashboardMemberDetail extends Vue {
         }
         chartObj.option.xaxis.categories = newMemberLabels;
         chartObj.option.series = newSeries;
+        chartObj.option.chart.height = newMemberLabels.length*30;
+
+        const self = this;
+        chartObj.option.chart.events = {
+          click(e:any, context:any, config:any){
+            const index = e.target.attributes['j'];
+            if(index){
+              self.goMemberDetailByName(config.globals.labels[index.value]);
+            }
+          }
+        }
       }
       chartObj.chart.updateOptions(chartObj.option)
     }
@@ -380,10 +407,16 @@ export default class DashboardMemberDetail extends Vue {
     memberStore.resetMember();
   }
 
+  @debounce(1000)
   goEventDetail(key:string){
     if(key){
       this.$router.push(`/event/detail/${key}`);
     }
+  }
+
+  @debounce(1000)
+  goMemberDetailByName(name:string){
+    console.log('goMemberDetail name : ', name);
   }
 }
 
@@ -408,10 +441,10 @@ export default class DashboardMemberDetail extends Vue {
   background-color:#fff;
   z-index: 10;
   &.title {
-    top:60px;
+    top:56px;
   }
   &.range {
-    top:100px;
+    top:97px;
   }
 }
 </style>

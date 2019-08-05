@@ -153,6 +153,10 @@ export default class Members extends Vue {
   async created(){
     await memberStore.getMembersInActive();
     await memberStore.setMembersInfoByKeys(this.members.map(member=>member.key||''));
+
+    this.members.forEach(member=>{
+      console.log('name : ', member.name);
+    })
   }
 
   goMeberDetail(key:string){
