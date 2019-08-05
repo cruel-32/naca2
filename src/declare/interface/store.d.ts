@@ -1,6 +1,6 @@
 declare interface ContentTypes {
     key:string;
-    name?:string;
+    name:string;
 }
 
 declare interface DateRange {

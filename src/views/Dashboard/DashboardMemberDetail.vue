@@ -63,8 +63,13 @@
         </v-flex>
 
         <v-flex xs12 sm6 md6>
-          <v-subheader>선호 컨텐츠 카테고리</v-subheader>
+          <v-subheader>선호하는 컨텐츠</v-subheader>
           <div id="familiarContentsChart" class="chart"></div>
+        </v-flex>
+
+        <v-flex xs12 sm6 md6>
+          <v-subheader>선호하는 장소</v-subheader>
+          <div id="familiarPlacesChart" class="chart"></div>
         </v-flex>
 
       </v-layout>
@@ -147,6 +152,8 @@ export default class DashboardMemberDetail extends Vue {
   tickCount:number = 0;
   rangeLabels:string[] = [];
   rangeEventsVO:Map<string,object[]> = new Map();
+  rangeContentsVO:Map<string,number> = new Map();
+  rangePlacesVO:Map<string,number> = new Map();
 
   //날짜가 바뀌거나 멤버키가 바뀌면 rest해주어야 하는 VO
   joinedEventsVO:Map<string,object[]> = new Map();
@@ -200,6 +207,8 @@ export default class DashboardMemberDetail extends Vue {
     this.tickCount = 0;
     this.rangeLabels = [];
     this.rangeEventsVO = new Map();
+    this.rangeContentsVO = new Map();
+    this.rangePlacesVO = new Map();
   }
 
   resetPrivateVO(){
@@ -227,7 +236,18 @@ export default class DashboardMemberDetail extends Vue {
         eventDates.push(eventInfo);
       } else {
         this.rangeEventsVO.set(YYYY_MM, [eventInfo]);
-      } 
+      }
+
+      event.contentKeys.forEach(contentKey=>{
+        const count = this.rangeContentsVO.get(contentKey);
+        this.rangeContentsVO.set(contentKey, (count || 0) + 1);
+      })
+
+      event.placeKeys.forEach(placeKey=>{
+        const count = this.rangePlacesVO.get(placeKey);
+        this.rangePlacesVO.set(placeKey, (count || 0) + 1);
+      })
+
     })
   }
   
@@ -253,11 +273,6 @@ export default class DashboardMemberDetail extends Vue {
             this.joinedEventsVO.set(YYYY_MM, [eventInfo]);
           }
 
-          joinedEvent.contentKeys.forEach(contentKey=>{
-            const count = this.familiarContentsVO.get(contentKey);
-            this.familiarContentsVO.set(contentKey, (count || 0) + 1);
-          })
-
           joinedEvent.memberKeys.forEach(memberKey=>{
             if(myKey !== memberKey){//본인제외
               const memberVO = this.familiarMembersVO.get(memberKey);
@@ -268,6 +283,11 @@ export default class DashboardMemberDetail extends Vue {
                 name : memberObj ? memberObj.name : '탈퇴한회원',
               });
             }
+          })
+
+          joinedEvent.contentKeys.forEach(contentKey=>{
+            const count = this.familiarContentsVO.get(contentKey);
+            this.familiarContentsVO.set(contentKey, (count || 0) + 1);
           })
 
           joinedEvent.placeKeys.forEach(placeKey=>{
@@ -316,14 +336,38 @@ export default class DashboardMemberDetail extends Vue {
     }],
     ["familiarContentsChart", {
       chart:null,
-      option : {
+      option: {
+        animate: true,
+        updateSyncedCharts: true,
+        plotOptions: {
+            bar: {
+                horizontal: true,
+            }
+        },
         chart: {
-            type: 'donut',
-            width: '100%',
+          type: 'bar',
         },
         series: [],
+        xaxis: {categories:[]},
       }
-    }]
+    }],
+    ["familiarPlacesChart", {
+      chart:null,
+      option: {
+        animate: true,
+        updateSyncedCharts: true,
+        plotOptions: {
+            bar: {
+                horizontal: true,
+            }
+        },
+        chart: {
+          type: 'bar',
+        },
+        series: [],
+        xaxis: {categories:[]},
+      }
+    }],
   ]);
 
   async created(){
@@ -375,7 +419,7 @@ export default class DashboardMemberDetail extends Vue {
 
         chartObj.option.xaxis.categories = this.rangeLabels;
         chartObj.option.series = newSeries;
-        chartObj.option.chart.height = (this.tickCount*80)+100;
+        chartObj.option.chart.height = (this.tickCount*60)+100;
 
       } else if(id === 'familiarMembersChart'){
         const newSeries:any[] = [
@@ -410,28 +454,49 @@ export default class DashboardMemberDetail extends Vue {
           }
         }
       } else if(id === 'familiarContentsChart'){
-        console.log('familiarContentsChart');
-        const newSeries:any[] = [];
+        const newSeries:any[] = [
+          {data:[],name: '참여한 컨텐츠 횟수'},
+          {data:[],name: '열린 컨텐츠 횟수'},
+        ];
+        
+        const newContentLabels:string[] = []
 
-        const newContentsLabels:string[] = []
+        this.contents.forEach((content:ContentTypes)=>{
+          newContentLabels.push(content.name);
 
-        if(this.familiarContentsVO.size > 0){
-          for(let [key, value] of this.familiarContentsVO){
-            if(value){
-              const content = this.contents.find((content:ContentTypes)=> key === content.key);
-              if(content && content.name){
-                newContentsLabels.push(content.name);
-              }
-              newSeries.push(value);
-            }
-          }
-        } else {
-          newContentsLabels.push('참여기록없음');
-          newSeries.push(0);
-        }
+          const joined = this.familiarContentsVO.get(content.key);
+          const events = this.rangeContentsVO.get(content.key);
 
-        chartObj.option.labels = newContentsLabels;
+          newSeries[0].data.push(joined || 0);
+          newSeries[1].data.push(events || 0);
+        });
+
+
+        chartObj.option.xaxis.categories = newContentLabels;
         chartObj.option.series = newSeries;
+        chartObj.option.chart.height = (this.contents.length*60)+100;
+      } else if(id === 'familiarPlacesChart'){
+        const newSeries:any[] = [
+          {data:[],name: '참여한 장소 횟수'},
+          {data:[],name: '열린 장소 횟수'},
+        ];
+
+        const newPlaceLabels:string[] = []
+
+        this.places.forEach((place:PlaceTypes)=>{
+          newPlaceLabels.push(place.name);
+
+          const joined = this.familiarPlacesVO.get(place.key);
+          const events = this.rangePlacesVO.get(place.key);
+
+          newSeries[0].data.push(joined || 0);
+          newSeries[1].data.push(events || 0);
+        });
+
+
+        chartObj.option.xaxis.categories = newPlaceLabels;
+        chartObj.option.series = newSeries;
+        chartObj.option.chart.height = (this.places.length*60)+100;
       }
       chartObj.chart.updateOptions(chartObj.option)
     }
