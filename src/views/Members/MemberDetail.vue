@@ -386,7 +386,6 @@ export default class MemberDetail extends Vue {
     menuStore.setProgress(true);
     if(this.currentUser){
       const result = await memberStore.deleteMember(this.member.key ? this.member.key : '');
-      console.log('result : ', result);
       dialogStore.showSnackbar(result);
     } else {
       dialogStore.showSnackbar({snackColor:'error',snackText:'권한이 없습니다'});
