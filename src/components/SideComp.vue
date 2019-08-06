@@ -18,13 +18,13 @@
         <img class="draw-user" :src="currentUser.providerData[0].photoURL" alt="avatar">
         <span class="d-block title" style="color:#fff;">{{currentUser.displayName}}</span>
         <span class="d-block caption" style="color:#fff;">{{currentUser.email}}</span>
-        <v-btn @click="login()" color="info">NACA에서 로그아웃</v-btn>
+        <v-btn @click="logout()" color="info">NACA에서 로그아웃</v-btn>
       </div>
       <div v-if="!currentUser" class="pt-4 pb-3" style="text-align:center;">
         <div>
           <v-icon x-large>account_circle</v-icon>
         </div>
-        <v-btn @click="logout()" color="info">구글 아이디로 로그인</v-btn>
+        <v-btn @click="login()" color="info">구글 아이디로 로그인</v-btn>
       </div>
     </v-card-title>
 

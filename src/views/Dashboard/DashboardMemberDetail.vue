@@ -53,26 +53,18 @@
         </v-flex>
 
         <v-flex xs12 sm6 md6>
-          <v-subheader id="eventsChart" class="chart_title">월별 참여 횟수</v-subheader>
-          <!-- <div id="partiChart" class="chart"></div> -->
           <apexchart type="bar" :options="eventsOptions"  :height="eventsHeight" :series="eventsSeries"></apexchart>
         </v-flex>
 
         <v-flex xs12 sm6 md6>
-          <v-subheader id="membersChart" class="chart_title">만난 회원 목록</v-subheader>
-          <!-- <div id="personalMembersChart" class="chart"></div> -->
-          <apexchart type="bar" :options="membersOptions"  :height="membersHeight" :series="membersSeries" @click="goMemberDetailByName"></apexchart>
+          <apexchart type="bar" :options="membersOptions"  :height="membersHeight" :series="membersSeries"></apexchart>
         </v-flex>
 
         <v-flex xs12 sm6 md6>
-          <v-subheader id="contentsChart" class="chart_title">선호하는 컨텐츠</v-subheader>
-          <!-- <div id="personalContentsChart" class="chart"></div> -->
           <apexchart type="bar" :options="contentsOptions"  :height="contentsHeight" :series="contentsSeries"></apexchart>
         </v-flex>
 
         <v-flex xs12 sm6 md6>
-          <v-subheader id="placesChart" class="chart_title">선호하는 장소</v-subheader>
-          <!-- <div id="personalPlacesChart" class="chart"></div> -->
           <apexchart type="bar" :options="placesOptions"  :height="placesHeight" :series="placesSeries"></apexchart>
         </v-flex>
 
@@ -309,14 +301,19 @@ export default class DashboardMemberDetail extends Vue {
     }
   }
 
-
   eventsSeries:any[] = [];
   eventsHeight:any = 'auto';
   eventsOptions:any = {
+    title: {
+      text: '월별 참여 횟수'
+    },
+    legend: {
+      position: 'top'
+    },
     plotOptions: {
-        bar: {
-            horizontal: true,
-        }
+      bar: {
+          horizontal: true,
+      }
     },
     xaxis: {categories:[]}
   }
@@ -324,17 +321,34 @@ export default class DashboardMemberDetail extends Vue {
   membersSeries:any[] = [];
   membersHeight:any = 'auto';
   membersOptions:any  = {
+    title: {
+      text: '만난 회원 목록'
+    },
+    legend: {
+      position: 'top'
+    },
     plotOptions: {
         bar: {
             horizontal: true,
         }
     },
-    xaxis: {categories:[]}
+    xaxis: {categories:[]},
+    chart : {
+      events : {
+        dataPointSelection: this.goMemberDetailByName,
+      }
+    }
   }
 
   contentsSeries:any[] = [];
   contentsHeight:any = 'auto';
   contentsOptions:any  = {
+    title: {
+      text: '선호 컨텐츠'
+    },
+    legend: {
+      position: 'top'
+    },
     plotOptions: {
         bar: {
             horizontal: true,
@@ -346,6 +360,12 @@ export default class DashboardMemberDetail extends Vue {
   placesSeries:any[] = [];
   placesHeight:any = 'auto';
   placesOptions:any  = {
+    title: {
+      text: '선호 지역'
+    },
+    legend: {
+      position: 'top'
+    },
     plotOptions: {
         bar: {
             horizontal: true,
@@ -356,13 +376,6 @@ export default class DashboardMemberDetail extends Vue {
 
   async created(){
     menuStore.setProgress(true);
-    if(!this.currentUser){
-      dialogStore.showSnackbar({
-        snackColor : 'error',
-        snackText : '로그인이 필요합니다'
-      });
-      this.$router.back();
-    }
     this.setDateRange();
     Promise.all([
       contentStore.getContents(), 
@@ -419,7 +432,7 @@ export default class DashboardMemberDetail extends Vue {
 
     this.membersSeries = newSeries;
     this.membersOptions.xaxis.categories = newMemberLabels;
-    this.membersHeight = (newMemberLabels.length*25)+100;
+    this.membersHeight = (newMemberLabels.length*30)+120;
   }
 
   updateContentsChart(){
@@ -481,13 +494,11 @@ export default class DashboardMemberDetail extends Vue {
   }
 
   @debounce(1000)
-  goMemberDetailByName(e:any){
-    const text = e.target.querySelector('text');
-    if(text){
-      const member = this.members.find((member:MemberTypes)=> member.name === text.textContent);
-      if(member){
-        this.$router.push(`/dashboard/member/detail/${member.key}`);
-      }
+  goMemberDetailByName(e:any, chartContext:any, config:any){
+    const name = chartContext.w.globals.labels[e.target.getAttribute('j')];
+    const member = this.members.find((member:MemberTypes)=> member.name === name);
+    if(member){
+      this.$router.push(`/dashboard/member/detail/${member.key}`);
     }
   }
 }
@@ -510,7 +521,7 @@ export default class DashboardMemberDetail extends Vue {
 
 .sticky {
   position:sticky;
-  background-color:#fff;
+  background-color:#fafafa;
   z-index: 10;
   &.title {
     top:56px;
