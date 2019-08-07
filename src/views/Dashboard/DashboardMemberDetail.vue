@@ -256,7 +256,6 @@ export default class DashboardMemberDetail extends Vue {
   setPersonalVO(){
     const myKey = this.member.key;
     if(this.member.participation){
-
     
       this.member.participation.forEach(participation=>{
         const joinedEvent = this.events.find(event=> event.key === participation.key);
@@ -408,7 +407,7 @@ export default class DashboardMemberDetail extends Vue {
 
     this.eventsSeries = newSeries;
     this.eventsOptions.xaxis.categories = this.rangeLabels;
-    this.eventsHeight = (this.tickCount*50)+150;
+    this.eventsHeight = (this.tickCount*60)+120;
   }
 
   updateMembersChart(){
@@ -441,21 +440,20 @@ export default class DashboardMemberDetail extends Vue {
       {data:[],name: '열린 컨텐츠 횟수'},
     ];
     
-    const newContentLabels:string[] = []
+    const newContentLabels:string[] = [];
 
-    this.contents.forEach((content:ContentTypes)=>{
-      newContentLabels.push(content.name);
+    for(let [key, value] of this.rangeContentsVO.entries()){
+      const content = this.contents.find((content:ContentTypes) => content.key === key);
+      const contentCount = this.personalContentsVO.get(key);
 
-      const joined = this.personalContentsVO.get(content.key);
-      const events = this.rangeContentsVO.get(content.key);
-
-      newSeries[0].data.push(joined || 0);
-      newSeries[1].data.push(events || 0);
-    });
+      newContentLabels.push(content!.name);
+      newSeries[0].data.push(contentCount || 0);
+      newSeries[1].data.push(value || 0);
+    }
 
     this.contentsSeries =  newSeries;
     this.contentsOptions.xaxis.categories = newContentLabels;
-    this.contentsHeight = (this.contents.length*50)+150;
+    this.contentsHeight = (this.rangeContentsVO.size*60)+130;
   }
 
   updatePlacesChart(){
@@ -463,22 +461,21 @@ export default class DashboardMemberDetail extends Vue {
       {data:[],name: '참여한 장소 횟수'},
       {data:[],name: '열린 장소 횟수'},
     ];
-
+    
     const newPlaceLabels:string[] = []
 
-    this.places.forEach((place:PlaceTypes)=>{
-      newPlaceLabels.push(place.name);
+    for(let [key, value] of this.rangePlacesVO.entries()){
+      const place = this.places.find((place:PlaceTypes) => place.key === key);
+      const placeCount = this.personalPlacesVO.get(key);
 
-      const joined = this.personalPlacesVO.get(place.key);
-      const events = this.rangePlacesVO.get(place.key);
-
-      newSeries[0].data.push(joined || 0);
-      newSeries[1].data.push(events || 0);
-    });
+      newPlaceLabels.push(place!.name);
+      newSeries[0].data.push(placeCount || 0);
+      newSeries[1].data.push(value || 0);
+    }
 
     this.placesSeries = newSeries;
     this.placesOptions.xaxis.categories = newPlaceLabels;
-    this.placesHeight = (this.places.length*50)+150;
+    this.placesHeight = (this.rangePlacesVO.size*60)+130;
 
   }
 
