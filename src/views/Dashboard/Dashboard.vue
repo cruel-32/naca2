@@ -24,12 +24,12 @@ export default class Dashboard extends Vue {
     {
       title: '회원 전체 통계',
       subtitle: "회원 전체 통계를 봅니다.",
-      link: '/dashboard/membersAge'
+      link: '/dashboard/memberAll'
     },
     {
       title: '이벤트 통계',
       subtitle: "이벤트 통계를 봅니다.",
-      link: '/dashboard/events'
+      link: '/dashboard/eventAll'
     },
   ]
 }

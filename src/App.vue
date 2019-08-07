@@ -2,8 +2,12 @@
   <v-app
     app
   >
-    <SideComp></SideComp>
-    <HeaderComp></HeaderComp>
+    <HeaderComp></HeaderComp> 
+
+    <v-container v-if="$route.fullPath === '/'" fluid>
+      None Alcohol Culture Admin
+    </v-container>
+    
 
     <v-content class="pb-5">
       <ProgressComp></ProgressComp>
@@ -39,7 +43,6 @@ import { accountStore } from "@/stores/modules/account"
 import { dialogStore } from "@/stores/modules/dialog"
 // import { MemberTypes, memberStore } from "@/stores/modules/member"
 
-import SideComp from "@/components/SideComp.vue"
 import HeaderComp from "@/components/HeaderComp.vue"
 import FooterComp from "@/components/FooterComp.vue"
 import ProgressComp from "@/components/ProgressComp.vue"
@@ -48,7 +51,7 @@ import ProgressComp from "@/components/ProgressComp.vue"
 @Component({
   name: 'App',
   components: {
-    HeaderComp,SideComp,FooterComp,ProgressComp
+    HeaderComp,FooterComp,ProgressComp
   },
   computed: {
     snackBar(){
@@ -57,6 +60,12 @@ import ProgressComp from "@/components/ProgressComp.vue"
   }
 })
 export default class extends Vue {
+  created(){
+    accountStore.onAuthStateChanged(); //전체앱 통틀어 한번만 실행
+    console.log('App launched');
+    console.log('this', this.$route);
+  }
+
   moundted(){
     this.$validator.localize('en', {
       custom : {
@@ -86,11 +95,6 @@ export default class extends Vue {
     });
   }
   
-  created(){
-    accountStore.onAuthStateChanged(); //전체앱 통틀어 한번만 실행
-    console.log('App launched');
-  }
-  
   onScroll(){
   }
 
@@ -100,8 +104,8 @@ export default class extends Vue {
 }
 </script>
 <style lang="scss">
-  * {
-    transition: none !important;
-  }
+  // * {
+  //   transition: none !important;
+  // }
 </style>
 

@@ -1,36 +1,53 @@
 <template>
-  <v-toolbar app :clipped-left="true" dark>
-    <v-toolbar-side-icon @click.stop="toggleSideCompDrawer()">
-    </v-toolbar-side-icon>
+  <div class="header">
 
-    <router-link :to="{name : 'home'}">
-      <v-icon v-html="'home'"></v-icon>
-    </router-link>
-
-    <v-toolbar-title v-text="title"></v-toolbar-title>
-
-    <v-spacer></v-spacer>
-
-    <div class="user login" v-if="currentUser">
-      <v-avatar
-        :tile="false"
-        :size="24"
-        color="grey lighten-4"
-      >
-        <v-btn icon :to="{name : 'account'}">
-          <img :src="currentUser && currentUser.providerData[0].photoURL" :alt="currentUser && currentUser.email">
-        </v-btn>
-      </v-avatar>
-      <v-btn class="logout hidden-xs-only" @click="logout">로그아웃</v-btn>
-    </div>
-
-    <div class="user" v-if="!currentUser">
-      <v-btn icon>
+    <v-avatar
+      class="user"
+      :tile="false"
+      :size="20"
+      color="grey lighten-4"
+    >
+      <v-btn icon v-if="currentUser" @click="viewLogoutConfirm = true">
+        <img :src="currentUser && currentUser.providerData[0].photoURL" :alt="currentUser && currentUser.email">
+      </v-btn>
+      <v-btn icon v-if="!currentUser">
         <v-icon @click="login()">account_circle</v-icon>
       </v-btn>
-    </div>
+    </v-avatar>
 
-  </v-toolbar>
+
+    <v-dialog
+      v-model="viewLogoutConfirm"
+    >
+      <v-card>
+        <v-card-title class="headline">로그아웃 하시겠습니까?</v-card-title>
+        <v-card-text>
+          로그아웃합니다
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn
+            right
+            @click="viewLogoutConfirm = false"
+            outline
+            depressed
+          >
+            취소
+          </v-btn>
+          <v-btn
+            right
+            color="red darken-1"
+            @click="logout()"
+            outline
+            depressed
+          >
+            로그아웃
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+  </div>
 </template>
 
 <script lang="ts">
@@ -44,14 +61,10 @@ export default class HeaderComp extends Vue {
   //stores
   get snackBar(){ return dialogStore.snackBar}
   get currentUser(){ return accountStore.currentUser }
-  get drawer(){ return menuStore.drawer }
 
   //local data
   title:string = 'NACA System 2.0';
-
-  toggleSideCompDrawer(){
-    menuStore.setDrawerAction(!this.drawer);
-  }
+  viewLogoutConfirm:boolean = false;
 
   async login(){
     const user = await accountStore.login();
@@ -63,12 +76,20 @@ export default class HeaderComp extends Vue {
   async logout(){
     const result = await accountStore.logout();
     if(result){
+      this.viewLogoutConfirm = false;
       dialogStore.showSnackbar({snackColor:'success', snackText:`로그아웃되었습니다`});
-
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+.header{
+  .v-avatar {
+    position:fixed;
+    top:12px;
+    right:12px;
+    z-index:30;
+  }
+}
 </style>

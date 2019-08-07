@@ -52,32 +52,37 @@
         dark
         color="indigo"
         @click="showSnackbar({snackColor:'info',snackText:'퀵메뉴 : 오늘 날짜로 이벤트를 생성합니다'})"
-        :to="{path : `/event/detail`}"
+        :to="{path : `/events/detail`}"
       >
         <v-icon>add_alarm</v-icon>
       </v-btn>
     </v-speed-dial>
 
 
-      <!-- :active.sync="$route.name"
-      :color="pageColor" -->
     <v-bottom-nav
       :value="true"
       fixed
       shift
+      dark
+      :color="pageColor"
     >
-      <v-btn dark flat :to="{name : 'events'}">
+      <v-btn flat :to="{name : 'home'}">
+        <span>Home</span>
+        <v-icon>home</v-icon>
+      </v-btn>
+
+      <v-btn flat :to="{name : 'events'}">
         <span>Events</span>
         <v-icon>date_range</v-icon>
       </v-btn>
 
-      <v-btn dark flat :to="{name : 'members'}">
+      <v-btn flat :to="{name : 'members'}">
         <span>Members</span>
         <v-icon>people</v-icon>
       </v-btn>
 
-      <v-btn dark flat :to="{name : 'statistics'}">
-        <span>statistics</span>
+      <v-btn flat :to="{name : 'dashboard'}">
+        <span>Dashboard</span>
         <v-icon>insert_chart</v-icon>
       </v-btn>
     </v-bottom-nav>
@@ -92,21 +97,23 @@ import { dialogStore } from "@/stores/modules/dialog";
 export default class FooterComp extends Vue {
   get snackBar(){return dialogStore.snackBar}
 
+  pageNum:number = 4;
   fab:boolean = false;
   joinDate:any = this.$moment(new Date()).format('YYYY-MM-DD');
 
-  // get pageColor() {
-  //   console.log('this.$route : ', this.$route);
-    
-  //   switch (this.$route.name) {
-  //     case 'event' : return 'blue-grey'
-  //     case 'events' : return 'blue-grey'
-  //     case 'member' : return 'teal'
-  //     case 'members' : return 'teal'
-  //     case 'statistics' : return 'brown'
-  //     default : return '#666666'
-  //   }
-  // }
+  get pageColor() {
+    let color = '';
+    if(this.$route.path.indexOf('/member') == 0 ){
+      color = 'blue-grey';
+    } else if(this.$route.path.indexOf('/member') == 0 ){
+      color = 'teal';
+    } else if(this.$route.path.indexOf('/dashboard') == 0 ){
+      color = 'brown';
+    } else {
+      color = '#666666'
+    }
+    return color;
+  }
 
   showSnackbar(snackBar:SnackbarTypes){
     dialogStore.showSnackbar(snackBar);
@@ -114,12 +121,11 @@ export default class FooterComp extends Vue {
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
-<style scoped lang="scss">
-.v-speed-dial--fixed {
-  z-index: 5;
+<style lang="scss">
+.v-speed-dial--fixed, .v-speed-dial--absolute {
+  z-index:20;
 }
 .v-speed-dial--bottom:not(.v-speed-dial--absolute) {
-  bottom: 36px;
+  bottom: 50px;
 }
 </style>

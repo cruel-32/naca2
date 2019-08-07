@@ -26,7 +26,7 @@ export default class ProgressComp extends Vue {
 <style scoped lang="scss">
 .bg {
   position: fixed;
-  z-index: 20;
+  z-index: 30;
   top: 0;
   left: 0;
   right: 0;

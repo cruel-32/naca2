@@ -154,7 +154,7 @@
                     outline
                     depressed
                     block
-                    @click="$router.push(`/event/detail/${member.firstDate.key}`)"
+                    @click="$router.push(`/events/detail/${member.firstDate.key}`)"
                   >{{firstDateString}} 이벤트 보러가기</v-btn>
                 </v-flex>
 
@@ -166,7 +166,7 @@
                     outline
                     depressed
                     block
-                    @click="$router.push(`/event/detail/${member.lastDate.key}`)"
+                    @click="$router.push(`/events/detail/${member.lastDate.key}`)"
                   >{{lastDateString}} 이벤트 보러가기</v-btn>
                 </v-flex>
 

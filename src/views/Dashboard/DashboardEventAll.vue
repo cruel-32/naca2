@@ -5,10 +5,7 @@
       
         <v-flex xs12 sm12 md12 class="sticky title">
           <h1 class="headline">
-            <v-icon color="green">insert_chart</v-icon> {{member.name}}님의 통계
-            <v-btn class="ma-2" small tile outline color="success" @click="$router.push(`/members/detail/${member.key}`)">
-              회원정보보기
-            </v-btn>
+            <v-icon color="green">insert_chart</v-icon> 전체 이벤트 통계
           </h1>
         </v-flex>
 
@@ -57,15 +54,11 @@
         </v-flex>
 
         <v-flex xs12 sm6 md6>
-          <apexchart type="bar" :options="membersOptions"  :height="membersHeight" :series="membersSeries"></apexchart>
+          <apexchart type="donut" :options="contentsOptions"  :height="contentsHeight" :series="contentsSeries"></apexchart>
         </v-flex>
 
         <v-flex xs12 sm6 md6>
-          <apexchart type="bar" :options="contentsOptions"  :height="contentsHeight" :series="contentsSeries"></apexchart>
-        </v-flex>
-
-        <v-flex xs12 sm6 md6>
-          <apexchart type="bar" :options="placesOptions"  :height="placesHeight" :series="placesSeries"></apexchart>
+          <apexchart type="donut" :options="placesOptions"  :height="placesHeight" :series="placesSeries"></apexchart>
         </v-flex>
 
       </v-layout>
@@ -88,21 +81,20 @@ import apexchart from 'vue-apexcharts'
     apexchart
   }
 })
-export default class DashboardMemberDetail extends Vue {
+export default class DashboardMemberAll extends Vue {
    //props
   @Prop() params: any;
 
   //stores
-  get member(){return memberStore.member}
   get events(){return eventStore.events}
   get members(){return memberStore.members}
   get places(){return placeStore.places}
   get contents(){return contentStore.contents}
 
   endAt:string = this.$moment(new Date()).format('YYYY-MM');
-  startAt:string = this.$moment(new Date()).add(-4, 'months').format('YYYY-MM');
+  startAt:string = this.$moment(new Date()).add(-6, 'months').format('YYYY-MM');
   dateRange:DateRange = {
-    startAt: this.$moment(new Date()).add(-4, 'months').format('YYYYMM'),
+    startAt: this.$moment(new Date()).add(-6, 'months').format('YYYYMM'),
     endAt: this.$moment(new Date()).format('YYYYMM'),
   }
 
@@ -113,12 +105,6 @@ export default class DashboardMemberDetail extends Vue {
   rangeContentsVO:Map<string,number> = new Map();
   rangePlacesVO:Map<string,number> = new Map();
 
-  //날짜가 바뀌거나 멤버키가 바뀌면 rest해주어야 하는 VO
-  personalEventsVO:Map<string,object[]> = new Map();
-  personalMembersVO:Map<string,any> = new Map();
-  personalPlacesVO:Map<string,number> = new Map();
-  personalContentsVO:Map<string,number> = new Map();
-
   viewStartAt:boolean = false;
   viewEndAt:boolean = false;
 
@@ -126,7 +112,7 @@ export default class DashboardMemberDetail extends Vue {
   eventsHeight:any = 'auto';
   eventsOptions:any = {
     title: {
-      text: '월별 참여 횟수'
+      text: '월별 이벤트 횟수'
     },
     legend: {
       position: 'top'
@@ -139,41 +125,14 @@ export default class DashboardMemberDetail extends Vue {
     xaxis: {categories:[]}
   }
   
-  membersSeries:any[] = [];
-  membersHeight:any = 'auto';
-  membersOptions:any  = {
-    title: {
-      text: '만난 회원 목록'
-    },
-    legend: {
-      position: 'top'
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-        }
-    },
-    xaxis: {categories:[]},
-    chart : {
-      events : {
-        dataPointSelection: this.goMemberDetailByName,
-      }
-    }
-  }
-
   contentsSeries:any[] = [];
   contentsHeight:any = 'auto';
   contentsOptions:any  = {
     title: {
-      text: '선호 컨텐츠'
+      text: '컨텐츠 비율'
     },
     legend: {
       position: 'top'
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-        }
     },
     xaxis: {categories:[]}
   }
@@ -182,15 +141,10 @@ export default class DashboardMemberDetail extends Vue {
   placesHeight:any = 'auto';
   placesOptions:any  = {
     title: {
-      text: '선호 지역'
+      text: '지역 비율'
     },
     legend: {
       position: 'top'
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-        }
     },
     xaxis: {categories:[]}
   }
@@ -207,38 +161,16 @@ export default class DashboardMemberDetail extends Vue {
 
   @Watch('events')
   setDashboardData(){
-    if(this.member.key){
-      menuStore.setProgress(true);
-      this.resetChartCommonInfo();
-      this.resetPersonalVO();
-
-      this.setChartCommonInfo();
-      this.setPersonalVO();
-
-      this.updateEventsChart();
-      this.updateMembersChart();
-      this.updateContentsChart();
-      this.updatePlacesChart();
-
-      menuStore.setProgress(false);
-    }
-  }
-
-  @Watch('params.key')
-  async getNewMember(){
     menuStore.setProgress(true);
-    this.resetPersonalVO();
-    const msg = await memberStore.getMemberByKey(this.params ? this.params.key : '')
-    if(msg.snackColor === 'success'){
-      this.setPersonalVO();
+    this.resetChartCommonInfo();
 
-      this.updateEventsChart();
-      this.updateMembersChart();
-      this.updateContentsChart();
-      this.updatePlacesChart();
+    this.setChartCommonInfo();
 
-      menuStore.setProgress(false);
-    }
+    this.updateEventsChart();
+    this.updateContentsChart();
+    this.updatePlacesChart();
+
+    menuStore.setProgress(false);
   }
 
   resetChartCommonInfo(){
@@ -247,13 +179,6 @@ export default class DashboardMemberDetail extends Vue {
     this.rangeEventsVO = new Map();
     this.rangeContentsVO = new Map();
     this.rangePlacesVO = new Map();
-  }
-
-  resetPersonalVO(){
-    this.personalEventsVO = new Map();
-    this.personalMembersVO = new Map();
-    this.personalPlacesVO = new Map();
-    this.personalContentsVO = new Map();
   }
 
   setChartCommonInfo(){
@@ -285,57 +210,10 @@ export default class DashboardMemberDetail extends Vue {
         const count = this.rangePlacesVO.get(placeKey);
         this.rangePlacesVO.set(placeKey, (count || 0) + 1);
       })
-
     })
+
   }
   
-  setPersonalVO(){
-    const myKey = this.member.key;
-    if(this.member.participation){
-    
-      this.member.participation.forEach(participation=>{
-        const joinedEvent = this.events.find(event=> event.key === participation.key);
-
-        if(joinedEvent){
-          const key = joinedEvent.key;
-          const YYYYMMDD = joinedEvent.date.toString();
-          const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;
-          const YYYY_MM_DD = `${YYYY_MM}.${YYYYMMDD.slice(6,8)}`;
-          const eventInfo = {key, date:YYYY_MM_DD};
-
-          const joinedEventDates = this.personalEventsVO.get(YYYY_MM);
-          if(joinedEventDates){//참여한 이벤트를 월별로 나눠 map에 담는다. key:이벤트년월 value:이벤트날짜들
-            joinedEventDates.push(eventInfo);
-          } else {
-            this.personalEventsVO.set(YYYY_MM, [eventInfo]);
-          }
-
-          joinedEvent.memberKeys.forEach(memberKey=>{
-            if(myKey !== memberKey){//본인제외
-              const memberVO = this.personalMembersVO.get(memberKey);
-              const memberObj = this.members.find((member:MemberTypes)=> member.key === memberKey);
-
-              this.personalMembersVO.set(memberKey, {
-                count : memberVO ? (memberVO.count) + 1 : 1,
-                name : memberObj ? memberObj.name : '탈퇴한회원',
-              });
-            }
-          })
-
-          joinedEvent.contentKeys.forEach(contentKey=>{
-            const count = this.personalContentsVO.get(contentKey);
-            this.personalContentsVO.set(contentKey, (count || 0) + 1);
-          })
-
-          joinedEvent.placeKeys.forEach(placeKey=>{
-            const count = this.personalPlacesVO.get(placeKey);
-            this.personalPlacesVO.set(placeKey, (count || 0) + 1);
-          })
-        }
-      })
-    }
-  }
-
   async created(){
     menuStore.setProgress(true);
     this.setDateRange();
@@ -355,94 +233,54 @@ export default class DashboardMemberDetail extends Vue {
 
   updateEventsChart(){
     const newSeries:any[] = [
-      {data:[],name: '참여한 이벤트 횟수'},
       {data:[],name: '열린 이벤트 횟수'},
     ];
 
     for(let i=0; i<=this.tickCount; i++){
-      const joined = this.personalEventsVO.get(this.rangeLabels[i]);
       const events = this.rangeEventsVO.get(this.rangeLabels[i]);
 
-      newSeries[0].data.push(joined ? joined.length : 0);
-      newSeries[1].data.push(events ? events.length : 0);
+      newSeries[0].data.push(events ? events.length : 0);
     }
 
     this.eventsSeries = newSeries;
     this.eventsOptions.xaxis.categories = this.rangeLabels;
-    this.eventsHeight = (this.tickCount*60)+120;
-  }
-
-  updateMembersChart(){
-    const newSeries:any[] = [
-      {data:[],name: '만난 회원'},
-    ];
-
-    const newMemberLabels:string[] = []
-
-    if(this.personalMembersVO.size > 0){
-      for(let [key, value] of this.personalMembersVO){
-        if(value){
-          newMemberLabels.push(value.name);
-          newSeries[0].data.push(value.count);
-        }
-      }
-    } else {
-      newMemberLabels.push('참여기록없음');
-      newSeries[0].data.push(0);
-    }
-
-    this.membersSeries = newSeries;
-    this.membersOptions.xaxis.categories = newMemberLabels;
-    this.membersHeight = (newMemberLabels.length*30)+120;
+    this.eventsHeight = (this.tickCount*30)+120;
   }
 
   updateContentsChart(){
-    const newSeries:any[] = [
-      {data:[],name: '참여한 컨텐츠 횟수'},
-      {data:[],name: '열린 컨텐츠 횟수'},
-    ];
-    
+    const newSeries:any[] = [];
     const newContentLabels:string[] = [];
 
     for(let [key, value] of this.rangeContentsVO.entries()){
-      const content = this.contents.find((content:ContentTypes) => content.key === key);
-      const contentCount = this.personalContentsVO.get(key);
-
-      newContentLabels.push(content!.name);
-      newSeries[0].data.push(contentCount || 0);
-      newSeries[1].data.push(value || 0);
+      const content = this.contents.find((content:ContentTypes)=>content.key === key);
+      if(content){
+        newContentLabels.push(content!.name);
+        newSeries.push(value);
+      }
     }
 
     this.contentsSeries =  newSeries;
-    this.contentsOptions.xaxis.categories = newContentLabels;
-    this.contentsHeight = (this.rangeContentsVO.size*60)+130;
+    this.contentsOptions.labels = newContentLabels;
+    this.contentsHeight = 400
   }
 
   updatePlacesChart(){
-    const newSeries:any[] = [
-      {data:[],name: '참여한 장소 횟수'},
-      {data:[],name: '열린 장소 횟수'},
-    ];
+    const newSeries:any[] = [];
     
     const newPlaceLabels:string[] = []
 
     for(let [key, value] of this.rangePlacesVO.entries()){
-      const place = this.places.find((place:PlaceTypes) => place.key === key);
-      const placeCount = this.personalPlacesVO.get(key);
-
-      newPlaceLabels.push(place!.name);
-      newSeries[0].data.push(placeCount || 0);
-      newSeries[1].data.push(value || 0);
+      const place = this.places.find((place:PlaceTypes)=>place.key === key);
+      if(place){
+        newPlaceLabels.push(place!.name);
+        newSeries.push(value);
+      }
     }
 
     this.placesSeries = newSeries;
-    this.placesOptions.xaxis.categories = newPlaceLabels;
-    this.placesHeight = (this.rangePlacesVO.size*60)+130;
+    this.placesOptions.labels = newPlaceLabels;
+    this.placesHeight = 400
 
-  }
-
-  beforeDestroy(){
-    memberStore.resetMember();
   }
 
   @debounce(1000)
@@ -452,14 +290,6 @@ export default class DashboardMemberDetail extends Vue {
     }
   }
 
-  @debounce(1000)
-  goMemberDetailByName(e:any, chartContext:any, config:any){
-    const name = chartContext.w.globals.labels[e.target.getAttribute('j')];
-    const member = this.members.find((member:MemberTypes)=> member.name === name);
-    if(member){
-      this.$router.push(`/dashboard/members/detail/${member.key}`);
-    }
-  }
 }
 
 

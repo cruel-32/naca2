@@ -8,7 +8,7 @@ export default new Router({
   base: process.env.BASE_URL,
   routes: [
     {
-      path: '/',
+      path: '/index',
       name: 'home',
       component: ()=> import('@/views/Main/Home.vue'),
     },
@@ -18,7 +18,7 @@ export default new Router({
       component: () => import('@/views/Events/Events.vue'),
     },
     {
-      path: '/event/detail',
+      path: '/events/detail',
       name: 'eventCreate',
       props: route=>({
         query : route.query
@@ -26,7 +26,7 @@ export default new Router({
       component: () => import('@/views/Events/EventDetail.vue'),
     },
     {
-      path: '/event/detail/:key',
+      path: '/events/detail/:key',
       name: 'eventUpdate',
       props: route=>({
         params : route.params
@@ -42,7 +42,7 @@ export default new Router({
       component: () => import('@/views/Members/Members.vue'),
     },
     {
-      path: '/member/detail',
+      path: '/members/detail',
       name: 'memberCreate',
       props: (route) => ({
         query : route.query
@@ -50,7 +50,7 @@ export default new Router({
       component: () => import('@/views/Members/MemberDetail.vue'),
     },
     {
-      path: '/member/detail/:key',
+      path: '/members/detail/:key',
       name: 'memberUpdate',
       props: (route) => ({
         params : route.params,
@@ -79,49 +79,29 @@ export default new Router({
     },
 
     {
-      path: '/dashboard/member/detail/:key',
+      path: '/dashboard/members/detail/:key',
       name: 'membersPartiDetail',
       props: (route) => ({
         params : route.params,
       }),
       component: () => import('@/views/Dashboard/DashboardMemberDetail.vue'),
     },
+    {
+      path: '/dashboard/memberAll',
+      name: 'memberAll',
+      props: (route) => ({
+        query: route.query
+      }),
+      component: () => import('@/views/Dashboard/DashboardMemberAll.vue'),
+    },
 
-    // {
-    //   path: '/statistics/membersAge',
-    //   name: 'membersAge',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/MembersAge.vue'),
-    // },
-    // {
-    //   path: '/statistics/eventssStats',
-    //   name: 'eventssStats',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/EventsStats.vue'),
-    // },
-    // {
-    //   path: '/statistics/eventssStatsDetail/:YYYYMM',
-    //   name: 'eventssStatsDetail',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/EventsStatsDetail.vue'),
-    // },
-    // {
-    //   path: '/statistics/eventssStatsYear',
-    //   name: 'eventssStatsYear',
-    //   props: (route) => ({
-    //     params : route.params,
-    //     query: route.query
-    //   }),
-    //   component: () => import('./views/EventsStatsYear.vue'),
-    // },
+    {
+      path: '/dashboard/eventAll',
+      name: 'eventAll',
+      props: (route) => ({
+        query: route.query
+      }),
+      component: () => import('@/views/Dashboard/DashboardEventAll.vue'),
+    },
   ]
 })

@@ -114,7 +114,7 @@ export default class Events extends Vue {
       dialogStore.showSnackbar({snackColor:'error', snackText:'로그인이 필요합니다'});
     } else {
       this.$router.push({
-        path:`/event/detail`,
+        path:`/events/detail`,
         query: {
           date : this.clickedYYYYMMDD
         }
@@ -123,7 +123,7 @@ export default class Events extends Vue {
   }
   
   goEventDetail(key:string){
-    this.$router.push(`/event/detail/${key}`);
+    this.$router.push(`/events/detail/${key}`);
   }
 }
 </script>

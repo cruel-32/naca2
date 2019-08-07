@@ -156,7 +156,7 @@ export default class DashboardMembers extends Vue {
   }
 
   goDashboardMeberDetail(key:string){
-    this.$router.push(`/dashboard/member/detail/${key}`);
+    this.$router.push(`/dashboard/members/detail/${key}`);
   }
   
 

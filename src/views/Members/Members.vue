@@ -156,7 +156,7 @@ export default class Members extends Vue {
   }
 
   goMeberDetail(key:string){
-    this.$router.push(`/member/detail/${key}`);
+    this.$router.push(`/members/detail/${key}`);
   }
   
 
