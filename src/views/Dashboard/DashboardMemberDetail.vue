@@ -4,7 +4,7 @@
       <v-flex xs12 sm12 md12 class="sticky title">
         <h1 class="headline">
           <v-icon color="green">insert_chart</v-icon>
-          <b @click="$router.push(`/members/detail/${member.key}`)">{{member.name}}</b>님의 통계
+          <strong @click="$router.push(`/members/detail/${member.key}`)">{{member.name}}</strong>님의 통계
         </h1>
       </v-flex>
 

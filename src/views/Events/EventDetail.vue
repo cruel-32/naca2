@@ -3,9 +3,9 @@
     <form id="create-event-dialog" class="ui form" @submit.prevent="updateEvent">
       <v-card>
         <v-card-title class="pb-0">
-          <span class="headline">
+          <strong class="headline">
             {{isNew ? "이벤트 생성" : "이벤트 수정"}}
-          </span>
+          </strong>
         </v-card-title>
       
         <v-card-text class="pa-0">

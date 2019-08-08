@@ -5,7 +5,9 @@
         <v-card-title class="pb-0">
           <h1 class="headline">
             <v-icon color="green">people</v-icon>
-            <span v-if="params && params.key"><b @click="$router.push(`/dashboard/members/detail/${member.key}`)">{{member.name}}</b>님의 정보</span>
+            <span v-if="params && params.key">
+              <strong @click="$router.push(`/dashboard/members/detail/${member.key}`)">{{member.name}}</strong> 님의 정보
+            </span>
             <span v-else>신입 회원 정보 입력</span>
           </h1>
         </v-card-title>
@@ -411,7 +413,11 @@ export default class MemberDetail extends Vue {
   height:100%;
   align-items:center;
 }
-
+.headline {
+ span {
+   font-size:inherit;
+ }
+}
 .v-card {
   box-shadow:none;
 }
