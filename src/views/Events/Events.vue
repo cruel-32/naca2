@@ -1,6 +1,6 @@
 <template>
-  <v-layout column align-center>
-    <v-card class="pt-3 pa-3" >
+  <div class="events_container">
+    <v-card>
       <h1 class="headline">
         <v-icon color="#009688">date_range</v-icon>
         이달의 이벤트 목록
@@ -49,7 +49,7 @@
         이 달의 이벤트 횟수 : {{events && events.length}}
       </div>
     </v-card>
-  </v-layout>
+  </div>
 </template>
 
 <script lang="ts">
@@ -129,6 +129,13 @@ export default class Events extends Vue {
 </script>
 
 <style scoped lang="scss">
+.events_container {
+  display: flex;
+  height:100%;
+  align-items:center;
+  padding:1rem;
+}
+
 .v-card {
   box-shadow:none;
 }

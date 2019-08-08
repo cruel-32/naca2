@@ -1,20 +1,9 @@
 <template>
   <div class="home_container">
-    <v-list-tile three-line
-      class="custom_tile"
-      v-for="item in sideMenuItems"
-      :key="item.title"
-      avatar
-      @click="goPage(item.link)"
-    >
-      <v-list-tile-avatar>
-        <v-icon :color="item.color" :class="[item.iconClass]" >{{ item.icon }}</v-icon>
-      </v-list-tile-avatar>
-      <v-list-tile-content>
-        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-        <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
-      </v-list-tile-content>
-    </v-list-tile>
+    <div v-for="(item,index) in sideMenuItems" :key="index" @click="$router.push({name:item.link,})">
+      <h2 class="headline"><v-icon >{{item.icon}}</v-icon>{{item.title}}</h2>
+      <p>{{item.subtitle}}</p>
+    </div>
   </div>
 </template>
 
@@ -38,11 +27,6 @@ export default class Home extends Vue {
     }
   ];
   
-  goPage(name:string){
-    this.$router.push({
-      name,
-    });
-  }
 }
 </script>
 
@@ -51,22 +35,13 @@ export default class Home extends Vue {
   display:flex;
   height:100%;
   flex-direction: column;
+  justify-content:center;
+  align-items:center;
   > div {
-    flex: 1 1 auto;
+    cursor: pointer;
+    flex: 0 1 auto;
+    padding:20px;
+    text-align:right;
   }
-}
-
-.custom_tile {
-  margin: 30px 0 15px 5%;
-  .v-icon {
-    font-size:40px;
-  }
-  .v-list__tile__title {
-    font-size:24px;
-  }
-  .v-list__tile__sub-title {
-    font-size:18px;
-  }
-
 }
 </style>

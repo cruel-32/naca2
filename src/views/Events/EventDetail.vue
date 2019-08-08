@@ -1,7 +1,7 @@
 <template>
-  <v-layout column align-center >
+  <div class="event_detail_container">
     <form id="create-event-dialog" class="ui form" @submit.prevent="updateEvent">
-      <v-card class="pt-3 pa-3">
+      <v-card>
         <v-card-title class="pb-0">
           <span class="headline">
             {{isNew ? "이벤트 생성" : "이벤트 수정"}}
@@ -239,7 +239,7 @@
         </v-card-actions>
       </v-card>
     </form>
-  </v-layout>
+  </div>
 </template>
 
 <script lang="ts">
@@ -402,6 +402,11 @@ export default class EventDetail extends Vue {
 </script>
 
 <style scoped lang="scss">
+.event_detail_container {
+  display:flex;
+  height:100%;
+  align-items:center;
+}
 .v-card {
   box-shadow:none;
 }

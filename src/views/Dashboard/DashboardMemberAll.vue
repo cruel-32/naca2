@@ -1,7 +1,7 @@
 <template>
-  <v-layout column align-center>
+  <div class="member_all_container">
     <v-container grid-list-md>
-      <v-layout wrap pt-3>
+      <v-layout wrap>
       
         <v-flex xs12 sm12 md12 >
           <h1 class="headline">
@@ -19,7 +19,7 @@
 
       </v-layout>
     </v-container>
-  </v-layout>
+  </div>
 </template>
 
 <script lang="ts">
@@ -162,6 +162,12 @@ export default class DashboardMemberAll extends Vue {
 </script>
 
 <style scoped lang="scss">
+.member_all_container {
+  padding:1.5rem;
+  display:flex;
+  height:100%;
+  align-items:center;
+}
 .v-card {
   box-shadow:none;
 }

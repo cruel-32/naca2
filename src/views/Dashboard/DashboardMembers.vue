@@ -1,69 +1,60 @@
 <template>
-  <v-card>
-    
-    <v-card-title>
-      <h1 class="headline"><v-icon color="green">people</v-icon> 회원목록</h1>
-      <p class="caption" style="margin:0 0 0 10px !important;">
-        <span>평균연령 : {{ members && ageVO.get('total') > 0? (ageVO.get('total')/ members.length).toFixed(2) : 0}}세, </span>
-        <span>남자:{{genderCountVO.get('M')}}명 여자: {{genderCountVO.get('F')}}명</span>
-      </p>
+  <div class="members_dash_container">
+    <v-card>
+      <v-card-title>
+        <h1 class="headline"><v-icon color="green">people</v-icon> 회원목록</h1>
+        <p class="caption" style="margin:0 0 0 10px !important;">
+          <span>평균연령 : {{ members && ageVO.get('total') > 0? (ageVO.get('total')/ members.length).toFixed(2) : 0}}세, </span>
+          <span>남자:{{genderCountVO.get('M')}}명 여자: {{genderCountVO.get('F')}}명</span>
+        </p>
 
-      <v-spacer></v-spacer>
+        <v-spacer></v-spacer>
 
-      <v-text-field
-        v-model="search"
-        append-icon="search"
-        label="Search"
-        single-line
-        hide-details
-      ></v-text-field>
-    </v-card-title>
-
-    <v-data-table
-      :headers="headers"
-      :items="members"
-      :sort-by.sync="sortBy"
-      :sort-desc.sync="descending"
-      :search="search"
-      :rows-per-page-items="options"
-      rows-per-page-text="한 페이지당 목록수"
-      class="elevation-1 custom-table"
-    >
-      <template slot="items" slot-scope="props" >
-        <tr @click="goDashboardMeberDetail(props.item.key)">
-          <td class="text-xs-left">{{ props.item.name }}</td>
-          <td class="text-xs-left">{{ props.item.birth && $moment(props.item.birth.toString()).format('YYYY.MM.DD')}}</td>
-          <td class="text-xs-left">{{ props.item.birth && (year - parseInt(props.item.birth.toString().slice(0,4))) }}세</td>
-          <td class="text-xs-left">{{ $moment(props.item.joinDate.toString()).format('YYYY.MM.DD') }}</td>
-          <td class="text-xs-left">{{ props.item.gender === 'M' ? '남' : '여' }}</td>
-          <td class="text-xs-left">{{ props.item.address }}</td>
-          <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">
-            {{ gradeInfoVO && gradeInfoVO.get(props.item.grade).name }}
-          </td>
-          <td class="text-xs-center" >
-            {{props.item.lastDate.value ? $moment(props.item.lastDate.value.toString()).format('YYYY.MM.DD') : "미참석" }}
-          </td>
-          <td class="text-xs-center" >
-            {{props.item.dPlus}}일
-          </td>
-          <td v-bind:class="['text-xs-center', `status-${props.item.status}`]">
-            {{
-              props.item.status === 'red' ? '강퇴대상' :
-                (props.item.status === 'blue' && props.item.grade == 1 ? '운영진' :
-                  (props.item.status === 'blue' && props.item.grade == 5 ? '특수회원' :
-                    (props.item.status === 'green' ? '모임장' :
-                      props.item.dMinus + '일'
-                    )
-                  )
-                )
-            }}
-          </td>
-        </tr>
-      </template>
-    </v-data-table>
-
-
-  </v-card>
+        <v-text-field
+          v-model="search"
+          append-icon="search"
+          label="Search"
+          single-line
+          hide-details
+        ></v-text-field>
+      </v-card-title>
+      <div class="table" >
+        <v-data-table
+          :headers="headers"
+          :items="members"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="descending"
+          :search="search"
+          :rows-per-page-items="options"
+          rows-per-page-text="한 페이지당 목록수"
+          class="elevation-1 custom-table"
+        >
+          <template slot="items" slot-scope="props" >
+            <tr @click="goDashboardMeberDetail(props.item.key)">
+              <td class="text-xs-left">{{ props.item.name }}</td>
+              <td class="text-xs-left">{{ props.item.birth && $moment(props.item.birth.toString()).format('YYYY.MM.DD')}}</td>
+              <td class="text-xs-left">{{ props.item.birth && (year - parseInt(props.item.birth.toString().slice(0,4))) }}세</td>
+              <td class="text-xs-left">{{ $moment(props.item.joinDate.toString()).format('YYYY.MM.DD') }}</td>
+              <td class="text-xs-left">{{ props.item.gender === 'M' ? '남' : '여' }}</td>
+              <td class="text-xs-left">{{ props.item.address }}</td>
+              <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">
+                {{ gradeInfoVO && gradeInfoVO.get(props.item.grade).name }}
+              </td>
+              <td class="text-xs-center" >
+                {{props.item.lastDate.value ? $moment(props.item.lastDate.value.toString()).format('YYYY.MM.DD') : "미참석" }}
+              </td>
+              <td class="text-xs-center" >
+                {{props.item.dPlus}}일
+              </td>
+              <td v-bind:class="['text-xs-center', `status-${props.item.status}`]">
+                {{getTextByStatus(props.item)}}
+              </td>
+            </tr>
+          </template>
+        </v-data-table>
+      </div>
+    </v-card>
+  </div>
 </template>
 
 <script lang="ts">
@@ -158,12 +149,40 @@ export default class DashboardMembers extends Vue {
   goDashboardMeberDetail(key:string){
     this.$router.push(`/dashboard/members/detail/${key}`);
   }
-  
+  getTextByStatus(item:any){
+    let text = '';
+    if(item.status === 'red'){
+      text = '강퇴대상'
+    } else if(item.status === 'blue' && item.grade == 1){
+      text = '운영진'
+    } else if(item.status === 'blue' && item.grade == 5){
+      text = '특수회원'
+    } else if(item.status === 'green'){
+      text = '모임장'
+    } else {
+      text = item.dMinus + '일'
+    }
+    return text;
+  }
 
 }
 </script>
 
 <style lang="scss">
+.members_dash_container {
+  display:flex;
+  height:100%;
+  align-items:center;
+  flex-direction: column;
+  > div {
+    flex:1 1 auto;
+  }
+}
+
+.table {
+  overflow:scroll;
+}
+
 .custom-table {
   th,td {
     padding: 0 10px !important;

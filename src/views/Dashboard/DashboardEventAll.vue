@@ -1,69 +1,66 @@
 <template>
-  <v-layout column align-center>
-    <v-container grid-list-md>
-      <v-layout wrap pt-3>
-      
-        <v-flex xs12 sm12 md12 class="sticky title">
-          <h1 class="headline">
-            <v-icon color="green">insert_chart</v-icon> 전체 이벤트 통계
-          </h1>
-        </v-flex>
+  <div class="event_all_container">
+    <v-layout wrap>
+      <v-flex xs12 sm12 md12 class="sticky title">
+        <h1 class="headline">
+          <v-icon color="green">insert_chart</v-icon> 전체 이벤트 통계
+        </h1>
+      </v-flex>
 
-        <v-flex xs6 sm6 md6 class="sticky range">
-          <v-menu
-            v-model="viewStartAt"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            full-width
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="startAt"
-                label="통계 범위 선택 (from)"
-                persistent-hint
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker v-model="startAt" type="month" no-title @input="viewStartAt = false"></v-date-picker>
-          </v-menu>
-        </v-flex>
+      <v-flex xs6 sm6 md6 class="sticky range">
+        <v-menu
+          v-model="viewStartAt"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          full-width
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="startAt"
+              label="통계 범위 선택 (from)"
+              persistent-hint
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="startAt" type="month" no-title @input="viewStartAt = false"></v-date-picker>
+        </v-menu>
+      </v-flex>
 
-        <v-flex xs6 sm6 md6 class="sticky range">
-          <v-menu
-            v-model="viewEndAt"
-            :close-on-content-click="false"
-            transition="scale-transition"
-            offset-y
-            full-width
-          >
-            <template v-slot:activator="{ on }">
-              <v-text-field
-                v-model="endAt"
-                label="통계 범위 선택 (to)"
-                persistent-hint
-                v-on="on"
-              ></v-text-field>
-            </template>
-            <v-date-picker v-model="endAt" type="month" no-title @input="viewEndAt = false"></v-date-picker>
-          </v-menu>
-        </v-flex>
+      <v-flex xs6 sm6 md6 class="sticky range">
+        <v-menu
+          v-model="viewEndAt"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          full-width
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="endAt"
+              label="통계 범위 선택 (to)"
+              persistent-hint
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="endAt" type="month" no-title @input="viewEndAt = false"></v-date-picker>
+        </v-menu>
+      </v-flex>
 
-        <v-flex xs12 sm6 md6>
-          <apexchart type="bar" :options="eventsOptions"  :height="eventsHeight" :series="eventsSeries"></apexchart>
-        </v-flex>
+      <v-flex xs12 sm6 md6>
+        <apexchart type="bar" :options="eventsOptions"  :height="eventsHeight" :series="eventsSeries"></apexchart>
+      </v-flex>
 
-        <v-flex xs12 sm6 md6>
-          <apexchart type="donut" :options="contentsOptions"  :height="contentsHeight" :series="contentsSeries"></apexchart>
-        </v-flex>
+      <v-flex xs12 sm6 md6>
+        <apexchart type="donut" :options="contentsOptions"  :height="contentsHeight" :series="contentsSeries"></apexchart>
+      </v-flex>
 
-        <v-flex xs12 sm6 md6>
-          <apexchart type="donut" :options="placesOptions"  :height="placesHeight" :series="placesSeries"></apexchart>
-        </v-flex>
+      <v-flex xs12 sm6 md6>
+        <apexchart type="donut" :options="placesOptions"  :height="placesHeight" :series="placesSeries"></apexchart>
+      </v-flex>
 
-      </v-layout>
-    </v-container>
-  </v-layout>
+    </v-layout>
+  </div>
 </template>
 
 <script lang="ts">
@@ -258,8 +255,6 @@ export default class DashboardMemberAll extends Vue {
       }
     }
 
-    console.log('newContentLabels : ', newContentLabels);
-
     this.contentsOptions.labels = newContentLabels;
     this.contentsSeries =  newSeries;
     this.contentsHeight = 400
@@ -277,8 +272,6 @@ export default class DashboardMemberAll extends Vue {
         newSeries.push(value);
       }
     }
-
-    console.log('newPlaceLabels : ', newPlaceLabels);
 
     this.placesOptions.labels = newPlaceLabels;
     this.placesSeries = newSeries;
@@ -299,6 +292,12 @@ export default class DashboardMemberAll extends Vue {
 </script>
 
 <style scoped lang="scss">
+.event_all_container {
+  padding:1.5rem;
+  display:flex;
+  height:100%;
+  align-items:center;
+}
 .v-card {
   box-shadow:none;
 }
@@ -317,6 +316,7 @@ export default class DashboardMemberAll extends Vue {
   z-index: 20;
   &.title {
     top:0px;
+    padding-top:1rem;
   }
   &.range {
     top:40px;

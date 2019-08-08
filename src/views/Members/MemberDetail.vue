@@ -1,10 +1,12 @@
 <template>
-  <v-layout column align-center>
+  <div class="member_detail_container">
     <form id="create-meeting-dialog" class="ui form" @submit.prevent="updateMember">
-      <v-card class="pt-3 pa-3" >
+      <v-card>
         <v-card-title class="pb-0">
           <span class="headline">
-            <v-icon color="green">people</v-icon> {{params && params.key ? "회원정보 수정": "신입 회원정보 입력"}}
+            <v-icon color="green">people</v-icon>
+            <span v-if="params && params.key"><b @click="$router.push(`/dashboard/members/detail/${member.key}`)">{{member.name}}</b>님의 정보</span>
+            <span v-else>신입 회원 정보 입력</span>
           </span>
         </v-card-title>
         <v-card-text class="pa-0">
@@ -239,7 +241,7 @@
           </v-card-actions>
       </v-card>
     </form>
-  </v-layout>
+  </div>
 </template>
 
 <script lang="ts">
@@ -404,6 +406,12 @@ export default class MemberDetail extends Vue {
 </script>
 
 <style scoped lang="scss">
+.member_detail_container {
+  display:flex;
+  height:100%;
+  align-items:center;
+}
+
 .v-card {
   box-shadow:none;
 }
