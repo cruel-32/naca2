@@ -63,7 +63,6 @@ export default class HeaderComp extends Vue {
   get currentUser(){ return accountStore.currentUser }
 
   //local data
-  title:string = 'NACA System 2.0';
   viewLogoutConfirm:boolean = false;
 
   async login(){
@@ -87,8 +86,8 @@ export default class HeaderComp extends Vue {
 .header{
   .v-avatar {
     position:fixed;
-    top:12px;
-    right:12px;
+    top:18px;
+    right:18px;
     z-index:30;
   }
 }

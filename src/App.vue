@@ -1,13 +1,14 @@
 <template>
-  <v-app
-    app
-  >
+  <v-app app>
     <HeaderComp></HeaderComp> 
 
-    <v-container v-if="$route.fullPath === '/'" fluid>
-      None Alcohol Culture Admin
-    </v-container>
-    
+    <div class="main" v-if="$route.fullPath === '/'">
+      <div class="title">
+        <h1>None Alcohol Culture Admin</h1>
+        <span>Made by CHOI.S.H</span>
+      </div>
+    </div>
+  
 
     <v-content class="pb-5">
       <ProgressComp></ProgressComp>
@@ -107,5 +108,23 @@ export default class extends Vue {
   // * {
   //   transition: none !important;
   // }
+  body {
+    font-size:62.5%;
+  }
+  .main {
+    display:flex;
+    height:100%;
+    align-items:center;
+    .title {
+      padding:0 2rem;
+      > h1 {
+        font-size:1.6rem;
+      }
+      > span {
+        display:block;
+        font-size:1.1rem;
+      }
+    }
+  }
 </style>
 

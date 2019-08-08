@@ -159,7 +159,6 @@ export default class DashboardMemberAll extends Vue {
     eventStore.getEventsRange(this.dateRange);
   }
 
-  @Watch('events')
   setDashboardData(){
     menuStore.setProgress(true);
     this.resetChartCommonInfo();
@@ -259,8 +258,10 @@ export default class DashboardMemberAll extends Vue {
       }
     }
 
-    this.contentsSeries =  newSeries;
+    console.log('newContentLabels : ', newContentLabels);
+
     this.contentsOptions.labels = newContentLabels;
+    this.contentsSeries =  newSeries;
     this.contentsHeight = 400
   }
 
@@ -277,8 +278,10 @@ export default class DashboardMemberAll extends Vue {
       }
     }
 
-    this.placesSeries = newSeries;
+    console.log('newPlaceLabels : ', newPlaceLabels);
+
     this.placesOptions.labels = newPlaceLabels;
+    this.placesSeries = newSeries;
     this.placesHeight = 400
 
   }

@@ -74,7 +74,7 @@ export default class DashboardMemberAll extends Vue {
       position: 'top'
     },
     xaxis: {
-      categories: [],
+      categories: ['평균 나이'],
     }
   }
 
@@ -126,6 +126,8 @@ export default class DashboardMemberAll extends Vue {
       newGenderLabels.push(key === 'F' ? "여자" : "남자");
     }
 
+    console.log('newGenderLabels : ', newGenderLabels);
+
     this.genderSeries = newSeries;
     this.genderOptions.labels = newGenderLabels;
     this.genderHeight = 380
@@ -133,10 +135,9 @@ export default class DashboardMemberAll extends Vue {
 
   updateAgeChart(){
     const newSeries:any[] = [
-      {data:[], name: '남자 평균 나이'},
       {data:[], name: '여자 평균 나이'},
+      {data:[], name: '남자 평균 나이'},
     ];
-    const newAgeLabels:string[] = [];
 
     for(let [gender,value] of this.ageVO){
       const genderTotal = this.genderVO.get(gender);
@@ -144,17 +145,14 @@ export default class DashboardMemberAll extends Vue {
       if(genderTotal){
         const aver = (value/genderTotal).toFixed(2)
         if(gender === 'M'){
-          newSeries[0].data.push(aver);
-          newAgeLabels.push('남자 평균 나이');
-        } else {
           newSeries[1].data.push(aver);
-          newAgeLabels.push('여자 평균 나이');
+        } else {
+          newSeries[0].data.push(aver);
         }
       }
     }
 
     this.ageSeries = newSeries;
-    this.ageOptions.xaxis.categories = newAgeLabels;
     this.ageHeight = 380
   }
 

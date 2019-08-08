@@ -1,27 +1,21 @@
 <template>
-  <v-container fluid>
-    <v-slide-y-transition mode="out-in">
-      <v-layout column align-left>
-
-        <v-list-tile three-line
-          class="custom_tile"
-          v-for="item in sideMenuItems"
-          :key="item.title"
-          avatar
-          @click="goPage(item.link)"
-        >
-          <v-list-tile-avatar>
-            <v-icon :color="item.color" :class="[item.iconClass]" >{{ item.icon }}</v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content>
-            <v-list-tile-title>{{ item.title }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-        </v-list-tile>
-
-      </v-layout>
-    </v-slide-y-transition>
-  </v-container>
+  <div class="home_container">
+    <v-list-tile three-line
+      class="custom_tile"
+      v-for="item in sideMenuItems"
+      :key="item.title"
+      avatar
+      @click="goPage(item.link)"
+    >
+      <v-list-tile-avatar>
+        <v-icon :color="item.color" :class="[item.iconClass]" >{{ item.icon }}</v-icon>
+      </v-list-tile-avatar>
+      <v-list-tile-content>
+        <v-list-tile-title>{{ item.title }}</v-list-tile-title>
+        <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
+      </v-list-tile-content>
+    </v-list-tile>
+  </div>
 </template>
 
 <script lang="ts">
@@ -53,6 +47,15 @@ export default class Home extends Vue {
 </script>
 
 <style scoped lang="scss">
+.home_container {
+  display:flex;
+  height:100%;
+  flex-direction: column;
+  > div {
+    flex: 1 1 auto;
+  }
+}
+
 .custom_tile {
   margin: 30px 0 15px 5%;
   .v-icon {
