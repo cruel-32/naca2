@@ -173,8 +173,13 @@ export default class Members extends Vue {
 
 <style lang="scss">
 
+.v-card {
+  width:100%;
+}
+
 .members_container {
   display:flex;
+  width:100%;
   height:100%;
   align-items:center;
   > div {

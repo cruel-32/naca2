@@ -169,8 +169,13 @@ export default class DashboardMembers extends Vue {
 </script>
 
 <style lang="scss">
+.v-card {
+  width:100%;
+}
+
 .members_dash_container {
   display:flex;
+  width:100%;
   height:100%;
   align-items:center;
   flex-direction: column;

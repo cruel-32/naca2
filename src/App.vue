@@ -110,6 +110,14 @@ export default class extends Vue {
   // }
   body {
     font-size:62.5%;
+    .v-card {
+      &.v-sheet {
+        background-color:#fafafa;
+      }
+    }
+    div, p, span {
+      font-size:1rem;
+    }
   }
   .main {
     display:flex;
