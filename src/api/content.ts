@@ -8,7 +8,8 @@ export default {
             child.key = snapshot.key;
             contents.push(child);
         })
-        return contents
+        return contents.sort((prev:ContentTypes, next:ContentTypes):number=> prev.name < next.name ? -1 : 1)
+
     }),
 
 }

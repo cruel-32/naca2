@@ -158,37 +158,11 @@ export default class DashboardMemberDetail extends Vue {
 
   contentsSeries:any[] = [];
   contentsHeight:any = 'auto';
-  contentsOptions:any  = {
-    title: {
-      text: '선호 컨텐츠'
-    },
-    legend: {
-      position: 'top'
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-        }
-    },
-    xaxis: {categories:[]}
-  }
+  contentsOptions:any  = {};
 
   placesSeries:any[] = [];
   placesHeight:any = 'auto';
-  placesOptions:any  = {
-    title: {
-      text: '선호 지역'
-    },
-    legend: {
-      position: 'top'
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-        }
-    },
-    xaxis: {categories:[]}
-  }
+  placesOptions:any  = {}
 
   @Watch('startAt')
   @Watch('endAt')
@@ -409,7 +383,13 @@ export default class DashboardMemberDetail extends Vue {
     }
 
     this.contentsSeries =  newSeries;
-    this.contentsOptions.xaxis.categories = newContentLabels;
+    //contentsOptions 옵션을 통째로 바꾸지 않으면 라벨 순서가 이상한 apexchart 자체 버그가 있음 ㅡㅡ
+    this.contentsOptions = {
+      title: {text: '선호 컨텐츠'},
+      legend: {position: 'top'},
+      plotOptions: {bar: {horizontal: true}},
+      xaxis: {categories:newContentLabels}
+    }
     this.contentsHeight = (this.rangeContentsVO.size*60)+130;
   }
 
@@ -431,9 +411,14 @@ export default class DashboardMemberDetail extends Vue {
     }
 
     this.placesSeries = newSeries;
-    this.placesOptions.xaxis.categories = newPlaceLabels;
+    //placesOptions 옵션을 통째로 바꾸지 않으면 라벨 순서가 이상한 apexchart 자체 버그가 있음 ㅡㅡ
+    this.placesOptions = {
+      title: {text: '선호 지역'},
+      legend: {position: 'top'},
+      plotOptions: {bar: {horizontal: true}},
+      xaxis: {categories:newPlaceLabels}
+    }
     this.placesHeight = (this.rangePlacesVO.size*60)+130;
-
   }
 
   beforeDestroy(){

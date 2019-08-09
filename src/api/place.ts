@@ -8,7 +8,7 @@ export default {
             child.key = snapshot.key;
             places.push(child);
         })
-        return places
+        return places.sort((prev:PlaceTypes, next:PlaceTypes):number=> prev.name < next.name ? -1 : 1)
     }),
 
 }
