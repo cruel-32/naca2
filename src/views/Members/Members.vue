@@ -35,20 +35,20 @@
               <td class="text-xs-left">{{ props.item.name }}</td>
               <td class="text-xs-left">{{ props.item.birth && $moment(props.item.birth.toString()).format('YYYY.MM.DD')}}</td>
               <td class="text-xs-left">{{ props.item.birth && (year - parseInt(props.item.birth.toString().slice(0,4))) }}세</td>
-              <td class="text-xs-left">{{ $moment(props.item.joinDate.toString()).format('YYYY.MM.DD') }}</td>
-              <td class="text-xs-left">{{ props.item.gender === 'M' ? '남' : '여' }}</td>
-              <td class="text-xs-left">{{ props.item.address }}</td>
-              <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">
-                {{ gradeInfoVO && gradeInfoVO.get(props.item.grade).name }}
+              <td v-bind:class="['text-xs-center', `status-${props.item.status}`]">
+                {{getTextByStatus(props.item)}}
               </td>
               <td class="text-xs-center" >
                 {{props.item.lastDate.value ? $moment(props.item.lastDate.value.toString()).format('YYYY.MM.DD') : "미참석" }}
               </td>
               <td class="text-xs-center" >
-                {{props.item.dPlus}}일
+                {{props.item.dPlus > 0 ? `+${props.item.dPlus}일` : '참여예정'}} {{props.item.grade === 4 ? '(가입일로부터)' : ''}}
               </td>
-              <td v-bind:class="['text-xs-center', `status-${props.item.status}`]">
-                {{getTextByStatus(props.item)}}
+              <td class="text-xs-left">{{ $moment(props.item.joinDate.toString()).format('YYYY.MM.DD') }}</td>
+              <td class="text-xs-left">{{ props.item.gender === 'M' ? '남' : '여' }}</td>
+              <td class="text-xs-left">{{ props.item.address }}</td>
+              <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">
+                {{ gradeInfoVO && gradeInfoVO.get(props.item.grade).name }}
               </td>
             </tr>
           </template>
@@ -106,6 +106,21 @@ export default class Members extends Vue {
       value: 'age'
     },
     {
+      text : '남은일수',
+      align: 'center',
+      value: 'dMinus'
+    },
+    {
+      text : '마지막 참석일',
+      align: 'center',
+      value: 'lastDate'
+    },
+    {
+      text : '마지막 참여일로부터',
+      align: 'center',
+      value: 'dPlus'
+    },
+    {
       text : '가입일',
       align: 'left',
       value: 'joinDate'
@@ -124,21 +139,6 @@ export default class Members extends Vue {
       text : '회원등급',
       align: 'left',
       value: 'grade',
-    },
-    {
-      text : '마지막 참석일',
-      align: 'center',
-      value: 'lastDate'
-    },
-    {
-      text : '마지막참여일+',
-      align: 'center',
-      value: 'dPlus'
-    },
-    {
-      text : '남은일수',
-      align: 'center',
-      value: 'dMinus'
     },
   ];
 
