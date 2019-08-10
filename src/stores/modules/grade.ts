@@ -5,12 +5,12 @@ import { classGrade } from '@/declare/enums/member';
 
 @Module
 class GradeStore extends VuexModule {
-  grades:GradeTypes[] = [];
-  gradeInfoVO:Map<number,GradeTypes> = new Map();
+  grades:IGradeTypes[] = [];
+  gradeInfoVO:Map<number,IGradeTypes> = new Map();
   gradeCountVO:Map<number,number> = new Map();
 
   @Mutation
-  setGrades(grades:GradeTypes[]){
+  setGrades(grades:IGradeTypes[]){
     this.grades = grades;
   }
 
@@ -33,8 +33,8 @@ class GradeStore extends VuexModule {
   }
 
   @Action
-  async getGrades():Promise<SnackbarTypes>{
-    const msg:SnackbarTypes = {
+  async getGrades():Promise<ISnackbarTypes>{
+    const msg:ISnackbarTypes = {
       snackColor:'error',
       snackText:'event 가져오기 실패'
     }

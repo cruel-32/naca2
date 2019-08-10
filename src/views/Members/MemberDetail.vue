@@ -302,7 +302,7 @@ export default class MemberDetail extends Vue {
   }
 
   get gradeText(){
-    const info:GradeTypes|undefined = gradeStore.gradeInfoVO.get(this.member.grade);
+    const info:IGradeTypes|undefined = gradeStore.gradeInfoVO.get(this.member.grade);
     return info ? info.name : "";
   }
 

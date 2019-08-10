@@ -383,7 +383,7 @@ export default class EventDetail extends Vue {
   async deleteEvent(){
     menuStore.setProgress(true);
     if(this.event.key){
-      const result:SnackbarTypes = await eventStore.deleteEvent(this.event.key);
+      const result:ISnackbarTypes = await eventStore.deleteEvent(this.event.key);
       dialogStore.showSnackbar(result);
     } else {
       dialogStore.showSnackbar({

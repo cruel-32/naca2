@@ -7,7 +7,7 @@ import moment from 'moment';
 
 @Module
 class EventStore extends VuexModule {
-  event:EventTypes = {
+  event:IEventTypes = {
     key:null,
     date:parseInt(moment(new Date()).format('YYYYMMDD')),
     title:'',
@@ -15,26 +15,26 @@ class EventStore extends VuexModule {
     contentKeys:[],
     memberKeys:[],
   };
-  events:EventTypes[] = [];
+  events:IEventTypes[] = [];
 
   @Mutation
-  private setEvent(event:EventTypes){
+  private setEvent(event:IEventTypes){
     this.event = event;
   }
 
   @Mutation
-  private setEvents(events:EventTypes[]){
+  private setEvents(events:IEventTypes[]){
     this.events = events;
   }
 
   @Action
-  public async getEventByKey(key:string):Promise<SnackbarTypes>{
-    const msg:SnackbarTypes = {
+  public async getEventByKey(key:string):Promise<ISnackbarTypes>{
+    const msg:ISnackbarTypes = {
       snackColor:'error',
       snackText:'event 가져오기 실패'
     }
     if(key){
-      const event:EventTypes = await eventApi.getEventByKey(key);
+      const event:IEventTypes = await eventApi.getEventByKey(key);
       this.setEvent(event);
       if(event){
         msg.snackColor = 'success';
@@ -45,8 +45,8 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async getEventsRange(payload:DateRange):Promise<EventTypes[]>{
-    const events:EventTypes[] = await eventApi.getEventsRange(payload);
+  public async getEventsRange(payload:IDateRange):Promise<IEventTypes[]>{
+    const events:IEventTypes[] = await eventApi.getEventsRange(payload);
     this.setEvents(events)
     return events;
   }
@@ -64,7 +64,7 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async updateEvent(payload:EventTypes):Promise<EventTypes>{
+  public async updateEvent(payload:IEventTypes):Promise<IEventTypes>{
     const result = await eventApi.updateEvent(payload);
     console.log('result : ', result);
     
@@ -72,7 +72,7 @@ class EventStore extends VuexModule {
   }
 
   @Action
-  public async deleteEvent(key:string):Promise<SnackbarTypes>{
+  public async deleteEvent(key:string):Promise<ISnackbarTypes>{
     const result:string = await eventApi.deleteEvent(key);
     return {
       key,

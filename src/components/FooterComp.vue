@@ -115,7 +115,7 @@ export default class FooterComp extends Vue {
     return color;
   }
 
-  showSnackbar(snackBar:SnackbarTypes){
+  showSnackbar(snackBar:ISnackbarTypes){
     dialogStore.showSnackbar(snackBar);
   }
 }

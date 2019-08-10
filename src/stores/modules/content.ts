@@ -4,19 +4,19 @@ import contentApi from '@/api/content'
 
 @Module
 class ContentStore extends VuexModule {
-  contents:ContentTypes[] = [];
+  contents:IContentTypes[] = [];
 
   @Mutation
-  setContents(contents:ContentTypes[]){
+  setContents(contents:IContentTypes[]){
     this.contents=contents;
   }
 
   @Action
-  async getContents():Promise<SnackbarTypes>{
-    const contents:ContentTypes[] = await contentApi.getContents();
+  async getContents():Promise<ISnackbarTypes>{
+    const contents:IContentTypes[] = await contentApi.getContents();
     this.setContents(contents);
 
-    const msg:SnackbarTypes = {
+    const msg:ISnackbarTypes = {
       snackColor:'error',
       snackText:'contents 가져오기 실패'
     }

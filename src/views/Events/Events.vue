@@ -70,7 +70,7 @@ export default class Events extends Vue {
   date:string = '';
   clickedYYYYMMDD:any = '';
   pickedYYYYMM:any = null;
-  samedayEvents:EventTypes[] = [];
+  samedayEvents:IEventTypes[] = [];
   eventsDialog:boolean = false;
   colors:string[] = [
     "info",
@@ -83,7 +83,7 @@ export default class Events extends Vue {
     this.date = this.today.slice(0,7) === changedDate ? this.today : changedDate;
     if(changedDate.length > 4){
       const changedDateArr = changedDate.split('-')
-      const dateRange:DateRange = {
+      const dateRange:IDateRange = {
         startAt: parseInt(changedDateArr.join('')+'01'),
         endAt: parseInt(changedDateArr.join('')+'31'),
       }

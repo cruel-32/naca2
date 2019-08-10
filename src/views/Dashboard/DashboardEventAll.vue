@@ -46,7 +46,6 @@
           <v-date-picker v-model="endAt" type="month" no-title @input="viewEndAt = false"></v-date-picker>
         </v-menu>
       </v-flex>
-
       <v-flex xs12 sm6 md6>
         <apexchart type="bar" :options="eventsOptions"  :height="eventsHeight" :series="eventsSeries"></apexchart>
       </v-flex>
@@ -57,6 +56,27 @@
 
       <v-flex xs12 sm6 md6>
         <apexchart type="donut" :options="placesOptions"  :height="placesHeight" :series="placesSeries"></apexchart>
+      </v-flex>
+
+      <v-flex xs12 sm12 md12>
+        <v-data-table
+          :headers="headers"
+          :items="events"
+          :sort-by.sync="sortBy"
+          :sort-desc.sync="descending"
+          :search="search"
+          :rows-per-page-items="options"
+          rows-per-page-text="한 페이지당 목록수"
+          class="elevation-1 custom-table"
+        >
+          <template slot="items" slot-scope="props" >
+            <tr @click="goEventDetail(props.item.key)">
+              <td class="text-xs-left">{{ $moment(props.item.date.toString()).format('YYYY.MM.DD') }}</td>
+              <td class="text-xs-left">{{ props.item.title }}</td>
+              <td class="text-xs-center">{{ props.item.memberKeys.length }}명</td>
+            </tr>
+          </template>
+        </v-data-table>
       </v-flex>
 
     </v-layout>
@@ -88,15 +108,24 @@ export default class DashboardMemberAll extends Vue {
   get places(){return placeStore.places}
   get contents(){return contentStore.contents}
 
+  headers:any[] = [
+    {text: '날짜', value: 'date'},
+    {text: '제목', value: 'title' },
+    {text: '인원수', value: 'memberKeys' },
+  ];
+  search:string = '';
+  sortBy:string = '';
+  descending:boolean = false;
+  options:any[] = [{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}, 10,20,];
+
   endAt:string = this.$moment(new Date()).format('YYYY-MM');
   startAt:string = this.$moment(new Date()).add(-6, 'months').format('YYYY-MM');
-  dateRange:DateRange = {
+  dateRange:IDateRange = {
     startAt: this.$moment(new Date()).add(-6, 'months').format('YYYYMM'),
     endAt: this.$moment(new Date()).format('YYYYMM'),
   }
 
   //날짜가 바뀌면 reset해주어야 하는 info
-  tickCount:number = 0;
   rangeLabels:string[] = [];
   rangeEventsVO:Map<string,object[]> = new Map();
   rangeContentsVO:Map<string,number> = new Map();
@@ -149,15 +178,16 @@ export default class DashboardMemberAll extends Vue {
   @Watch('startAt')
   @Watch('endAt')
   setDateRange(){
+      menuStore.setProgress(true);
     this.dateRange = {
       startAt: parseInt(`${this.$moment(this.startAt).format('YYYYMM')}01`),
       endAt: parseInt(`${this.$moment(this.endAt).format('YYYYMM')}31`),
     };
     eventStore.getEventsRange(this.dateRange);
+    menuStore.setProgress(false);
   }
 
   setDashboardData(){
-    menuStore.setProgress(true);
     this.resetChartCommonInfo();
 
     this.setChartCommonInfo();
@@ -165,12 +195,9 @@ export default class DashboardMemberAll extends Vue {
     this.updateEventsChart();
     this.updateContentsChart();
     this.updatePlacesChart();
-
-    menuStore.setProgress(false);
   }
 
   resetChartCommonInfo(){
-    this.tickCount = 0;
     this.rangeLabels = [];
     this.rangeEventsVO = new Map();
     this.rangeContentsVO = new Map();
@@ -178,12 +205,7 @@ export default class DashboardMemberAll extends Vue {
   }
 
   setChartCommonInfo(){
-    this.tickCount = this.$moment(this.endAt).diff(this.startAt, 'months');
-    for(let i=0; i<=this.tickCount; i++){
-      const YYYY_MM = this.$moment(this.startAt).add(i, 'months').format('YYYY.MM');
-      this.rangeLabels.push(YYYY_MM);
-    }
-    this.events.forEach((event:EventTypes)=>{
+    this.events.forEach((event:IEventTypes)=>{
       const key = event.key;
       const YYYYMMDD = event.date.toString();
       const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;
@@ -232,15 +254,14 @@ export default class DashboardMemberAll extends Vue {
       {data:[],name: '열린 이벤트 횟수'},
     ];
 
-    for(let i=0; i<=this.tickCount; i++){
-      const events = this.rangeEventsVO.get(this.rangeLabels[i]);
-
-      newSeries[0].data.push(events ? events.length : 0);
+    for(let [key, value] of this.rangeEventsVO.entries()){
+      this.rangeLabels.push(key);
+      newSeries[0].data.push(value.length);
     }
 
     this.eventsSeries = newSeries;
     this.eventsOptions.xaxis.categories = this.rangeLabels;
-    this.eventsHeight = (this.tickCount*30)+120;
+    this.eventsHeight = (this.rangeEventsVO.size*30)+120;
   }
 
   updateContentsChart(){
@@ -248,7 +269,7 @@ export default class DashboardMemberAll extends Vue {
     const newContentLabels:string[] = [];
 
     for(let [key, value] of this.rangeContentsVO.entries()){
-      const content = this.contents.find((content:ContentTypes)=>content.key === key);
+      const content = this.contents.find((content:IContentTypes)=>content.key === key);
       if(content){
         newContentLabels.push(content!.name);
         newSeries.push(value);
@@ -266,7 +287,7 @@ export default class DashboardMemberAll extends Vue {
     const newPlaceLabels:string[] = []
 
     for(let [key, value] of this.rangePlacesVO.entries()){
-      const place = this.places.find((place:PlaceTypes)=>place.key === key);
+      const place = this.places.find((place:IPlaceTypes)=>place.key === key);
       if(place){
         newPlaceLabels.push(place!.name);
         newSeries.push(value);
@@ -292,6 +313,16 @@ export default class DashboardMemberAll extends Vue {
 </script>
 
 <style scoped lang="scss">
+.custom-table {
+  th,td {
+    padding: 0 10px !important;
+  }
+}
+
+.table {
+  overflow:scroll;
+}
+
 .event_all_container {
   padding:1.5rem;
   display:flex;

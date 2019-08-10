@@ -12,7 +12,7 @@ import { Component, Vue } from 'vue-property-decorator';
 
 @Component
 export default class Home extends Vue {
-  sideMenuItems:SideMenuTypes[] = [
+  sideMenuItems:ISideMenuTypes[] = [
     {
       icon: 'date_range', iconClass: 'amber lighten-1 white--text', color:"amber",
       title: '이벤트관리', subtitle: '이벤트 생성,삭제 출석관리', link: "events",

@@ -40,9 +40,9 @@
 import { Component, Vue } from 'vue-property-decorator'
 
 import { accountStore } from "@/stores/modules/account"
-// import { EventTypes, eventStore } from "@/stores/modules/event"
+// import { IEventTypes, eventStore } from "@/stores/modules/event"
 import { dialogStore } from "@/stores/modules/dialog"
-// import { MemberTypes, memberStore } from "@/stores/modules/member"
+// import { IMemberTypes, memberStore } from "@/stores/modules/member"
 
 import HeaderComp from "@/components/HeaderComp.vue"
 import FooterComp from "@/components/FooterComp.vue"

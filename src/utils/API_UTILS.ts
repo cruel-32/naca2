@@ -30,8 +30,8 @@ const arrayConvertToObj = (array:string[]):{[key:string]:any} =>
         return obj
 },{});
 
-const objConvertToArray = <VALUE>(object:{[key:string]:VALUE} ):KeyAndValue<VALUE>[]=>{
-    const VOarray:KeyAndValue<VALUE>[] = [];
+const objConvertToArray = <VALUE>(object:{[key:string]:VALUE} ):IKeyAndValue<VALUE>[]=>{
+    const VOarray:IKeyAndValue<VALUE>[] = [];
 
     if(object){
         for(let [key,value] of Object.entries(object)){

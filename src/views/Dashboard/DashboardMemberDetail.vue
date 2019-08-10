@@ -96,13 +96,12 @@ export default class DashboardMemberDetail extends Vue {
 
   endAt:string = this.$moment(new Date()).format('YYYY-MM');
   startAt:string = this.$moment(new Date()).add(-4, 'months').format('YYYY-MM');
-  dateRange:DateRange = {
+  dateRange:IDateRange = {
     startAt: this.$moment(new Date()).add(-4, 'months').format('YYYYMM'),
     endAt: this.$moment(new Date()).format('YYYYMM'),
   }
 
   //날짜가 바뀌면 reset해주어야 하는 info
-  tickCount:number = 0;
   rangeLabels:string[] = [];
   rangeEventsVO:Map<string,object[]> = new Map();
   rangeContentsVO:Map<string,number> = new Map();
@@ -110,15 +109,15 @@ export default class DashboardMemberDetail extends Vue {
 
   //날짜가 바뀌거나 멤버키가 바뀌면 rest해주어야 하는 VO
   personalEventsVO:Map<string,object[]> = new Map();
-  personalMembersVO:Map<string,any> = new Map();
+  personalMembersVO:Map<string,number> = new Map();
   personalPlacesVO:Map<string,number> = new Map();
   personalContentsVO:Map<string,number> = new Map();
 
   viewStartAt:boolean = false;
   viewEndAt:boolean = false;
 
-  eventsSeries:any[] = [];
-  eventsHeight:any = 'auto';
+  eventsSeries:number[] = [];
+  eventsHeight:number|string = 'auto';
   eventsOptions:any = {
     title: {
       text: '월별 참여 횟수'
@@ -134,8 +133,8 @@ export default class DashboardMemberDetail extends Vue {
     xaxis: {categories:[]}
   }
   
-  membersSeries:any[] = [];
-  membersHeight:any = 'auto';
+  membersSeries:number[] = [];
+  membersHeight:number|string = 'auto';
   membersOptions:any  = {
     title: {
       text: '만난 회원 목록'
@@ -156,28 +155,29 @@ export default class DashboardMemberDetail extends Vue {
     }
   }
 
-  contentsSeries:any[] = [];
-  contentsHeight:any = 'auto';
+  contentsSeries:number[] = [];
+  contentsHeight:number|string = 'auto';
   contentsOptions:any  = {};
 
-  placesSeries:any[] = [];
-  placesHeight:any = 'auto';
+  placesSeries:number[] = [];
+  placesHeight:number|string = 'auto';
   placesOptions:any  = {}
 
   @Watch('startAt')
   @Watch('endAt')
   setDateRange(){
+    menuStore.setProgress(true);
     this.dateRange = {
       startAt: parseInt(`${this.$moment(this.startAt).format('YYYYMM')}01`),
       endAt: parseInt(`${this.$moment(this.endAt).format('YYYYMM')}31`),
     };
     eventStore.getEventsRange(this.dateRange);
+    menuStore.setProgress(false);
   }
 
   @Watch('events')
   setDashboardData(){
     if(this.member.key){
-      menuStore.setProgress(true);
       this.resetChartCommonInfo();
       this.resetPersonalVO();
 
@@ -188,8 +188,6 @@ export default class DashboardMemberDetail extends Vue {
       this.updateMembersChart();
       this.updateContentsChart();
       this.updatePlacesChart();
-
-      menuStore.setProgress(false);
     }
   }
 
@@ -211,7 +209,6 @@ export default class DashboardMemberDetail extends Vue {
   }
 
   resetChartCommonInfo(){
-    this.tickCount = 0;
     this.rangeLabels = [];
     this.rangeEventsVO = new Map();
     this.rangeContentsVO = new Map();
@@ -226,12 +223,7 @@ export default class DashboardMemberDetail extends Vue {
   }
 
   setChartCommonInfo(){
-    this.tickCount = this.$moment(this.endAt).diff(this.startAt, 'months');
-    for(let i=0; i<=this.tickCount; i++){
-      const YYYY_MM = this.$moment(this.startAt).add(i, 'months').format('YYYY.MM');
-      this.rangeLabels.push(YYYY_MM);
-    }
-    this.events.forEach((event:EventTypes)=>{
+    this.events.forEach((event:IEventTypes)=>{
       const key = event.key;
       const YYYYMMDD = event.date.toString();
       const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;
@@ -254,15 +246,15 @@ export default class DashboardMemberDetail extends Vue {
         const count = this.rangePlacesVO.get(placeKey);
         this.rangePlacesVO.set(placeKey, (count || 0) + 1);
       })
-
     })
+
   }
   
   setPersonalVO(){
     const myKey = this.member.key;
     if(this.member.participation){
     
-      this.member.participation.forEach(participation=>{
+      this.member.participation.forEach((participation:IKeyAndValue<number>)=>{
         const joinedEvent = this.events.find(event=> event.key === participation.key);
 
         if(joinedEvent){
@@ -271,8 +263,8 @@ export default class DashboardMemberDetail extends Vue {
           const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;
           const YYYY_MM_DD = `${YYYY_MM}.${YYYYMMDD.slice(6,8)}`;
           const eventInfo = {key, date:YYYY_MM_DD};
-
           const joinedEventDates = this.personalEventsVO.get(YYYY_MM);
+
           if(joinedEventDates){//참여한 이벤트를 월별로 나눠 map에 담는다. key:이벤트년월 value:이벤트날짜들
             joinedEventDates.push(eventInfo);
           } else {
@@ -281,13 +273,8 @@ export default class DashboardMemberDetail extends Vue {
 
           joinedEvent.memberKeys.forEach(memberKey=>{
             if(myKey !== memberKey){//본인제외
-              const memberVO = this.personalMembersVO.get(memberKey);
-              const memberObj = this.members.find((member:MemberTypes)=> member.key === memberKey);
-
-              this.personalMembersVO.set(memberKey, {
-                count : memberVO ? (memberVO.count) + 1 : 1,
-                name : memberObj ? memberObj.name : '탈퇴한회원',
-              });
+              const count = this.personalMembersVO.get(memberKey);
+              this.personalMembersVO.set(memberKey, (count || 0 ) + 1);
             }
           })
 
@@ -328,17 +315,17 @@ export default class DashboardMemberDetail extends Vue {
       {data:[],name: '열린 이벤트 횟수'},
     ];
 
-    for(let i=0; i<=this.tickCount; i++){
-      const joined = this.personalEventsVO.get(this.rangeLabels[i]);
-      const events = this.rangeEventsVO.get(this.rangeLabels[i]);
+    for(let [key, value] of this.rangeEventsVO.entries()){
+      const joined = this.personalEventsVO.get(key);
 
+      this.rangeLabels.push(key);
       newSeries[0].data.push(joined ? joined.length : 0);
-      newSeries[1].data.push(events ? events.length : 0);
+      newSeries[1].data.push(value.length);
     }
 
     this.eventsSeries = newSeries;
     this.eventsOptions.xaxis.categories = this.rangeLabels;
-    this.eventsHeight = (this.tickCount*60)+120;
+    this.eventsHeight = (this.rangeEventsVO.size *60)+120;
   }
 
   updateMembersChart(){
@@ -350,10 +337,9 @@ export default class DashboardMemberDetail extends Vue {
 
     if(this.personalMembersVO.size > 0){
       for(let [key, value] of this.personalMembersVO){
-        if(value){
-          newMemberLabels.push(value.name);
-          newSeries[0].data.push(value.count);
-        }
+        const member = this.members.find((member:IMemberTypes)=>member.key === key);
+        newMemberLabels.push(member!.name);
+        newSeries[0].data.push(value);
       }
     } else {
       newMemberLabels.push('참여기록없음');
@@ -374,7 +360,7 @@ export default class DashboardMemberDetail extends Vue {
     const newContentLabels:string[] = [];
 
     for(let [key, value] of this.rangeContentsVO.entries()){
-      const content = this.contents.find((content:ContentTypes) => content.key === key);
+      const content = this.contents.find((content:IContentTypes) => content.key === key);
       const contentCount = this.personalContentsVO.get(key);
 
       newContentLabels.push(content!.name);
@@ -402,7 +388,7 @@ export default class DashboardMemberDetail extends Vue {
     const newPlaceLabels:string[] = []
 
     for(let [key, value] of this.rangePlacesVO.entries()){
-      const place = this.places.find((place:PlaceTypes) => place.key === key);
+      const place = this.places.find((place:IPlaceTypes) => place.key === key);
       const placeCount = this.personalPlacesVO.get(key);
 
       newPlaceLabels.push(place!.name);
@@ -435,7 +421,7 @@ export default class DashboardMemberDetail extends Vue {
   @debounce(1000)
   goMemberDetailByName(e:any, chartContext:any, config:any){
     const name = chartContext.w.globals.labels[e.target.getAttribute('j')];
-    const member = this.members.find((member:MemberTypes)=> member.name === name);
+    const member = this.members.find((member:IMemberTypes)=> member.name === name);
     if(member){
       this.$router.push(`/dashboard/members/detail/${member.key}`);
     }

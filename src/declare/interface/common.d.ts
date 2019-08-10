@@ -1,4 +1,4 @@
-declare interface KeyAndValue<VALUE> {
+declare interface IKeyAndValue<VALUE> {
     key:string;
     value:VALUE;
 }

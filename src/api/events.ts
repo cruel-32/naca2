@@ -2,7 +2,7 @@ import API_UTILS from '@/utils/API_UTILS';
 import memberApi from "@/api/member";
 
 export default {
-    getEventByKey : (key:string):Promise<EventTypes> => new Promise<EventTypes>((resolve)=>{
+    getEventByKey : (key:string):Promise<IEventTypes> => new Promise<IEventTypes>((resolve)=>{
         API_UTILS.database.ref(`events/${key}`)
             .once('value',(snapshot:any)=>{
                 const event = snapshot.val();
@@ -16,13 +16,13 @@ export default {
                 }
             })
     }),
-    getEventsRange : (params:any):Promise<EventTypes[]> => new Promise<EventTypes[]>((resolve)=>{
+    getEventsRange : (params:any):Promise<IEventTypes[]> => new Promise<IEventTypes[]>((resolve)=>{
         API_UTILS.database.ref('events')
             .orderByChild('date')
             .startAt(params.startAt)
             .endAt(params.endAt)
             .once('value',(snapshots:any)=>{
-                const events:EventTypes[] = [];
+                const events:IEventTypes[] = [];
                 snapshots.forEach((snapshot:any)=>{
                     const event = snapshot.val();
                     event.key = snapshot.key;
@@ -34,7 +34,7 @@ export default {
                 resolve(events);
             })
     }),
-    updateEvent : async (payload:EventTypes):Promise<EventTypes> => {//key값을 넘기면 put, 안넘기면 post
+    updateEvent : async (payload:IEventTypes):Promise<IEventTypes> => {//key값을 넘기면 put, 안넘기면 post
         let {key, date, contentKeys, memberKeys, placeKeys, title} = payload;
         if(!key) key = API_UTILS.database.ref(`events`).push().key || '';
         

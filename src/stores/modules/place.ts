@@ -4,19 +4,19 @@ import placeApi from '@/api/place'
 
 @Module
 class PlaceStore extends VuexModule {
-  places:PlaceTypes[] = [];
+  places:IPlaceTypes[] = [];
 
   @Mutation
-  setPlaces(places:PlaceTypes[]){
+  setPlaces(places:IPlaceTypes[]){
     this.places=places;
   }
 
   @Action
-  async getPlaces():Promise<SnackbarTypes>{
-    const places:PlaceTypes[] = await placeApi.getPlaces();
+  async getPlaces():Promise<ISnackbarTypes>{
+    const places:IPlaceTypes[] = await placeApi.getPlaces();
     this.setPlaces(places);
 
-    const msg:SnackbarTypes = {
+    const msg:ISnackbarTypes = {
       snackColor:'error',
       snackText:'places 가져오기 실패'
     }

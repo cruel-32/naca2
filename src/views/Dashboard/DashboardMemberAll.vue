@@ -92,7 +92,7 @@ export default class DashboardMemberAll extends Vue {
   }
 
   setChartCommonInfo(){
-    this.members.forEach((member:MemberTypes)=>{
+    this.members.forEach((member:IMemberTypes)=>{
       const gender = this.genderVO.get(member.gender);
       const genderAge = this.ageVO.get(member.gender);
       const age:number = this.today.diff(this.$moment(member.birth.toString()), 'years')+1;

@@ -1,14 +1,14 @@
-declare interface ContentTypes {
+declare interface IContentTypes {
     key:string;
     name:string;
 }
 
-declare interface DateRange {
+declare interface IDateRange {
     startAt:number;
     endAt:number;
 }
 
-declare interface EventTypes {
+declare interface IEventTypes {
     key:string|null;
     date:number;
     title:string;
@@ -17,14 +17,14 @@ declare interface EventTypes {
     memberKeys:string[];
 }
 
-declare interface GradeTypes {
+declare interface IGradeTypes {
     key:string;
     grade:number;
     name:string;
     day:number;
 }
 
-declare interface MemberTypes {
+declare interface IMemberTypes {
     key:string|null;
     address:string;
     birth:number;
@@ -33,9 +33,9 @@ declare interface MemberTypes {
     joinDate:number
     mail:string;
     outDay:number
-    participation:any[];
-    firstDate:KeyAndValue<number>;
-    lastDate:KeyAndValue<number>;
+    participation:IKeyAndValue<number>[];
+    firstDate:IKeyAndValue<number>;
+    lastDate:IKeyAndValue<number>;
     phone:number;
     dPlus:number;
     dMinus:number;
@@ -44,12 +44,12 @@ declare interface MemberTypes {
     job:string;
 }
 
-declare interface PlaceTypes {
+declare interface IPlaceTypes {
     key:string;
     name:string;
 }
 
-declare interface SideMenuTypes {
+declare interface ISideMenuTypes {
     icon:string;
     iconClass:string;
     title:string;
@@ -58,7 +58,7 @@ declare interface SideMenuTypes {
     color:string;
 }
 
-declare interface SnackbarTypes {
+declare interface ISnackbarTypes {
     time?:number;
     isShowSnackbar?:boolean;
     snackColor:string;
@@ -66,7 +66,7 @@ declare interface SnackbarTypes {
     key?:string;
 }
 
-declare interface UserTypes {
+declare interface IUserTypes {
     displayName:string;
     email:string;
     emailVerified?:boolean;

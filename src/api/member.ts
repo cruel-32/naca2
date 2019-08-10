@@ -2,7 +2,7 @@ import API_UTILS from '@/utils/API_UTILS';
 import moment from 'moment';
 
 export default {
-    getMemberByKey : (key:string):Promise<MemberTypes> => new Promise<MemberTypes>((resolve,reject)=>{
+    getMemberByKey : (key:string):Promise<IMemberTypes> => new Promise<IMemberTypes>((resolve,reject)=>{
         API_UTILS.database.ref(`members/${key}`)
             .once('value',(snapshot:any)=>{
                 const member = snapshot.val();
@@ -11,7 +11,7 @@ export default {
                 if(member){
                     const VOarray = API_UTILS.objConvertToArray<number>(member.participation);
                     member.participation = VOarray;
-                    member.participation.sort((next:KeyAndValue<number>,prev:KeyAndValue<number>):number => prev.value - next.value);
+                    member.participation.sort((next:IKeyAndValue<number>,prev:IKeyAndValue<number>):number => prev.value - next.value);
                     if(member.participation && member.participation.length > 0){
                         member.lastDate = member.participation[0]
                         member.firstDate = member.participation[member.participation.length-1]
@@ -24,8 +24,8 @@ export default {
             })
     }),
 
-    getMembers : ():Promise<MemberTypes[]> => API_UTILS.database.ref('members').once('value').then((snapshots:any)=>{
-        const members:MemberTypes[] = [];
+    getMembers : ():Promise<IMemberTypes[]> => API_UTILS.database.ref('members').once('value').then((snapshots:any)=>{
+        const members:IMemberTypes[] = [];
 
         snapshots
             .forEach((snapshot:any)=>{
@@ -34,7 +34,7 @@ export default {
                 if(member.participation){
                     const VOarray = API_UTILS.objConvertToArray<number>(member.participation);
                     member.participation = VOarray;
-                    member.participation.sort((next:KeyAndValue<number>,prev:KeyAndValue<number>):number => prev.value - next.value);
+                    member.participation.sort((next:IKeyAndValue<number>,prev:IKeyAndValue<number>):number => prev.value - next.value);
 
                     member.lastDate = member.participation[0]
                     member.firstDate = member.participation[member.participation.length-1]
@@ -43,12 +43,12 @@ export default {
                 }
                 members.push(member);
             })
-        members.sort((memberA:MemberTypes, memberB:MemberTypes):number => memberA.name > memberB.name ? 1 : -1)
+        members.sort((memberA:IMemberTypes, memberB:IMemberTypes):number => memberA.name > memberB.name ? 1 : -1)
         return members
     }),
 
-    getMembersInActive : ():Promise<MemberTypes[]> => API_UTILS.database.ref('members').once('value').then((snapshots:any)=>{
-        const members:MemberTypes[] = [];
+    getMembersInActive : ():Promise<IMemberTypes[]> => API_UTILS.database.ref('members').once('value').then((snapshots:any)=>{
+        const members:IMemberTypes[] = [];
 
         snapshots
             .forEach((snapshot:any)=>{
@@ -58,7 +58,7 @@ export default {
                     if(member.participation){
                         const VOarray = API_UTILS.objConvertToArray<number>(member.participation);
                         member.participation = VOarray;
-                        member.participation.sort((next:KeyAndValue<number>,prev:KeyAndValue<number>):number => prev.value - next.value);
+                        member.participation.sort((next:IKeyAndValue<number>,prev:IKeyAndValue<number>):number => prev.value - next.value);
                         member.lastDate = member.participation.length > 0 ? member.participation[0] : {Key:'', value:member.joinDate};
                     } else {
                         member.lastDate = {Key:'', value:member.joinDate};
@@ -67,7 +67,7 @@ export default {
                 }
             })
 
-        members.sort((memberA:MemberTypes, memberB:MemberTypes):number => memberA.name > memberB.name ? 1 : -1)
+        members.sort((memberA:IMemberTypes, memberB:IMemberTypes):number => memberA.name > memberB.name ? 1 : -1)
         return members
     }),
 
@@ -106,7 +106,7 @@ export default {
         // }),
     },
     //key값을 넘기면 put, 안넘기면 post
-    updateMember : async (payload:MemberTypes):Promise<MemberTypes> => {
+    updateMember : async (payload:IMemberTypes):Promise<IMemberTypes> => {
         let {key, address, birth, gender, grade, joinDate, mail, phone, name, job} = payload;
         let params:any = {
             address, birth, gender, grade, joinDate, mail, phone, name, job

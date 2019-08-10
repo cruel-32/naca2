@@ -5,10 +5,10 @@ import accountApi from '@/api/account'
 
 @Module
 class AccountStore extends VuexModule {
-  currentUser:UserTypes|null = null;
+  currentUser:IUserTypes|null = null;
 
   @Mutation
-  setCurrentUser(user:UserTypes|null){
+  setCurrentUser(user:IUserTypes|null){
     this.currentUser=user;
   }
 
