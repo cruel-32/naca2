@@ -187,6 +187,7 @@ export default class DashboardMemberAll extends Vue {
     menuStore.setProgress(false);
   }
 
+  @Watch('events')
   setDashboardData(){
     this.resetChartCommonInfo();
 
