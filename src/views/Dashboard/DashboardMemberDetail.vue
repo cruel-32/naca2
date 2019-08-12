@@ -105,7 +105,6 @@ export default class DashboardMemberDetail extends Vue {
   }
 
   //날짜가 바뀌면 reset해주어야 하는 info
-  rangeLabels:string[] = [];
   rangeEventsVO:Map<string,object[]> = new Map();
   rangeContentsVO:Map<string,number> = new Map();
   rangePlacesVO:Map<string,number> = new Map();
@@ -121,42 +120,11 @@ export default class DashboardMemberDetail extends Vue {
 
   eventsSeries:number[] = [];
   eventsHeight:number|string = 'auto';
-  eventsOptions:any = {
-    title: {
-      text: '월별 참여 횟수'
-    },
-    legend: {
-      position: 'top'
-    },
-    plotOptions: {
-      bar: {
-          horizontal: true,
-      }
-    },
-    xaxis: {categories:[]}
-  }
+  eventsOptions:any = {}
   
   membersSeries:number[] = [];
   membersHeight:number|string = 'auto';
-  membersOptions:any  = {
-    title: {
-      text: '만난 회원 목록'
-    },
-    legend: {
-      position: 'top'
-    },
-    plotOptions: {
-        bar: {
-            horizontal: true,
-        }
-    },
-    xaxis: {categories:[]},
-    chart : {
-      events : {
-        dataPointSelection: this.goMemberDetailByName,
-      }
-    }
-  }
+  membersOptions:any  = {}
 
   contentsSeries:number[] = [];
   contentsHeight:number|string = 'auto';
@@ -168,7 +136,8 @@ export default class DashboardMemberDetail extends Vue {
 
   @Watch('startAt')
   @Watch('endAt')
-  async setDateRange(now:string|undefined=undefined, prev:string|undefined=undefined){
+  async setDateRange(){
+    console.log('range changed');
     menuStore.setProgress(true);
 
     const startAtDate = this.$moment(this.startAt);
@@ -212,6 +181,7 @@ export default class DashboardMemberDetail extends Vue {
 
   @Watch('params.key')
   async getNewMember(){
+    console.log('paramskey chagned')
     menuStore.setProgress(true);
     this.resetPersonalVO();
     const msg = await memberStore.getMemberByKey(this.params ? this.params.key : '')
@@ -228,7 +198,6 @@ export default class DashboardMemberDetail extends Vue {
   }
 
   resetChartCommonInfo(){
-    this.rangeLabels = [];
     this.rangeEventsVO = new Map();
     this.rangeContentsVO = new Map();
     this.rangePlacesVO = new Map();
@@ -332,17 +301,31 @@ export default class DashboardMemberDetail extends Vue {
       {data:[],name: '참여한 이벤트 횟수'},
       {data:[],name: '열린 이벤트 횟수'},
     ];
+    const categories = [];
 
     for(let [key, value] of this.rangeEventsVO.entries()){
       const joined = this.personalEventsVO.get(key);
 
-      this.rangeLabels.push(key);
+      categories.push(key);
       newSeries[0].data.push(joined ? joined.length : 0);
       newSeries[1].data.push(value.length);
     }
 
     this.eventsSeries = newSeries;
-    this.eventsOptions.xaxis.categories = this.rangeLabels;
+    this.eventsOptions = {
+      title: {
+        text: '월별 참여 횟수'
+      },
+      legend: {
+        position: 'top'
+      },
+      plotOptions: {
+        bar: {
+            horizontal: true,
+        }
+      },
+      xaxis: {categories}
+    }
     this.eventsHeight = (this.rangeEventsVO.size *60)+120;
   }
 
@@ -351,22 +334,41 @@ export default class DashboardMemberDetail extends Vue {
       {data:[],name: '만난 회원'},
     ];
 
-    const newMemberLabels:string[] = []
+    const categories:string[] = []
 
     if(this.personalMembersVO.size > 0){
       for(let [key, value] of this.personalMembersVO){
         const member = this.members.find((member:IMemberTypes)=>member.key === key);
-        newMemberLabels.push(member!.name);
+        categories.push(member!.name);
         newSeries[0].data.push(value);
       }
     } else {
-      newMemberLabels.push('참여기록없음');
+      categories.push('참여기록없음');
       newSeries[0].data.push(0);
     }
 
     this.membersSeries = newSeries;
-    this.membersOptions.xaxis.categories = newMemberLabels;
-    this.membersHeight = (newMemberLabels.length*30)+120;
+    this.membersOptions = {
+      title: {
+        text: '만난 회원 목록'
+      },
+      legend: {
+        position: 'top'
+      },
+      plotOptions: {
+          bar: {
+              horizontal: true,
+          }
+      },
+      xaxis: {categories},
+      chart : {
+        events : {
+          dataPointSelection: this.goMemberDetailByName,
+        }
+      }
+    }
+
+    this.membersHeight = (categories.length*30)+120;
   }
 
   updateContentsChart(){
