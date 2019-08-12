@@ -137,7 +137,6 @@ export default class DashboardMemberDetail extends Vue {
   @Watch('startAt')
   @Watch('endAt')
   async setDateRange(){
-    console.log('range changed');
     menuStore.setProgress(true);
 
     const startAtDate = this.$moment(this.startAt);
@@ -165,7 +164,6 @@ export default class DashboardMemberDetail extends Vue {
 
   setDashboardData(){
     if(this.member.key){
-      console.log('events changed');
       this.resetChartCommonInfo();
       this.resetPersonalVO();
 
@@ -181,7 +179,6 @@ export default class DashboardMemberDetail extends Vue {
 
   @Watch('params.key')
   async getNewMember(){
-    console.log('paramskey chagned')
     menuStore.setProgress(true);
     this.resetPersonalVO();
     const msg = await memberStore.getMemberByKey(this.params ? this.params.key : '')
@@ -289,7 +286,6 @@ export default class DashboardMemberDetail extends Vue {
       memberStore.getMembersInActive(),
       memberStore.getMemberByKey(this.params ? this.params.key : ''),
     ]).then(async (done)=>{
-      console.log('done : ', done);
       // memberStore.setMembersInfoByKeys( this.event.memberKeys );
       this.setDashboardData();
       menuStore.setProgress(false);
