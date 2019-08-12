@@ -160,6 +160,7 @@ export default class DashboardMemberDetail extends Vue {
     };
 
     this.resetChartCommonInfo();
+    this.resetPersonalVO();
     await eventStore.getEventsRange(this.dateRange);
     this.setDashboardData();
     menuStore.setProgress(false);
