@@ -14,11 +14,12 @@
           :close-on-content-click="false"
           transition="scale-transition"
           offset-y
-          full-width
+          :full-width="true"
         >
           <template v-slot:activator="{ on }">
             <v-text-field
               v-model="startAt"
+              :readonly="true"
               label="통계 범위 선택 (from)"
               persistent-hint
               v-on="on"
@@ -34,11 +35,12 @@
           :close-on-content-click="false"
           transition="scale-transition"
           offset-y
-          full-width
+          :full-width="true"
         >
           <template v-slot:activator="{ on }">
             <v-text-field
               v-model="endAt"
+              :readonly="true"
               label="통계 범위 선택 (to)"
               persistent-hint
               v-on="on"
