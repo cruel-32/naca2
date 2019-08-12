@@ -136,44 +136,15 @@ export default class DashboardMemberAll extends Vue {
 
   eventsSeries:any[] = [];
   eventsHeight:any = 'auto';
-  eventsOptions:any = {
-    title: {
-      text: '월별 이벤트 횟수'
-    },
-    legend: {
-      position: 'top'
-    },
-    plotOptions: {
-      bar: {
-          horizontal: true,
-      }
-    },
-    xaxis: {categories:[]}
-  }
+  eventsOptions:any = {}
   
   contentsSeries:any[] = [];
   contentsHeight:any = 'auto';
-  contentsOptions:any  = {
-    title: {
-      text: '컨텐츠 비율'
-    },
-    legend: {
-      position: 'top'
-    },
-    xaxis: {categories:[]}
-  }
+  contentsOptions:any  = {}
 
   placesSeries:any[] = [];
   placesHeight:any = 'auto';
-  placesOptions:any  = {
-    title: {
-      text: '지역 비율'
-    },
-    legend: {
-      position: 'top'
-    },
-    xaxis: {categories:[]}
-  }
+  placesOptions:any  = {};
 
   @Watch('startAt')
   @Watch('endAt')
@@ -261,7 +232,20 @@ export default class DashboardMemberAll extends Vue {
     }
 
     this.eventsSeries = newSeries;
-    this.eventsOptions.xaxis.categories = this.rangeLabels;
+    this.eventsOptions = {
+      title: {
+        text: '월별 이벤트 횟수'
+      },
+      legend: {
+        position: 'top'
+      },
+      plotOptions: {
+        bar: {
+            horizontal: true,
+        }
+      },
+      xaxis: {categories:this.rangeLabels}
+    }
     this.eventsHeight = (this.rangeEventsVO.size*30)+120;
   }
 
@@ -277,7 +261,16 @@ export default class DashboardMemberAll extends Vue {
       }
     }
 
-    this.contentsOptions.labels = newContentLabels;
+    this.contentsOptions = {
+      title: {
+        text: '컨텐츠 비율'
+      },
+      labels : newContentLabels,
+      legend: {
+        position: 'top'
+      },
+    }
+
     this.contentsSeries =  newSeries;
     this.contentsHeight = 400
   }
@@ -295,7 +288,15 @@ export default class DashboardMemberAll extends Vue {
       }
     }
 
-    this.placesOptions.labels = newPlaceLabels;
+    this.placesOptions = {
+      title: {
+        text: '지역 비율'
+      },
+      labels: newPlaceLabels,
+      legend: {
+        position: 'top'
+      },
+    }
     this.placesSeries = newSeries;
     this.placesHeight = 400
 
