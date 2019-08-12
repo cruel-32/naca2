@@ -157,6 +157,7 @@ export default class DashboardMemberDetail extends Vue {
       endAt: parseInt(`${this.$moment(this.endAt).format('YYYYMM')}31`),
     };
 
+    this.resetChartCommonInfo();
     await eventStore.getEventsRange(this.dateRange);
     this.setDashboardData();
     menuStore.setProgress(false);
@@ -164,9 +165,6 @@ export default class DashboardMemberDetail extends Vue {
 
   setDashboardData(){
     if(this.member.key){
-      this.resetChartCommonInfo();
-      this.resetPersonalVO();
-
       this.setChartCommonInfo();
       this.setPersonalVO();
 
@@ -213,6 +211,7 @@ export default class DashboardMemberDetail extends Vue {
       const YYYYMMDD = event.date.toString();
       const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;
       const YYYY_MM_DD = `${YYYY_MM}.${YYYYMMDD.slice(6,8)}`;
+
       const eventDates = this.rangeEventsVO.get(YYYY_MM);
       const eventInfo = {key, date:YYYY_MM_DD};
 
@@ -335,7 +334,7 @@ export default class DashboardMemberDetail extends Vue {
     if(this.personalMembersVO.size > 0){
       for(let [key, value] of this.personalMembersVO){
         const member = this.members.find((member:IMemberTypes)=>member.key === key);
-        categories.push(member!.name);
+        categories.push(member ? member!.name : '탈퇴한 회원');
         newSeries[0].data.push(value);
       }
     } else {

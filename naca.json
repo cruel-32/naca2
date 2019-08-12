@@ -139,6 +139,65 @@
       },
       "title" : "영화 불주먹 에ㅇ...가 아닌 사자벙"
     },
+    "-LlWR0ZSpR1VidEaHr3A" : {
+      "contentKeys" : {
+        "qqqweerrtyyy" : 1565151852140
+      },
+      "date" : 20190808,
+      "memberKeys" : {
+        "-LaUywmc6asvIuxzJqdT" : 1565151852140,
+        "-LjRHx8uy1U1VFdK-hja" : 1565151852140,
+        "-LlQbhX9lYmWp-CwIUCd" : 1565151852140,
+        "dfgbrb" : 1565151852140,
+        "dfgbtujkyn" : 1565151852140,
+        "ertvuj56ub" : 1565151852140,
+        "wrtbeynunrtub" : 1565151852140
+      },
+      "placeKeys" : {
+        "ertberbertvwnzx" : 1565151852140
+      },
+      "title" : "보드게임"
+    },
+    "-LlWRJHkT2fNSE5QN4wt" : {
+      "contentKeys" : {
+        "cxvvcveetyhb" : 1565448927852
+      },
+      "date" : 20190810,
+      "memberKeys" : {
+        "-LWaik6X6pYfqY5vrG9b" : 1565448927852,
+        "-LcF9AF4and7EbH-49fc" : 1565448927852,
+        "-LlQbhX9lYmWp-CwIUCd" : 1565448927852,
+        "cccbryiumrtbryb" : 1565448927852,
+        "dfgberyvy" : 1565448927852,
+        "jjdfetrbgg" : 1565448927852,
+        "rrwervwevhbrty" : 1565448927852,
+        "wrtbeynunrtub" : 1565448927852
+      },
+      "placeKeys" : {
+        "ervtertyerybery" : 1565448927852
+      },
+      "title" : "포켓볼과 빙수"
+    },
+    "-LlpsX4XKfMFr6h4iSUF" : {
+      "contentKeys" : {
+        "wererwrtttyy" : 1565358713721
+      },
+      "date" : 20190809,
+      "memberKeys" : {
+        "-LWaik6X6pYfqY5vrG9b" : 1565358713721,
+        "-Lc4IiRD9yPOGA3jVJxc" : 1565358713721,
+        "-LlQbhX9lYmWp-CwIUCd" : 1565358713721,
+        "-LlWamP0X-aV1XUC15iT" : 1565358713721,
+        "cccbryiumrtbryb" : 1565358713721,
+        "dfgbtujkyn" : 1565358713721,
+        "dfgbujrnu" : 1565358713721,
+        "ertbunrtu" : 1565358713721
+      },
+      "placeKeys" : {
+        "ervtertyerybery" : 1565358713721
+      },
+      "title" : "평일 급 갈비벙"
+    },
     "-d1ioftue1hnxhfoi" : {
       "contentKeys" : {
         "qqqweerrtyyy" : 1564451341492
@@ -200,19 +259,19 @@
     },
     "-di1odftuevnx2hfo" : {
       "contentKeys" : {
-        "eeerfccaqycw" : 1564895129733
+        "dsfoopjeroeo" : 1565174351372
       },
       "date" : 20190727,
       "memberKeys" : {
-        "ertbunrtu" : 1564895129733,
-        "nnnnghtyrtbrtyb" : 1564895129733,
-        "wervwerv" : 1564895129733,
-        "wrtbeynunrtub" : 1564895129733
+        "ertbunrtu" : 1565174351372,
+        "nnnnghtyrtbrtyb" : 1565174351372,
+        "wervwerv" : 1565174351372,
+        "wrtbeynunrtub" : 1565174351372
       },
       "placeKeys" : {
-        "fgfgrtrtdsfsdww" : 1564895129733
+        "xxxxxxdffffeeer" : 1565174351372
       },
-      "title" : "당일치기 양양 바다여행"
+      "title" : "양양 바다여행...은 망하고 드라이브"
     },
     "-di1of1uehnxhfoid" : {
       "contentKeys" : {
@@ -1050,7 +1109,6 @@
       },
       "date" : 20190205,
       "memberKeys" : {
-        "-LW-yellfSd4vqH5P2-H" : 1564451341492,
         "dfgberyvy" : 1564451341492,
         "dfgbrb" : 1564451341492,
         "jjdfetrbgg" : 1564451341492
@@ -1206,7 +1264,6 @@
       },
       "date" : 20181229,
       "memberKeys" : {
-        "-LSEs3KAabYgfSslxMhp" : 1564451341492,
         "cccbryiumrtbryb" : 1564451341492,
         "dfgbtujkyn" : 1564451341492,
         "rrwervwevhbrty" : 1564451341492,
@@ -1659,6 +1716,8 @@
       "outDay" : 0,
       "participation" : {
         "-LlLeVYYcUM7WWKZlx-q" : 20190803,
+        "-LlWRJHkT2fNSE5QN4wt" : 20190810,
+        "-LlpsX4XKfMFr6h4iSUF" : 20190809,
         "-d2ioftuenx6hfoid" : 20190414,
         "-di1oftuehnxhfo1i" : 20190617,
         "-di1oftuhnx2hfoid" : 20190615,
@@ -1752,6 +1811,7 @@
       "outDay" : 0,
       "participation" : {
         "-LlQEsCo0A9VJuUi1YM7" : 20190731,
+        "-LlWR0ZSpR1VidEaHr3A" : 20190808,
         "-d1ioftue1hnxhfoi" : 20190608,
         "-di1of1uehnxhfoid" : 20190710,
         "-dio3ftuehnxh3foi" : 20190626,
@@ -1779,6 +1839,7 @@
       "outDay" : 0,
       "participation" : {
         "-LlLeVYYcUM7WWKZlx-q" : 20190803,
+        "-LlpsX4XKfMFr6h4iSUF" : 20190809,
         "-d2ioftuenx6hfoid" : 20190414,
         "-di1odftuehnx2hoi" : 20190718,
         "-di1oftuehnxhfo1i" : 20190617,
@@ -1810,6 +1871,7 @@
       "participation" : {
         "-3dioftuehnxhfoi4" : 20190601,
         "-LlLeVYYcUM7WWKZlx-q" : 20190803,
+        "-LlWRJHkT2fNSE5QN4wt" : 20190810,
         "-diof45tuehnxfoid" : 20190501,
         "-do1ftuehnxhfoi1d" : 20190706
       },
@@ -1920,6 +1982,7 @@
       "name" : "양인태",
       "outDay" : 0,
       "participation" : {
+        "-LlWR0ZSpR1VidEaHr3A" : 20190808,
         "-dio1ftuehn1xhfid" : 20190714
       },
       "phone" : 1012345678
@@ -1979,11 +2042,16 @@
       "address" : "광진구 중곡동",
       "birth" : 19880422,
       "gender" : "M",
-      "grade" : 4,
+      "grade" : 3,
       "job" : "회사원",
       "joinDate" : 20190729,
       "mail" : "",
       "name" : "모원성",
+      "participation" : {
+        "-LlWR0ZSpR1VidEaHr3A" : 20190808,
+        "-LlWRJHkT2fNSE5QN4wt" : 20190810,
+        "-LlpsX4XKfMFr6h4iSUF" : 20190809
+      },
       "phone" : 0
     },
     "-LlQbqHH10EJ6Q_4AV-2" : {
@@ -2028,6 +2096,108 @@
       "joinDate" : 20190803,
       "mail" : "",
       "name" : "고영현",
+      "phone" : 0
+    },
+    "-LlWQXpJv8kSqH03pdj3" : {
+      "address" : "쌍문",
+      "birth" : 19890714,
+      "gender" : "M",
+      "grade" : 4,
+      "job" : "IT 신사",
+      "joinDate" : 20190805,
+      "mail" : "",
+      "name" : "정일권",
+      "phone" : 0
+    },
+    "-LlWamP0X-aV1XUC15iT" : {
+      "address" : "의정부",
+      "birth" : 19911208,
+      "gender" : "F",
+      "grade" : 3,
+      "job" : "병원 / 노원",
+      "joinDate" : 20190805,
+      "mail" : "",
+      "name" : "안은별",
+      "participation" : {
+        "-LlpsX4XKfMFr6h4iSUF" : 20190809
+      },
+      "phone" : 0
+    },
+    "-LlfemvzAuMBxDQuIKqz" : {
+      "address" : "도봉",
+      "birth" : 19920325,
+      "gender" : "M",
+      "grade" : 4,
+      "job" : "it 공덕",
+      "joinDate" : 20190806,
+      "mail" : "",
+      "name" : "배선우",
+      "phone" : 0
+    },
+    "-Llkr5tCbvUmVpvC0Ahb" : {
+      "address" : "의정부",
+      "birth" : 19930709,
+      "gender" : "M",
+      "grade" : 4,
+      "job" : "의정부",
+      "joinDate" : 20190808,
+      "mail" : "",
+      "name" : "김철환",
+      "phone" : 0
+    },
+    "-LlliLGD5mKoY_4aRAb8" : {
+      "address" : "도봉",
+      "birth" : 19920925,
+      "gender" : "F",
+      "grade" : 4,
+      "job" : "회사원 강남",
+      "joinDate" : 20190808,
+      "mail" : "",
+      "name" : "김승희",
+      "phone" : 0
+    },
+    "-LlliSfkuFEEeJ8daNeQ" : {
+      "address" : "의정부",
+      "birth" : 19930709,
+      "gender" : "M",
+      "grade" : 4,
+      "job" : "의정부",
+      "joinDate" : 20190808,
+      "mail" : "",
+      "name" : "김철환",
+      "phone" : 0
+    },
+    "-LltmbqIHRgFx9yNLFav" : {
+      "address" : "방학",
+      "birth" : 19921210,
+      "gender" : "M",
+      "grade" : 4,
+      "job" : "교사 (노원)",
+      "joinDate" : 20190810,
+      "mail" : "",
+      "name" : "형민우",
+      "phone" : 0
+    },
+    "-LlvUyIRTH92WNatlweL" : {
+      "address" : "의정부",
+      "birth" : 19920414,
+      "gender" : "F",
+      "grade" : 4,
+      "job" : "천연제품 강사 내방동",
+      "joinDate" : 20190810,
+      "mail" : "",
+      "name" : "이지혜",
+      "phone" : 0
+    },
+    "-Lm2rTgLmxYFe-SSdQLF" : {
+      "address" : "월곡동",
+      "birth" : 19890203,
+      "gender" : "M",
+      "grade" : 4,
+      "job" : "웹개발 (성수)",
+      "joinDate" : 20190812,
+      "mail" : "",
+      "name" : "최민규",
       "phone" : 0
     },
     "LYZdhhO8H3tG1Czdqok" : {
@@ -2082,7 +2252,7 @@
       "address" : "도봉산",
       "birth" : 19860805,
       "gender" : "M",
-      "grade" : 1,
+      "grade" : 2,
       "job" : "웹퍼블리셔",
       "joinDate" : 20150405,
       "mail" : "",
@@ -2090,6 +2260,8 @@
       "participation" : {
         "-3dioftuehnxhfoi4" : 20190601,
         "-LlLeVYYcUM7WWKZlx-q" : 20190803,
+        "-LlWRJHkT2fNSE5QN4wt" : 20190810,
+        "-LlpsX4XKfMFr6h4iSUF" : 20190809,
         "-d1ioftue1hnxhfoi" : 20190608,
         "-di1oftuhnx2hfoid" : 20190615,
         "-di3oftuehnxhfoid" : 20190127,
@@ -2133,6 +2305,7 @@
       "name" : "신선하",
       "participation" : {
         "-1ioftueh4nxhfoid" : 20190309,
+        "-LlWRJHkT2fNSE5QN4wt" : 20190810,
         "-di86oftuehnxhfoi" : 20190503,
         "-diof43tuehnxhfoi" : 20190427,
         "-diof4tuehnxhfoid" : 20190420,
@@ -2159,6 +2332,7 @@
       "participation" : {
         "-1dioftuehnxhfoid" : 20190418,
         "-LlQEsCo0A9VJuUi1YM7" : 20190731,
+        "-LlWR0ZSpR1VidEaHr3A" : 20190808,
         "-d1ioftue1hnxhfoi" : 20190608,
         "-d2ioftuenx6hfoid" : 20190414,
         "-di1of1uehnxhfoid" : 20190710,
@@ -2210,6 +2384,8 @@
         "-3dioftuehnxhfoi4" : 20190601,
         "-LlLeVYYcUM7WWKZlx-q" : 20190803,
         "-LlQEsCo0A9VJuUi1YM7" : 20190731,
+        "-LlWR0ZSpR1VidEaHr3A" : 20190808,
+        "-LlpsX4XKfMFr6h4iSUF" : 20190809,
         "-d1ioftue1hnxhfoi" : 20190608,
         "-d2ioftuenx6hfoid" : 20190414,
         "-di1odftuehnx2hoi" : 20190718,
@@ -2279,6 +2455,7 @@
       "mail" : "",
       "name" : "정혜선",
       "participation" : {
+        "-LlpsX4XKfMFr6h4iSUF" : 20190809,
         "-di3oftuehn4xhfoi" : 20190506,
         "-dio1ftuehn1xhfid" : 20190714,
         "-dioftuehn9xhfoid" : 20190109
@@ -2315,6 +2492,7 @@
         "-3dioftuehnxhfoi4" : 20190601,
         "-LlLeVYYcUM7WWKZlx-q" : 20190803,
         "-LlQEsCo0A9VJuUi1YM7" : 20190731,
+        "-LlpsX4XKfMFr6h4iSUF" : 20190809,
         "-d2ioftuenx6hfoid" : 20190414,
         "-di1odftuehnx2hoi" : 20190718,
         "-di1odftuevnx2hfo" : 20190727,
@@ -2399,6 +2577,7 @@
       "mail" : "",
       "name" : "배인지",
       "participation" : {
+        "-LlWR0ZSpR1VidEaHr3A" : 20190808,
         "-d1ioftue1hnxhfoi" : 20190608,
         "-d2ioftuenx6hfoid" : 20190414,
         "-di4oftehnxh3foid" : 20190516,
@@ -2494,6 +2673,7 @@
       "name" : "김비오",
       "participation" : {
         "-1ioftueh4nxhfoid" : 20190309,
+        "-LlWRJHkT2fNSE5QN4wt" : 20190810,
         "-di86oftuehnxhfoi" : 20190503,
         "-diof4tuehnxhfoid" : 20190420,
         "-diof5tuehnx4hfoi" : 20190511,
@@ -2568,6 +2748,7 @@
       "name" : "김효석",
       "participation" : {
         "-LlLeVYYcUM7WWKZlx-q" : 20190803,
+        "-LlWRJHkT2fNSE5QN4wt" : 20190810,
         "-di3ftu5ehnxhfoid" : 20190323,
         "-di3oftuehnxhfoid" : 20190127,
         "-diof4tuehnx4hfoi" : 20190629,
@@ -2743,6 +2924,8 @@
         "-1dioftuehnxhfoid" : 20190418,
         "-3dioftuehnxhfoi4" : 20190601,
         "-LlQEsCo0A9VJuUi1YM7" : 20190731,
+        "-LlWR0ZSpR1VidEaHr3A" : 20190808,
+        "-LlWRJHkT2fNSE5QN4wt" : 20190810,
         "-d2ioftuenx6hfoid" : 20190414,
         "-di1odftuehnx2hoi" : 20190718,
         "-di1odftuevnx2hfo" : 20190727,
