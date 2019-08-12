@@ -77,6 +77,7 @@ import { memberStore } from "@/stores/modules/member";
 import { menuStore } from "@/stores/modules/menu";
 import { debounce } from "typescript-debounce-decorator";
 import apexchart from 'vue-apexcharts'
+import { dialogStore } from '../../stores/modules/dialog';
 
 @Component({
   components : {
@@ -94,8 +95,10 @@ export default class DashboardMemberDetail extends Vue {
   get places(){return placeStore.places}
   get contents(){return contentStore.contents}
 
+
   endAt:string = this.$moment(new Date()).format('YYYY-MM');
   startAt:string = this.$moment(new Date()).add(-4, 'months').format('YYYY-MM');
+
   dateRange:IDateRange = {
     startAt: this.$moment(new Date()).add(-4, 'months').format('YYYYMM'),
     endAt: this.$moment(new Date()).format('YYYYMM'),
@@ -165,19 +168,35 @@ export default class DashboardMemberDetail extends Vue {
 
   @Watch('startAt')
   @Watch('endAt')
-  setDateRange(){
+  async setDateRange(now:string|undefined=undefined, prev:string|undefined=undefined){
     menuStore.setProgress(true);
+
+    const startAtDate = this.$moment(this.startAt);
+    const endAtDate = this.$moment(this.endAt);
+    const diff:number = endAtDate.diff(startAtDate, 'months');
+
+    if(diff < 0){
+      dialogStore.showSnackbar({
+        "snackColor" : "error",
+        "snackText" : "날짜범위를 다시 설정하세요"
+      });
+      menuStore.setProgress(false);
+      return
+    }
+
     this.dateRange = {
       startAt: parseInt(`${this.$moment(this.startAt).format('YYYYMM')}01`),
       endAt: parseInt(`${this.$moment(this.endAt).format('YYYYMM')}31`),
     };
-    eventStore.getEventsRange(this.dateRange);
+
+    await eventStore.getEventsRange(this.dateRange);
+    this.setDashboardData();
     menuStore.setProgress(false);
   }
 
-  @Watch('events')
   setDashboardData(){
     if(this.member.key){
+      console.log('events changed');
       this.resetChartCommonInfo();
       this.resetPersonalVO();
 
@@ -246,8 +265,8 @@ export default class DashboardMemberDetail extends Vue {
         const count = this.rangePlacesVO.get(placeKey);
         this.rangePlacesVO.set(placeKey, (count || 0) + 1);
       })
+      
     })
-
   }
   
   setPersonalVO(){
@@ -298,7 +317,6 @@ export default class DashboardMemberDetail extends Vue {
     Promise.all([
       contentStore.getContents(), 
       placeStore.getPlaces(),
-      eventStore.getEventsRange(this.dateRange),
       memberStore.getMembersInActive(),
       memberStore.getMemberByKey(this.params ? this.params.key : ''),
     ]).then(async (done)=>{
