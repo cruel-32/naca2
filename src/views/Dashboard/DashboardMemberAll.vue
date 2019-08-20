@@ -1,24 +1,69 @@
 <template>
   <div class="member_all_container">
-    <v-container grid-list-md>
-      <v-layout wrap>
+    <v-layout wrap>
+      <v-flex xs12 sm12 md12 class="sticky title">
+        <h1 class="headline">
+          <v-icon color="green">insert_chart</v-icon> 전체 회원 통계
+        </h1>
+      </v-flex>
       
-        <v-flex xs12 sm12 md12 >
-          <h1 class="headline">
-            <v-icon color="green">insert_chart</v-icon> 전체 회원 통계
-          </h1>
-        </v-flex>
+      <v-flex xs6 sm6 md6 class="sticky range">
+        <v-menu
+          v-model="viewStartAt"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          :full-width="true"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="startAt"
+              :readonly="true"
+              label="통계 범위 선택 (from)"
+              persistent-hint
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="startAt" type="month" no-title @input="viewStartAt = false"></v-date-picker>
+        </v-menu>
+      </v-flex>
 
-        <v-flex xs12 sm6 md6>
-          <apexchart type="donut" :options="genderOptions"  :height="genderHeight" :series="genderSeries"></apexchart>
-        </v-flex>
+      <v-flex xs6 sm6 md6 class="sticky range">
+        <v-menu
+          v-model="viewEndAt"
+          :close-on-content-click="false"
+          transition="scale-transition"
+          offset-y
+          :full-width="true"
+        >
+          <template v-slot:activator="{ on }">
+            <v-text-field
+              v-model="endAt"
+              :readonly="true"
+              label="통계 범위 선택 (to)"
+              persistent-hint
+              v-on="on"
+            ></v-text-field>
+          </template>
+          <v-date-picker v-model="endAt" type="month" no-title @input="viewEndAt = false"></v-date-picker>
+        </v-menu>
+      </v-flex>
+    
+      <v-flex xs12 sm6 md6>
+        <apexchart type="donut" :options="genderOptions"  :height="genderHeight" :series="genderSeries"></apexchart>
+      </v-flex>
 
-        <v-flex xs12 sm6 md6>
-          <apexchart type="bar" :options="ageOptions"  :height="ageHeight" :series="ageSeries"></apexchart>
-        </v-flex>
+      <v-flex xs12 sm6 md6>
+        <apexchart type="bar" :options="ageOptions"  :height="ageHeight" :series="ageSeries"></apexchart>
+      </v-flex>
 
-      </v-layout>
-    </v-container>
+
+
+      <v-flex xs12 sm6 md6 v-for="(charInfo,index) in rangeCountsChartInfo" :key="index">
+        <apexchart type="bar" :options="charInfo.options"  :height="charInfo.height" :series="charInfo.series"></apexchart>
+      </v-flex>
+
+    </v-layout>
   </div>
 </template>
 
@@ -31,6 +76,27 @@ import { memberStore } from "@/stores/modules/member";
 import { menuStore } from "@/stores/modules/menu";
 import { debounce } from "typescript-debounce-decorator";
 import apexchart from 'vue-apexcharts'
+import { dialogStore } from '@/stores/modules/dialog';
+
+interface IChartOption {
+  series:number[];
+  options:{
+    title:{
+      text:string
+    },
+    legend:{
+      position:string;
+    },
+    plotOptions:{
+      bar:{
+        horizontal:boolean;
+      }
+    },
+    xaxis:{
+      categories:string[];
+    }
+  }
+}
 
 @Component({
   components : {
@@ -47,22 +113,28 @@ export default class DashboardMemberAll extends Vue {
   get places(){return placeStore.places}
   get contents(){return contentStore.contents}
 
+  viewStartAt:boolean = false;
+  viewEndAt:boolean = false;
+
+  endAt:string = this.$moment(new Date()).format('YYYY-MM');
+  startAt:string = this.$moment(new Date()).add(-2, 'months').format('YYYY-MM');
+
+  dateRange:IDateRange = {
+    startAt: this.$moment(new Date()).add(-2, 'months').format('YYYYMM'),
+    endAt: this.$moment(new Date()).format('YYYYMM'),
+  }
+
   today:any = this.$moment(new Date());
 
   //날짜가 바뀌면 reset해주어야 하는 info
   genderVO:Map<string,number> = new Map();
   ageVO:Map<string,number> = new Map();
+  rangeCountsVO:Map<string, Map<string, number>> = new Map();
+  rangeCountsChartInfo:any[] = [];
 
   genderSeries:any[] = [];
   genderHeight:any = 'auto';
-  genderOptions:any  = {
-    title: {
-      text: '전체 남녀 성비'
-    },
-    legend: {
-      position: 'top'
-    },
-  }
+  genderOptions:any  = {}
 
   ageSeries:any[] = [];
   ageHeight:any = 'auto';
@@ -78,12 +150,40 @@ export default class DashboardMemberAll extends Vue {
     }
   }
 
+  @Watch('startAt')
+  @Watch('endAt')
+  async setDateRange(){
+    menuStore.setProgress(true);
+    const startAtDate = this.$moment(this.startAt);
+    const endAtDate = this.$moment(this.endAt);
+    const diff:number = endAtDate.diff(startAtDate, 'months');
+
+    if(diff < 0){
+      dialogStore.showSnackbar({
+        "snackColor" : "error",
+        "snackText" : "날짜범위를 다시 설정하세요"
+      });
+      menuStore.setProgress(false);
+      return
+    }
+
+    this.dateRange = {
+      startAt: parseInt(`${this.$moment(this.startAt).format('YYYYMM')}01`),
+      endAt: parseInt(`${this.$moment(this.endAt).format('YYYYMM')}31`),
+    };
+    this.resetRangeEvents();
+    await eventStore.getEventsRange(this.dateRange);
+    this.setRangeEvents();
+    this.updateRangeEventChart();
+    menuStore.setProgress(false);
+  }
+
   setDashboardData(){
     menuStore.setProgress(true);
     this.setChartCommonInfo();
     this.updateGenderChart();
     this.updateAgeChart();
-
+    this.updateRangeEventChart();
     menuStore.setProgress(false);
   }
 
@@ -99,8 +199,37 @@ export default class DashboardMemberAll extends Vue {
 
       this.genderVO.set(member.gender, (gender || 0) + 1);
       this.ageVO.set(member.gender, (genderAge ||0 ) + age);
+
     })
   }
+
+  resetRangeEvents(){
+    this.rangeCountsVO = new Map();
+    this.rangeCountsChartInfo = [];
+  }
+
+  setRangeEvents(){
+    this.events.reverse().forEach((event:IEventTypes)=>{
+      const key = event.key;
+      const YYYYMMDD = event.date.toString();
+      const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;
+      const memberKeys = event.memberKeys;
+      const eventVO = this.rangeCountsVO.get(YYYY_MM);
+
+      if(!eventVO){
+        const newVO = new Map();
+        memberKeys.forEach((memberKey:string)=>{
+          newVO.set(memberKey,1);
+        })
+        this.rangeCountsVO.set(YYYY_MM, newVO);
+      } else {
+        memberKeys.forEach((memberKey:string)=>{
+          eventVO.set(memberKey, (eventVO.get(memberKey)||0)+1);
+        })
+      }
+    });
+  }
+
   
   async created(){
     menuStore.setProgress(true);
@@ -109,6 +238,7 @@ export default class DashboardMemberAll extends Vue {
       placeStore.getPlaces(),
       memberStore.getMembersInActive(),
       memberStore.getMemberByKey(this.params ? this.params.key : ''),
+      this.setDateRange(),
     ]).then(async (done)=>{
       console.log('done : ', done);
       // memberStore.setMembersInfoByKeys( this.event.memberKeys );
@@ -126,10 +256,16 @@ export default class DashboardMemberAll extends Vue {
       newGenderLabels.push(key === 'F' ? "여자" : "남자");
     }
 
-    console.log('newGenderLabels : ', newGenderLabels);
-
     this.genderSeries = newSeries;
-    this.genderOptions.labels = newGenderLabels;
+    this.genderOptions = {
+       title: {
+        text: '전체 남녀 성비'
+      },
+      legend: {
+        position: 'top'
+      },
+      labels : newGenderLabels
+    };
     this.genderHeight = 380
   }
 
@@ -156,6 +292,45 @@ export default class DashboardMemberAll extends Vue {
     this.ageHeight = 380
   }
 
+  updateRangeEventChart(){
+    this.rangeCountsChartInfo=[];
+    const chartInfo = [];
+    for(let [YYYYMM,MAP] of this.rangeCountsVO.entries()){
+      const series:any[] = [
+        {data:[], name: `${YYYYMM} 참석횟수`},
+      ];
+      const options = {
+        title: {
+          text: `${YYYYMM} 참석왕`
+        },
+        legend: {
+          position: 'top'
+        },
+        plotOptions: {
+            bar: {
+                horizontal: true,
+            }
+        },
+        xaxis: {}
+      }
+      // series[0].data.push(value.values)
+      const categories = [];
+      const height = (MAP.size*30)+100;
+      for(let [key,value] of MAP.entries()){
+        const member = this.members.find((member:IMemberTypes)=>member.key === key);
+        series[0].data.push(value);
+        categories.push(member ? member.name : '탈퇴한 회원');
+      }
+      options.xaxis = {categories};
+      chartInfo.push({
+        series,
+        options,
+        height
+      })
+    }
+    this.rangeCountsChartInfo = chartInfo;
+    console.log('this.rangeCountsChartInfo : ', this.rangeCountsChartInfo);
+  }
 }
 
 
@@ -178,5 +353,17 @@ export default class DashboardMemberAll extends Vue {
 .v-subheader {
   height:24px;
   padding-left:10px;
+}
+.sticky {
+  position:sticky;
+  background-color:#fafafa;
+  z-index: 20;
+  &.title {
+    top:0px;
+    padding-top:1rem;
+  }
+  &.range {
+    top:40px;
+  }
 }
 </style>

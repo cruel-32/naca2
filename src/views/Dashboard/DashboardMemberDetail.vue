@@ -79,7 +79,7 @@ import { memberStore } from "@/stores/modules/member";
 import { menuStore } from "@/stores/modules/menu";
 import { debounce } from "typescript-debounce-decorator";
 import apexchart from 'vue-apexcharts'
-import { dialogStore } from '../../stores/modules/dialog';
+import { dialogStore } from '@/stores/modules/dialog';
 
 @Component({
   components : {
