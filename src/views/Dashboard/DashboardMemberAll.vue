@@ -209,7 +209,7 @@ export default class DashboardMemberAll extends Vue {
   }
 
   setRangeEvents(){
-    this.events.reverse().forEach((event:IEventTypes)=>{
+    this.events.forEach((event:IEventTypes)=>{
       const key = event.key;
       const YYYYMMDD = event.date.toString();
       const YYYY_MM = `${YYYYMMDD.slice(0,4)}.${YYYYMMDD.slice(4,6)}`;

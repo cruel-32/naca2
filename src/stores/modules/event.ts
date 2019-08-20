@@ -24,7 +24,7 @@ class EventStore extends VuexModule {
 
   @Mutation
   private setEvents(events:IEventTypes[]){
-    this.events = events;
+    this.events = events.reverse();
   }
 
   @Action

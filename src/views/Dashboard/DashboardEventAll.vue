@@ -64,8 +64,6 @@
         <v-data-table
           :headers="headers"
           :items="events"
-          :sort-by.sync="sortBy"
-          :sort-desc.sync="descending"
           :search="search"
           :rows-per-page-items="options"
           rows-per-page-text="한 페이지당 목록수"
@@ -111,13 +109,11 @@ export default class DashboardMemberAll extends Vue {
   get contents(){return contentStore.contents}
 
   headers:any[] = [
-    {text: '날짜', value: 'date'},
-    {text: '제목', value: 'title' },
-    {text: '인원수', value: 'memberKeys' },
+    {text: '날짜', value: 'date', sort:true},
+    {text: '제목', value: 'title', sort:true},
+    {text: '인원수', value: 'memberKeys', sort:true},
   ];
   search:string = '';
-  sortBy:string = '';
-  descending:boolean = false;
   options:any[] = [{"text":"$vuetify.dataIterator.rowsPerPageAll","value":-1}, 10,20,];
 
   endAt:string = this.$moment(new Date()).format('YYYY-MM');
