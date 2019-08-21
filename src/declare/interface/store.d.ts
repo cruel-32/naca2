@@ -12,9 +12,9 @@ declare interface IEventTypes {
     key:string|null;
     date:number;
     title:string;
-    placeKeys:string[];
-    contentKeys:string[];
-    memberKeys:string[];
+    placeKeys:IPlaceTypes['key'][];
+    contentKeys:IContentTypes['key'][];
+    memberKeys:Exclude<IMemberTypes['key'],null>[];
 }
 
 declare interface IGradeTypes {
@@ -29,11 +29,11 @@ declare interface IMemberTypes {
     address:string;
     birth:number;
     gender:string;
-    grade:number
+    grade:IGradeTypes['grade'];
     joinDate:number
     mail:string;
     outDay:number
-    participation:IKeyAndValue<number>[];
+    participation:IKeyAndValue<Exclude<IEventTypes['key'],null>>[];
     firstDate:IKeyAndValue<number>;
     lastDate:IKeyAndValue<number>;
     phone:number;

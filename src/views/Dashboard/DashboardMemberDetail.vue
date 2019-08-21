@@ -241,7 +241,7 @@ export default class DashboardMemberDetail extends Vue {
     const myKey = this.member.key;
     if(this.member.participation){
     
-      this.member.participation.forEach((participation:IKeyAndValue<number>)=>{
+      this.member.participation.forEach((participation:IKeyAndValue<IEventTypes['key']>)=>{
         const joinedEvent = this.events.find(event=> event.key === participation.key);
 
         if(joinedEvent){
