@@ -16,7 +16,7 @@ export default {
                 }
             })
     }),
-    getEventsRange : (params:any):Promise<IEventTypes[]> => new Promise<IEventTypes[]>((resolve)=>{
+    getEventsRange : (params:IDateRange):Promise<IEventTypes[]> => new Promise<IEventTypes[]>((resolve)=>{
         API_UTILS.database.ref('events')
             .orderByChild('date')
             .startAt(params.startAt)

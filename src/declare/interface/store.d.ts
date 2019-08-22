@@ -14,7 +14,7 @@ declare interface IEventTypes {
     title:string;
     placeKeys:IPlaceTypes['key'][];
     contentKeys:IContentTypes['key'][];
-    memberKeys:Exclude<IMemberTypes['key'],null>[];
+    memberKeys:NonNullable<IMemberTypes['key']>[];
 }
 
 declare interface IGradeTypes {
@@ -33,7 +33,7 @@ declare interface IMemberTypes {
     joinDate:number
     mail:string;
     outDay:number
-    participation:IKeyAndValue<Exclude<IEventTypes['key'],null>>[];
+    participation:IKeyAndValue<NonNullable<IEventTypes['key']>>[];
     firstDate:IKeyAndValue<number>;
     lastDate:IKeyAndValue<number>;
     phone:number;

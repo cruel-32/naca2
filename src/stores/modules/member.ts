@@ -92,9 +92,9 @@ class MemberStore extends VuexModule {
 
   @Action
   addColumn(member:IMemberTypes){
-    const gradeInfo:any = gradeStore.gradeInfoVO.get(member.grade);
+    const gradeInfo:IGradeTypes|undefined = gradeStore.gradeInfoVO.get(member.grade);
     const dPlus = this.today.diff(member.lastDate.value ? member.lastDate.value.toString() : member.joinDate.toString(), 'days');
-    const dMinus = gradeInfo.day - dPlus;
+    const dMinus = gradeInfo ? gradeInfo.day - dPlus : 0;
     let status = "normal";
 
     if(member.grade === classGrade.ADMIN){
