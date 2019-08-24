@@ -1,14 +1,14 @@
-declare interface IContentTypes {
+interface IContentTypes {
     key:string;
     name:string;
 }
 
-declare interface IDateRange {
+interface IDateRange {
     startAt:number;
     endAt:number;
 }
 
-declare interface IEventTypes {
+interface IEventTypes {
     key:string|null;
     date:number;
     title:string;
@@ -17,14 +17,14 @@ declare interface IEventTypes {
     memberKeys:NonNullable<IMemberTypes['key']>[];
 }
 
-declare interface IGradeTypes {
+interface IGradeTypes {
     key:string;
     grade:number;
     name:string;
     day:number;
 }
 
-declare interface IMemberTypes {
+interface IMemberTypes {
     key:string|null;
     address:string;
     birth:number;
@@ -44,12 +44,12 @@ declare interface IMemberTypes {
     job:string;
 }
 
-declare interface IPlaceTypes {
+interface IPlaceTypes {
     key:string;
     name:string;
 }
 
-declare interface ISideMenuTypes {
+interface ISideMenuTypes {
     icon:string;
     iconClass:string;
     title:string;
@@ -58,7 +58,7 @@ declare interface ISideMenuTypes {
     color:string;
 }
 
-declare interface ISnackbarTypes {
+interface ISnackbarTypes {
     time?:number;
     isShowSnackbar?:boolean;
     snackColor:string;
@@ -66,7 +66,7 @@ declare interface ISnackbarTypes {
     key?:string;
 }
 
-declare interface IUserTypes {
+interface IUserTypes {
     displayName:string;
     email:string;
     emailVerified?:boolean;
