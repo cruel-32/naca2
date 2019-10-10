@@ -8,7 +8,6 @@
         <span>Made by CHOI.S.H</span>
       </div>
     </div>
-  
 
     <v-content class="pb-5">
       <ProgressComp></ProgressComp>
