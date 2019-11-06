@@ -49,18 +49,18 @@
                     <v-text-field
                       slot="activator"
                       v-model="birthString"
-                      label="생년월일을 입력하세요"
+                      label="생년을 입력하세요"
                       v-validate="'required'"
-                      :error-messages="errors.collect('date')"
                       readonly
                       data-vv-name="birth"
                     ></v-text-field>
                     <v-date-picker
                       ref="birthPicker"
                       v-model="birthString"
-                      max="1995-12-31"
-                      min="1985-01-01"
+                      max="1995"
+                      min="1985"
                       full-width
+                      type="year"
                       locale="ko"
                       @input="viewBirthCalandar = false"
                     ></v-date-picker>
@@ -79,7 +79,7 @@
                   ></v-text-field>
                 </v-flex>
 
-                <v-flex xs12 sm6 md4>
+                <!-- <v-flex xs12 sm6 md4>
                   <v-text-field
                     v-validate="'required|min:2|max:20'"
                     v-model="member.address"
@@ -89,16 +89,16 @@
                     data-vv-name="address"
                     clearable
                   ></v-text-field>
-                </v-flex>
+                </v-flex> -->
 
-                <v-flex xs12 sm6 md4>
+                <!-- <v-flex xs12 sm6 md4>
                   <v-text-field
                     v-model="member.job"
                     label="직업"
                     data-vv-name="job"
                     clearable
                   ></v-text-field>
-                </v-flex>
+                </v-flex> -->
 
                 <!-- <v-flex xs12 sm6 md4>
                   <v-text-field
@@ -294,11 +294,13 @@ export default class MemberDetail extends Vue {
   }
   
   get birthString(){
-    return this.$moment(this.member.birth.toString()).format('YYYY-MM-DD')
+    // return this.$moment(this.member.birth.toString()).format('YYYY-MM-DD')
+    return this.$moment(this.member.birth.toString()).format('YYYY')
   }
 
   set birthString(YYYY_MM_DD:string){
-    this.member.birth = parseInt(this.$moment(YYYY_MM_DD).format('YYYYMMDD'));
+    // this.member.birth = parseInt(this.$moment(YYYY_MM_DD).format('YYYYMMDD'));
+    this.member.birth = parseInt(this.$moment(YYYY_MM_DD).format('YYYY'));
   }
 
   get gradeText(){

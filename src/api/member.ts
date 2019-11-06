@@ -107,9 +107,9 @@ export default {
     },
     //key값을 넘기면 put, 안넘기면 post
     updateMember : async (payload:IMemberTypes):Promise<IMemberTypes> => {
-        let {key, address, birth, gender, grade, joinDate, mail, phone, name, job} = payload;
+        let {key, birth, gender, grade, joinDate, mail, phone, name} = payload;
         let params:any = {
-            address, birth, gender, grade, joinDate, mail, phone, name, job
+            birth, gender, grade, joinDate, mail, phone, name
         }
 
         if(!key){

@@ -32,7 +32,6 @@
           <template slot="items" slot-scope="props" >
             <tr @click="goDashboardMeberDetail(props.item.key)">
               <td class="text-xs-left">{{ props.item.name }}</td>
-              <td class="text-xs-left">{{ props.item.birth && $moment(props.item.birth.toString()).format('YYYY.MM.DD')}}</td>
               <td class="text-xs-left">{{ props.item.birth && (year - parseInt(props.item.birth.toString().slice(0,4))) }}세</td>
               <td v-bind:class="['text-xs-center', `status-${props.item.status}`]">
                 {{getTextByStatus(props.item)}}
@@ -45,7 +44,6 @@
               </td>
               <td class="text-xs-left">{{ $moment(props.item.joinDate.toString()).format('YYYY.MM.DD') }}</td>
               <td class="text-xs-left">{{ props.item.gender === 'M' ? '남' : '여' }}</td>
-              <td class="text-xs-left">{{ props.item.address }}</td>
               <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">
                 {{ gradeInfoVO && gradeInfoVO.get(props.item.grade).name }}
               </td>
@@ -95,11 +93,6 @@ export default class DashboardMembers extends Vue {
       value: 'name'
     },
     {
-      text : '생년월일',
-      align: 'left',
-      value: 'birth'
-    },
-    {
       text : '나이',
       align: 'left',
       value: 'age'
@@ -128,11 +121,6 @@ export default class DashboardMembers extends Vue {
       text : '성별',
       align: 'left',
       value: 'gender',
-    },
-    {
-      text : '사는곳',
-      align: 'left',
-      value: 'address',
     },
     {
       text : '회원등급',

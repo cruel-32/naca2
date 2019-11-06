@@ -33,7 +33,6 @@
           <template slot="items" slot-scope="props" >
             <tr @click="goMeberDetail(props.item.key)">
               <td class="text-xs-left">{{ props.item.name }}</td>
-              <td class="text-xs-left">{{ props.item.birth && $moment(props.item.birth.toString()).format('YYYY.MM.DD')}}</td>
               <td class="text-xs-left">{{ props.item.birth && (year - parseInt(props.item.birth.toString().slice(0,4))) }}세</td>
               <td class="text-xs-left">{{ $moment(props.item.joinDate.toString()).format('YYYY.MM.DD') }}</td>
               <td v-bind:class="['text-xs-center', `status-${props.item.status}`]">
@@ -46,7 +45,6 @@
                 {{props.item.dPlus > 0 ? `+${props.item.dPlus}일` : '참여예정'}} {{props.item.grade === 4 ? '(가입일로부터)' : ''}}
               </td>
               <td class="text-xs-left">{{ props.item.gender === 'M' ? '남' : '여' }}</td>
-              <td class="text-xs-left">{{ props.item.address }}</td>
               <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">
                 {{ gradeInfoVO && gradeInfoVO.get(props.item.grade).name }}
               </td>
@@ -96,11 +94,6 @@ export default class Members extends Vue {
       value: 'name'
     },
     {
-      text : '생년월일',
-      align: 'left',
-      value: 'birth'
-    },
-    {
       text : '나이',
       align: 'left',
       value: 'age'
@@ -129,11 +122,6 @@ export default class Members extends Vue {
       text : '성별',
       align: 'left',
       value: 'gender',
-    },
-    {
-      text : '사는곳',
-      align: 'left',
-      value: 'address',
     },
     {
       text : '회원등급',

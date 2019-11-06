@@ -26,7 +26,7 @@ interface IGradeTypes {
 
 interface IMemberTypes {
     key:string|null;
-    address:string;
+    // address:string;
     birth:number;
     gender:string;
     grade:IGradeTypes['grade'];
@@ -41,7 +41,7 @@ interface IMemberTypes {
     dMinus:number;
     status:string;
     name:string;
-    job:string;
+    // job:string;
 }
 
 interface IPlaceTypes {

@@ -15,8 +15,9 @@ class MemberStore extends VuexModule {
   
   member:IMemberTypes = {
     key:null,
-    address:'',
-    birth:19951231,
+    // address:'',
+    // birth:19951231,
+    birth:1995,
     gender:'F',
     grade:4,
     joinDate: parseInt(this.today.format('YYYYMMDD')),
@@ -30,7 +31,7 @@ class MemberStore extends VuexModule {
     dMinus:0,
     status:'',
     name:'',
-    job:'',
+    // job:'',
   };
   members:IMemberTypes[] = [];
 
@@ -48,8 +49,7 @@ class MemberStore extends VuexModule {
   public async resetMember(){
     this.setMember({
       key:null,
-      address:'',
-      birth:19951231,
+      birth:1995,
       gender:'F',
       grade:4,
       joinDate: parseInt(this.today.format('YYYYMMDD')),
@@ -63,7 +63,6 @@ class MemberStore extends VuexModule {
       dMinus:0,
       status:'',
       name:'',
-      job:'',
     });
   }
 
