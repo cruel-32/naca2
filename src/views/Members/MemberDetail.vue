@@ -38,7 +38,7 @@
                   </v-menu>
                 </v-flex>
 
-                <v-flex xs12 sm6 md4>
+                <!-- <v-flex xs12 sm6 md4>
                   <v-menu
                     ref="birthCalandar"
                     :close-on-content-click="false"
@@ -65,7 +65,7 @@
                       @input="viewBirthCalandar = false"
                     ></v-date-picker>
                   </v-menu>
-                </v-flex>
+                </v-flex> -->
 
                 <v-flex xs12 sm6 md4>
                   <v-text-field
@@ -108,6 +108,20 @@
                     disabled
                   ></v-text-field>
                 </v-flex> -->
+
+                <v-flex xs12 sm6 md4>
+                  <v-select
+                    v-model="member.birth"
+                    :items="birthList"
+                    label="생년"
+                    data-vv-name="birth"
+                    item-value="birth"
+                    item-text="생년"
+                    :error-messages="errors.collect('birth')"
+                    dense
+                    v-validate="'required'"
+                  ></v-select>
+                </v-flex>
 
                 <v-flex xs12 sm6 md4>
                   <v-select
@@ -293,16 +307,6 @@ export default class MemberDetail extends Vue {
     this.member.joinDate = parseInt(this.$moment(YYYY_MM_DD).format('YYYYMMDD'));
   }
   
-  get birthString(){
-    // return this.$moment(this.member.birth.toString()).format('YYYY-MM-DD')
-    return this.$moment(this.member.birth.toString()).format('YYYY')
-  }
-
-  set birthString(YYYY_MM_DD:string){
-    // this.member.birth = parseInt(this.$moment(YYYY_MM_DD).format('YYYYMMDD'));
-    this.member.birth = parseInt(this.$moment(YYYY_MM_DD).format('YYYY'));
-  }
-
   get gradeText(){
     const info:IGradeTypes|undefined = gradeStore.gradeInfoVO.get(this.member.grade);
     return info ? info.name : "";
@@ -340,6 +344,20 @@ export default class MemberDetail extends Vue {
   viewBirthCalandar:boolean = false;
   viewConfirmDelete:boolean = false;
   genders:Array<string> = ['F','M'];
+  
+  birthList:Array<Number> = [
+    1995,
+    1994,
+    1993,
+    1992,
+    1991,
+    1990,
+    1989,
+    1988,
+    1987,
+    1986,
+    1985,
+  ];
 
   async created(){
     menuStore.setProgress(true);
