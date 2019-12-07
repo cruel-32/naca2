@@ -65,7 +65,7 @@
         <apexchart type="bar" :options="charInfo.options"  :height="charInfo.height" :series="charInfo.series"></apexchart>
       </v-flex>
 
-      <v-dialog v-model="viewHobbyMembers"  >
+      <v-dialog v-model="viewHobbyMembers" persistent >
         <v-card>
           <v-card-title class="headline">
             {{selectedHobby}} <span class="text-sm">활동을 좋아하는 멤버입니다.</span>
@@ -83,7 +83,7 @@
             <div>등 {{hobbyMembers.length}}명</div>
           </v-card-text>
 
-          <v-card-actions persistent >
+          <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn
               center
