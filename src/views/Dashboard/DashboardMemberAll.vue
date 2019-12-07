@@ -48,6 +48,10 @@
           <v-date-picker v-model="endAt" type="month" no-title @input="viewEndAt = false"></v-date-picker>
         </v-menu>
       </v-flex>
+
+      <v-flex xs12 sm6 md6>
+        <apexchart type="donut" @dataPointSelection="clickHobbys" :options="hobbysOptions"  :height="hobbysHeight" :series="hobbysSeries"></apexchart>
+      </v-flex>
     
       <v-flex xs12 sm6 md6>
         <apexchart type="donut" :options="genderOptions"  :height="genderHeight" :series="genderSeries"></apexchart>
@@ -57,11 +61,45 @@
         <apexchart type="bar" :options="ageOptions"  :height="ageHeight" :series="ageSeries"></apexchart>
       </v-flex>
 
-
-
       <v-flex xs12 sm6 md6 v-for="(charInfo,index) in rangeCountsChartInfo" :key="index">
         <apexchart type="bar" :options="charInfo.options"  :height="charInfo.height" :series="charInfo.series"></apexchart>
       </v-flex>
+
+      <v-dialog v-model="viewHobbyMembers"  >
+        <v-card>
+          <v-card-title class="headline">
+            {{selectedHobby}} <span class="text-sm">활동을 좋아하는 멤버입니다.</span>
+          </v-card-title>
+          <v-card-text class="text-justify text-align-center">
+            <v-btn
+              v-for="(hobbyMember,index) in hobbyMembers" :key="index"
+              right
+              @click="$router.push(`/members/detail/${hobbyMember.key}`)"
+              depressed
+              flat
+            >
+              {{hobbyMember.name}}
+            </v-btn>
+            <div>등 {{hobbyMembers.length}}명</div>
+          </v-card-text>
+
+          <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn
+              center
+              @click="viewHobbyMembers = false"
+              outline
+              depressed
+            >
+              Okay
+            </v-btn>
+          </v-card-actions>
+
+        </v-card>
+      </v-dialog>
+
+
+
 
     </v-layout>
   </div>
@@ -112,7 +150,7 @@ export default class DashboardMemberAll extends Vue {
   get members(){return memberStore.members}
   get places(){return placeStore.places}
   get contents(){return contentStore.contents}
-
+  
   viewStartAt:boolean = false;
   viewEndAt:boolean = false;
 
@@ -125,8 +163,12 @@ export default class DashboardMemberAll extends Vue {
   }
 
   today:any = this.$moment(new Date());
+  viewHobbyMembers:boolean = false;
+  hobbyMembers:IMemberTypes[] = [];
+  selectedHobby:string = '';
 
   //날짜가 바뀌면 reset해주어야 하는 info
+  hobbysVO:Map<string, {count:number, members:IMemberTypes[]}> = new Map();
   genderVO:Map<string,number> = new Map();
   ageVO:Map<string,number> = new Map();
   rangeCountsVO:Map<string, Map<string, number>> = new Map();
@@ -135,6 +177,10 @@ export default class DashboardMemberAll extends Vue {
   genderSeries:any[] = [];
   genderHeight:any = 'auto';
   genderOptions:any  = {}
+
+  hobbysSeries:any[] = [];
+  hobbysHeight:any = 'auto';
+  hobbysOptions:any  = {}
 
   ageSeries:any[] = [];
   ageHeight:any = 'auto';
@@ -181,25 +227,28 @@ export default class DashboardMemberAll extends Vue {
   setDashboardData(){
     menuStore.setProgress(true);
     this.setChartCommonInfo();
+    this.updateHobbysChart();
     this.updateGenderChart();
     this.updateAgeChart();
     this.updateRangeEventChart();
     menuStore.setProgress(false);
   }
 
-  resetChartCommonInfo(){
-    this.genderVO = new Map();
-  }
-
   setChartCommonInfo(){
     this.members.forEach((member:IMemberTypes)=>{
+      member.hobbys.forEach(hobby=>{
+        const memberHobby = this.hobbysVO.get(hobby);
+        this.hobbysVO.set(hobby, {
+          count: (memberHobby && memberHobby.count||0)+1,
+          members: memberHobby && Array.isArray(memberHobby.members) ? memberHobby.members.concat([member]) : [member]
+        });
+      })
       const gender = this.genderVO.get(member.gender);
       const genderAge = this.ageVO.get(member.gender);
       const age:number = this.today.diff(this.$moment(member.birth.toString()), 'years')+1;
 
       this.genderVO.set(member.gender, (gender || 0) + 1);
       this.ageVO.set(member.gender, (genderAge ||0 ) + age);
-
     })
   }
 
@@ -245,6 +294,57 @@ export default class DashboardMemberAll extends Vue {
       this.setDashboardData();
       menuStore.setProgress(false);
     })
+  }
+
+  clickHobbys(event:any, chartContext:any, config:any){
+    const { target : { parentNode } } = event;
+    if(parentNode){
+      const { dataPointIndex } = config;
+      const seriesName = config.w.globals.seriesNames[dataPointIndex]
+      const content:IContentTypes|undefined = this.contents.find((content:IContentTypes)=>content.name === seriesName)
+
+      if(content){
+        this.selectedHobby = seriesName;
+        const memberHobby = this.hobbysVO.get(content.key);
+        this.hobbyMembers = memberHobby ? memberHobby.members : []
+        setTimeout(()=>{
+          this.viewHobbyMembers = true
+        },0)
+      }
+    }
+  }
+
+  updateHobbysChart(){
+    const newSeries:any[] = [];
+    const newHobbysLabels:string[] = [];
+
+    for(let [key,value] of this.hobbysVO){
+      newSeries.push(value.count)
+      const content = this.contents.find((content:IContentTypes)=> content.key === key)
+      newHobbysLabels.push(content!.name)
+    }
+
+    this.hobbysSeries = newSeries;
+    this.hobbysOptions = {
+       title: {
+        text: '전체 선호활동(취미)'
+      },
+      legend: {
+        position: 'top'
+      },
+      labels : newHobbysLabels,
+      tooltip: {
+        y: {
+          formatter(value:string) {
+            return `
+              ${value} 명 (click 하여 자세히 보기)
+            `
+          }
+        }
+      }
+    };
+    this.hobbysHeight = 380
+
   }
 
   updateGenderChart(){
@@ -329,7 +429,7 @@ export default class DashboardMemberAll extends Vue {
       })
     }
     this.rangeCountsChartInfo = chartInfo;
-    console.log('this.rangeCountsChartInfo : ', this.rangeCountsChartInfo);
+    // console.log('this.rangeCountsChartInfo : ', this.rangeCountsChartInfo);
   }
 }
 
@@ -366,4 +466,12 @@ export default class DashboardMemberAll extends Vue {
     top:40px;
   }
 }
+.text-sm {
+  margin-left:0.5rem
+}
+.text-align-center {
+  text-align: center;
+}
+
+
 </style>

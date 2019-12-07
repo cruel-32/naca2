@@ -48,6 +48,9 @@
               <td v-bind:class="['text-xs-left', `status-${props.item.status}`]">
                 {{ gradeInfoVO && gradeInfoVO.get(props.item.grade).name }}
               </td>
+              <td class="text-xs-center" >
+                {{getHobby(props.item)}}
+              </td>
             </tr>
           </template>
         </v-data-table>
@@ -63,6 +66,7 @@ import { memberStore } from "@/stores/modules/member";
 import { dialogStore } from "@/stores/modules/dialog"
 import { gradeStore } from "@/stores/modules/grade"
 import { menuStore } from "@/stores/modules/menu"
+import { contentStore } from "@/stores/modules/content";
 
 
 @Component
@@ -75,7 +79,8 @@ export default class Members extends Vue {
   get snackBar(){ return dialogStore.snackBar }
   get ageVO(){return memberStore.ageVO}
   get genderCountVO(){return memberStore.genderCountVO}
-  
+  get contents(){return contentStore.contents}
+
   //local data
   get year(){
     return parseInt(this.today.toString().slice(0,4))+1;
@@ -128,11 +133,23 @@ export default class Members extends Vue {
       align: 'left',
       value: 'grade',
     },
+    {
+      text : '선호활동',
+      align: 'center',
+      value: 'hobbys',
+    },
   ];
 
   async created(){
-    await memberStore.getMembersInActive();
-    await memberStore.setMembersInfoByKeys(this.members.map(member=>member.key||''));
+    menuStore.setProgress(true);
+    Promise.all([
+      contentStore.getContents(), 
+      memberStore.getMembersInActive(),
+    ]).then(async (done)=>{
+      console.log('done : ', done);
+      memberStore.setMembersInfoByKeys(this.members.map(member=>member.key||''));
+      menuStore.setProgress(false);
+    })
   }
 
   goMeberDetail(key:string){
@@ -154,6 +171,19 @@ export default class Members extends Vue {
     }
     return text;
   }
+
+  getHobby(item:IMemberTypes){
+    let hobbyText = '';
+    const hobby = item.hobbys && this.contents.find((content:any)=> content.key == [item.hobbys[0]])
+
+    if(hobby){
+      hobbyText = hobby.name
+    }
+    if(item.hobbys.length > 1){
+      hobbyText+=` 외 ${item.hobbys.length-1}개`
+    }
+    return hobbyText
+  }
   
 
 }
@@ -169,7 +199,7 @@ export default class Members extends Vue {
   display:flex;
   width:100%;
   height:100%;
-  align-items:center;
+  align-items:flex-start;
   > div {
     flex: 1 1 auto;
   }
@@ -179,10 +209,6 @@ export default class Members extends Vue {
   th,td {
     padding: 0 10px !important;
   }
-}
-
-.table {
-  overflow:scroll;
 }
 
 .status-red { 

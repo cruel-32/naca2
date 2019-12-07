@@ -253,6 +253,7 @@ export default class DashboardMemberAll extends Vue {
 
     for(let [key, value] of this.rangeContentsVO.entries()){
       const content = this.contents.find((content:IContentTypes)=>content.key === key);
+      console.log('content : ', content)
       if(content){
         newContentLabels.push(content!.name);
         newSeries.push(value);
@@ -319,15 +320,11 @@ export default class DashboardMemberAll extends Vue {
   }
 }
 
-.table {
-  overflow:scroll;
-}
-
 .event_all_container {
   padding:1.5rem;
   display:flex;
   height:100%;
-  align-items:center;
+  align-items:flex-start;
 }
 .v-card {
   box-shadow:none;

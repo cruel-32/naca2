@@ -12,6 +12,9 @@ export default {
                     const VOarray = API_UTILS.objConvertToArray<number>(member.participation);
                     member.participation = VOarray;
                     member.participation.sort((next:IKeyAndValue<number>,prev:IKeyAndValue<number>):number => prev.value - next.value);
+
+                    member.hobbys = member.hobbys ? Object.keys(member.hobbys) : [];
+
                     if(member.participation && member.participation.length > 0){
                         member.lastDate = member.participation[0]
                         member.firstDate = member.participation[member.participation.length-1]
@@ -31,6 +34,9 @@ export default {
             .forEach((snapshot:any)=>{
                 const member = snapshot.val();
                 member.key = snapshot.key;
+
+                member.hobbys = member.hobbys ? Object.keys(member.hobbys) : [];
+
                 if(member.participation){
                     const VOarray = API_UTILS.objConvertToArray<number>(member.participation);
                     member.participation = VOarray;
@@ -55,6 +61,9 @@ export default {
                 const member = snapshot.val();
                 if(member.grade !== 6){
                     member.key = snapshot.key;
+
+                    member.hobbys = member.hobbys ? Object.keys(member.hobbys) : [];
+                    
                     if(member.participation){
                         const VOarray = API_UTILS.objConvertToArray<number>(member.participation);
                         member.participation = VOarray;
@@ -107,9 +116,11 @@ export default {
     },
     //key값을 넘기면 put, 안넘기면 post
     updateMember : async (payload:IMemberTypes):Promise<IMemberTypes> => {
-        let {key, birth, gender, grade, joinDate, mail, phone, name} = payload;
+        let {key, birth, gender, grade, joinDate, mail, phone, name, hobbys} = payload;
         let params:any = {
-            birth, gender, grade, joinDate, mail, phone, name
+            birth, gender, grade, joinDate, mail, phone, name,
+
+            hobbys : hobbys && hobbys.length ? API_UTILS.arrayConvertToObj(hobbys) : {},
         }
 
         if(!key){

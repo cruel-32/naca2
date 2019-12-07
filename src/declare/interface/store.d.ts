@@ -41,6 +41,7 @@ interface IMemberTypes {
     dMinus:number;
     status:string;
     name:string;
+    hobbys:string[];
     // job:string;
 }
 

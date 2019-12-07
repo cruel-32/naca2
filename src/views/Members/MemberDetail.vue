@@ -164,6 +164,44 @@
                   ></v-text-field>
                 </v-flex> -->
 
+                 <v-flex xs12 sm12 md12>
+                  <v-select
+                    v-validate="'length:0,5'"
+                    :error-messages="errors.collect('contents')"
+                    v-model="member.hobbys"
+                    :items="contents"
+                    label="선호활동(취미)"
+                    data-vv-name="contents"
+                    item-value="key"
+                    item-text="name"
+                    chips
+                    deletable-chips
+                    multiple
+                    dense
+                    counter="5"
+                  >
+                    <!-- <v-list-tile
+                      slot="prepend-item"
+                      @click="toggleSelectAllContents"
+                    >
+                      <v-list-tile-action>
+                        <v-icon :color="member.hobbys && member.hobbys.length > 0 ? 'indigo darken-4' : ''">{{contentsCheckboxIcon}}</v-icon>
+                      </v-list-tile-action>
+                      <v-list-tile-title>
+                        {{member.hobbys && member.hobbys.length === contents.length ? 'Deselect All' : 'Select All'}}
+                      </v-list-tile-title>
+                    </v-list-tile> -->
+                    <!-- <v-divider
+                      slot="prepend-item"
+                      class="mt-2"
+                    ></v-divider> -->
+                    <!-- <v-divider
+                      slot="append-item"
+                      class="mb-2"
+                    ></v-divider> -->
+                  </v-select>
+                </v-flex>
+
                 <v-flex xs12 sm6 md6 v-if="params && params.key && member.participation.length > 0">
                   <v-subheader>처음 참여 이벤트 날짜</v-subheader>
                   <v-btn v-if="member.participation.length > 0"
@@ -176,6 +214,8 @@
                   >{{firstDateString}} 이벤트 보러가기</v-btn>
                 </v-flex>
 
+               
+
                 <v-flex xs12 sm6 md6 v-if="params && params.key && member.participation.length > 0">
                   <v-subheader>최근 참여 이벤트 날짜</v-subheader>
                   <v-btn v-if="member.participation.length > 0"
@@ -187,7 +227,7 @@
                     @click="$router.push(`/events/detail/${member.lastDate.key}`)"
                   >{{lastDateString}} 이벤트 보러가기</v-btn>
                 </v-flex>
-
+                
                 <v-flex xs12 sm6 md4>
                   <v-radio-group v-model="member.gender" color='success' :row="true">
                     <v-radio
@@ -199,6 +239,7 @@
                   </v-radio-group>
                 </v-flex>
 
+                
               </v-layout>
             </v-container>
           </v-card-text>
@@ -298,7 +339,14 @@ export default class MemberDetail extends Vue {
   get currentUser(){return accountStore.currentUser}
   get snackBar(){return dialogStore.snackBar}
 
+  // get allContents (){return this.member.hobbys && this.member.hobbys.length === this.contents.length}
+  // get someContents (){return this.member.hobbys && this.member.hobbys.length > 0 && !this.allContents}
 
+  // get contentsCheckboxIcon (){
+  //   if (this.allContents) return 'check_box'
+  //   if (this.someContents) return 'indeterminate_check_box'
+  //   return 'check_box_outline_blank'
+  // }
   get joinDateString(){
     return this.$moment(this.member.joinDate.toString()).format('YYYY-MM-DD')
   }
@@ -370,6 +418,7 @@ export default class MemberDetail extends Vue {
     Promise.all([
       gradeStore.getGrades(),
       memberStore.getMemberByKey(this.params ? this.params.key : ''),
+      contentStore.getContents(), 
     ]).then(async (done)=>{
       console.log('done : ', done);
       // memberStore.setMembersInfoByKeys( this.event.memberKeys );
@@ -421,6 +470,16 @@ export default class MemberDetail extends Vue {
     menuStore.setProgress(false);
   }
 
+
+  // toggleSelectAllContents () {
+  //   this.$nextTick(() => {
+  //     if(this.allContents) {
+  //       this.member.hobbys = [];
+  //     } else {
+  //       this.member.hobbys = this.contents.map(content=>content.key);
+  //     }
+  //   })
+  // }
 
 }
 

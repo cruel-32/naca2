@@ -31,6 +31,7 @@ class MemberStore extends VuexModule {
     dMinus:0,
     status:'',
     name:'',
+    hobbys:[],
     // job:'',
   };
   members:IMemberTypes[] = [];
@@ -63,6 +64,7 @@ class MemberStore extends VuexModule {
       dMinus:0,
       status:'',
       name:'',
+      hobbys:[],
     });
   }
 
