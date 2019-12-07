@@ -83,7 +83,7 @@
             <div>등 {{hobbyMembers.length}}명</div>
           </v-card-text>
 
-          <v-card-actions>
+          <v-card-actions persistent >
             <v-spacer></v-spacer>
             <v-btn
               center
@@ -307,9 +307,7 @@ export default class DashboardMemberAll extends Vue {
         this.selectedHobby = seriesName;
         const memberHobby = this.hobbysVO.get(content.key);
         this.hobbyMembers = memberHobby ? memberHobby.members : []
-        setTimeout(()=>{
-          this.viewHobbyMembers = true
-        },0)
+        this.viewHobbyMembers = true
       }
     }
   }
