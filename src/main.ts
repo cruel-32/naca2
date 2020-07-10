@@ -6,6 +6,7 @@ import store from './stores'
 import './registerServiceWorker'
 import Vuetify from 'vuetify';
 import VeeValidate from 'vee-validate';
+import Clipboard from 'v-clipboard'
 
 Vue.use(Vuetify, {
   theme: {
@@ -21,6 +22,8 @@ Vue.use(Vuetify, {
 
 Vue.use(VeeValidate);
 Vue.use(require('vue-moment'));
+Vue.use(Clipboard);
+
 Vue.config.productionTip = false
 
 new Vue({

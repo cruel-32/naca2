@@ -87,6 +87,14 @@
             <v-spacer></v-spacer>
             <v-btn
               center
+              @click="copyToClipBoard"
+              outline
+              depressed
+            >
+              COPY
+            </v-btn>
+            <v-btn
+              center
               @click="viewHobbyMembers = false"
               outline
               depressed
@@ -115,6 +123,7 @@ import { menuStore } from "@/stores/modules/menu";
 import { debounce } from "typescript-debounce-decorator";
 import apexchart from 'vue-apexcharts'
 import { dialogStore } from '@/stores/modules/dialog';
+import Clipboard from 'v-clipboard'
 
 interface IChartOption {
   series:number[];
@@ -428,6 +437,11 @@ export default class DashboardMemberAll extends Vue {
     }
     this.rangeCountsChartInfo = chartInfo;
     // console.log('this.rangeCountsChartInfo : ', this.rangeCountsChartInfo);
+  }
+
+  copyToClipBoard(){
+    this.viewHobbyMembers = false
+    this.$clipboard(this.hobbyMembers.map(member => member.name).join(' ') + ` 등 ${this.hobbyMembers.length}명 `)
   }
 }
 
