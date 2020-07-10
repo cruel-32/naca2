@@ -440,9 +440,8 @@ export default class DashboardMemberAll extends Vue {
 
   copyToClipBoard(){
     this.viewHobbyMembers = false
-    this.$clipboard(`
-      술없모에서 "${this.selectedHobby}" 활동을 좋아하는 멤버입니다.
-      [ ${this.hobbyMembers.map(member => member.name).join(' ')} 등 ${this.hobbyMembers.length}명 ]
+    this.$clipboard(`술없모에서 "${this.selectedHobby}" 활동을 좋아하는 멤버입니다.
+[ ${this.hobbyMembers.map(member => member.name).join(' ')} ] 등 ${this.hobbyMembers.length}명
     `)
 }
 }
