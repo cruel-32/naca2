@@ -52,7 +52,11 @@
       <v-flex xs12 sm6 md6>
         <apexchart type="donut" @dataPointSelection="clickHobbys" :options="hobbysOptions"  :height="hobbysHeight" :series="hobbysSeries"></apexchart>
       </v-flex>
-    
+
+      <v-flex xs12 sm6 md6>
+        <apexchart type="donut" @dataPointSelection="clickMbti" :options="mbtiOptions"  :height="mbtiHeight" :series="mbtiSeries"></apexchart>
+      </v-flex>
+
       <v-flex xs12 sm6 md6>
         <apexchart type="donut" :options="genderOptions"  :height="genderHeight" :series="genderSeries"></apexchart>
       </v-flex>
@@ -65,14 +69,14 @@
         <apexchart type="bar" :options="charInfo.options"  :height="charInfo.height" :series="charInfo.series"></apexchart>
       </v-flex>
 
-      <v-dialog v-model="viewHobbyMembers" persistent >
+      <v-dialog v-model="viewMembers" persistent >
         <v-card>
           <v-card-title class="headline">
-            {{selectedHobby}} <span class="text-sm">활동을 좋아하는 멤버입니다.</span>
+            {{selectedTitle}} <span class="text-sm">{{ selectedSubtitle }}</span>
           </v-card-title>
           <v-card-text class="text-justify text-align-center">
             <v-btn
-              v-for="(hobbyMember,index) in hobbyMembers" :key="index"
+              v-for="(hobbyMember,index) in popupMembers" :key="index"
               right
               @click="$router.push(`/members/detail/${hobbyMember.key}`)"
               depressed
@@ -80,7 +84,7 @@
             >
               {{hobbyMember.name}}
             </v-btn>
-            <div>등 {{hobbyMembers.length}}명</div>
+            <div>등 {{popupMembers.length}}명</div>
           </v-card-text>
 
           <v-card-actions>
@@ -95,7 +99,7 @@
             </v-btn>
             <v-btn
               center
-              @click="viewHobbyMembers = false"
+              @click="viewMembers = false"
               outline
               depressed
             >
@@ -158,7 +162,7 @@ export default class DashboardMemberAll extends Vue {
   get members(){return memberStore.members}
   get places(){return placeStore.places}
   get contents(){return contentStore.contents}
-  
+
   viewStartAt:boolean = false;
   viewEndAt:boolean = false;
 
@@ -171,9 +175,10 @@ export default class DashboardMemberAll extends Vue {
   }
 
   today:any = this.$moment(new Date());
-  viewHobbyMembers:boolean = false;
-  hobbyMembers:IMemberTypes[] = [];
-  selectedHobby:string = '';
+  viewMembers:boolean = false;
+  popupMembers:IMemberTypes[] = [];
+  selectedTitle:string = '';
+  selectedSubtitle:string = '';
 
   //날짜가 바뀌면 reset해주어야 하는 info
   hobbysVO:Map<string, {count:number, members:IMemberTypes[]}> = new Map();
@@ -189,6 +194,33 @@ export default class DashboardMemberAll extends Vue {
   hobbysSeries:any[] = [];
   hobbysHeight:any = 'auto';
   hobbysOptions:any  = {}
+
+  mbtiVO:Map<string, {count:number, members:IMemberTypes[]}> = new Map();
+  mbtiSeries:any[] = [];
+  mbtiHeight:any = 'auto';
+  mbtiOptions:any  = {}
+  mbtiList:string[] = [
+    '모릅니다',
+    'INFJ',
+    'INTJ',
+    'INFP',
+    'INTP',
+
+    'ISFJ',
+    'ISTJ',
+    'ISFP',
+    'ISTP',
+
+    'ESFJ',
+    'ESTJ',
+    'ESFP',
+    'ESTP',
+    
+    'ENFJ',
+    'ENTJ',
+    'ENFP',
+    'ENTP',
+  ];
 
   ageSeries:any[] = [];
   ageHeight:any = 'auto';
@@ -236,6 +268,7 @@ export default class DashboardMemberAll extends Vue {
     menuStore.setProgress(true);
     this.setChartCommonInfo();
     this.updateHobbysChart();
+    this.updateMbtiChart();
     this.updateGenderChart();
     this.updateAgeChart();
     this.updateRangeEventChart();
@@ -251,6 +284,16 @@ export default class DashboardMemberAll extends Vue {
           members: memberHobby && Array.isArray(memberHobby.members) ? memberHobby.members.concat([member]) : [member]
         });
       })
+
+      if (member.mbti) {
+        const memberMbti = this.mbtiVO.get(member.mbti);
+  
+        this.mbtiVO.set(member.mbti, {
+          count: (memberMbti && memberMbti.count||0)+1,
+          members: memberMbti && Array.isArray(memberMbti.members) ? memberMbti.members.concat([member]) : [member]
+        });
+      }
+
       const gender = this.genderVO.get(member.gender);
       const genderAge = this.ageVO.get(member.gender);
       const age:number = this.today.diff(this.$moment(member.birth.toString()), 'years')+1;
@@ -258,6 +301,7 @@ export default class DashboardMemberAll extends Vue {
       this.genderVO.set(member.gender, (gender || 0) + 1);
       this.ageVO.set(member.gender, (genderAge ||0 ) + age);
     })
+    console.log('this.mbtiVO :::: ', this.mbtiVO);
   }
 
   resetRangeEvents(){
@@ -312,10 +356,30 @@ export default class DashboardMemberAll extends Vue {
       const content:IContentTypes|undefined = this.contents.find((content:IContentTypes)=>content.name === seriesName)
 
       if(content){
-        this.selectedHobby = seriesName;
+        this.selectedTitle = seriesName;
+        this.selectedSubtitle = '활동을 좋아하는 멤버입니다.';
         const memberHobby = this.hobbysVO.get(content.key);
-        this.hobbyMembers = memberHobby ? memberHobby.members : []
-        this.viewHobbyMembers = true
+        this.popupMembers = memberHobby ? memberHobby.members : []
+        this.viewMembers = true
+      }
+    }
+  }
+
+  clickMbti(event:any, chartContext:any, config:any){
+    const { target : { parentNode } } = event;
+    if(parentNode){
+      console.log('parentNode ::::: ', parentNode);
+      const { dataPointIndex } = config;
+      const seriesName = config.w.globals.seriesNames[dataPointIndex]
+      console.log('seriesName ::::: ', seriesName);
+      const mbti: string |undefined = this.mbtiList.find((mbti:string)=> mbti === seriesName)
+
+      if(mbti){
+        this.selectedTitle = seriesName;
+        this.selectedSubtitle = seriesName === '모릅니다' ? 'mbti를 모르거나 밝히고 싶지 않은 멤버입니다.' : '특성을 가진 멤버입니다.';
+        const memberMbti = this.mbtiVO.get(mbti);
+        this.popupMembers = memberMbti ? memberMbti.members : []
+        this.viewMembers = true
       }
     }
   }
@@ -350,7 +414,41 @@ export default class DashboardMemberAll extends Vue {
       }
     };
     this.hobbysHeight = 380
+  }
+  
+  updateMbtiChart(){
+    const newSeries:any[] = [];
+    const newMbtiLabels:string[] = [];
 
+    for(let [key,value] of this.mbtiVO){
+      newSeries.push(value.count)
+      const mbti = this.mbtiList.find((mbti:string)=> mbti === key)
+      console.log('mbti ::::: ', mbti);
+      if (mbti) {
+        newMbtiLabels.push(mbti)
+      }
+    }
+
+    this.mbtiSeries = newSeries;
+    this.mbtiOptions = {
+       title: {
+        text: '전체 MBTI 비율'
+      },
+      legend: {
+        position: 'top'
+      },
+      labels : newMbtiLabels,
+      tooltip: {
+        y: {
+          formatter(value:string) {
+            return `
+              ${value} 명 (click 하여 자세히 보기)
+            `
+          }
+        }
+      }
+    };
+    this.mbtiHeight = 380
   }
 
   updateGenderChart(){
@@ -439,9 +537,9 @@ export default class DashboardMemberAll extends Vue {
   }
 
   copyToClipBoard(){
-    this.viewHobbyMembers = false
-    this.$clipboard(`술없모에서 "${this.selectedHobby}" 활동을 좋아하는 멤버입니다.
-[ ${this.hobbyMembers.map(member => member.name).join(' ')} ] 등 ${this.hobbyMembers.length}명`)
+    this.viewMembers = false
+    this.$clipboard(`술없모에서 "${this.selectedTitle}" ${this.selectedSubtitle}
+[ ${this.popupMembers.map(member => member.name).join(' ')} ] 등 ${this.popupMembers.length}명`)
 }
 }
 

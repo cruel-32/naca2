@@ -31,6 +31,7 @@ class MemberStore extends VuexModule {
     dMinus:0,
     status:'',
     name:'',
+    mbti:'모릅니다',
     hobbys:[],
     // job:'',
   };
@@ -64,6 +65,7 @@ class MemberStore extends VuexModule {
       dMinus:0,
       status:'',
       name:'',
+      mbti:'모릅니다',
       hobbys:[],
     });
   }

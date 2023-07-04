@@ -87,6 +87,10 @@ export default class extends Vue {
           required : (field:any) => `${field} 회원 이름을 적으세요`,
           max: (field:any,count:number) => `${field}필드는 ${count} 자를 초과할 수 없습니다`
         },
+        mbti: {
+          max: (field:any,count:number) => `${field}필드를 정확하게 입력해주세요`,
+          min : (field:any, count:number) => `${field}필드를 정확하게 입력해주세요`,
+        },
         // address: {
         //   required : (field:any) => `${field} 사는 곳을 적으세요`,
         //   max: (field:any,count:number) => `${field}필드는 ${count} 자를 초과할 수 없습니다`

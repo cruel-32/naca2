@@ -116,9 +116,9 @@ export default {
     },
     //key값을 넘기면 put, 안넘기면 post
     updateMember : async (payload:IMemberTypes):Promise<IMemberTypes> => {
-        let {key, birth, gender, grade, joinDate, mail, phone, name, hobbys} = payload;
+        let {key, birth, gender, grade, joinDate, mail, phone, name, hobbys, mbti} = payload;
         let params:any = {
-            birth, gender, grade, joinDate, mail, phone, name,
+            birth, gender, grade, joinDate, mail, phone, name, mbti,
 
             hobbys : hobbys && hobbys.length ? API_UTILS.arrayConvertToObj(hobbys) : {},
         }

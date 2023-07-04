@@ -154,6 +154,20 @@
                     disabled
                   ></v-text-field>
                 </v-flex>
+                
+                <v-flex xs12 sm6 md4>
+                  <v-select
+                    v-model="member.mbti"
+                    :items="mbtiList"
+                    label="mbti"
+                    data-vv-name="mbti"
+                    item-value="mbti"
+                    item-text="mbti"
+                    :error-messages="errors.collect('mbti')"
+                    dense
+                    v-validate="'min:4|max:4'"
+                  ></v-select>
+                </v-flex>
 
                 <!-- <v-flex xs12 sm6 md4 v-if="this.params && this.params.key && member.outDay">
                   <v-text-field
@@ -405,6 +419,29 @@ export default class MemberDetail extends Vue {
     1987,
     1986,
     1985,
+  ];
+
+  mbtiList:string[] = [
+    '모릅니다',
+    'INFJ',
+    'INTJ',
+    'INFP',
+    'INTP',
+
+    'ISFJ',
+    'ISTJ',
+    'ISFP',
+    'ISTP',
+
+    'ESFJ',
+    'ESTJ',
+    'ESFP',
+    'ESTP',
+    
+    'ENFJ',
+    'ENTJ',
+    'ENFP',
+    'ENTP',
   ];
 
   async created(){
