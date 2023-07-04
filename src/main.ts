@@ -7,6 +7,7 @@ import './registerServiceWorker'
 import Vuetify from 'vuetify';
 import VeeValidate from 'vee-validate';
 import Clipboard from 'v-clipboard'
+import 'material-design-icons-iconfont/dist/material-design-icons.css' // Ensure you are using css-loader
 
 Vue.use(Vuetify, {
   theme: {
@@ -17,7 +18,8 @@ Vue.use(Vuetify, {
     warning: "#ffeb3b",
     info: "#2196f3",
     success: "#4caf50"
-  }
+  },
+  iconfont: 'md',
 });
 
 Vue.use(VeeValidate);
